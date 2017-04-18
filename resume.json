@@ -1,0 +1,191 @@
+{
+    "basics": {
+        "name": "Harishankar Narayanan",
+        "label": "Software Architect",
+        "picture": "./harishankar.jpg",
+        "email": "nharishankar@gmail.com",
+        "phone": "+91 9940177422",
+        "website": "https://richardhendricks.com",
+        "summary": "A full-stack engineer with passion to build great products and demonstrated skills in designing software architecture for Mobile platforms & Enterprise Back-end. I have architected & built horizontally scalable, reliable back-ends using distributed RESTful API services, clustered NoSQL DBs and web/mobile based front-ends with modern, highly interactive UIs.",
+        "location": {
+            "address": "61, Muthu Street, A12 - Roohi Aswat, Royapettah",
+            "postalCode": "600014",
+            "city": "Chennai",
+            "countryCode": "IN",
+            "region": "TamilNadu"
+        },
+        "profiles": [
+            {
+                "network": "Github",
+                "username": "codetiger",
+                "url": "https://github.com/codetiger"
+            },
+            {
+                "network": "LinkedIn",
+                "username": "Harishankar",
+                "url": "https://www.linkedin.com/in/code42tiger/"
+            }
+        ]
+    },
+    "work": [
+        {
+            "company": "Altimetrik Inc",
+            "position": "Architect, CC Lead, AnyDevice Capability Centre",
+            "website": "https://www.altimetrik.com",
+            "startDate": "2016-10-21",
+            "endDate": "Present",
+            "summary": "Provided Technical Leadership for Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools & frameworks using emerging technologies.",
+            "highlights": [
+                "RMAD Framework: Led architecture design & development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.",
+                "mBaas Platform: Led architecture design & development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services",
+                "Responsible for all technology related activities for AnyDevice CC. Actively involved in RFP, RFQ, until product delivery for various clients."
+            ]
+        },
+        {
+            "company": "Amtex Inc",
+            "position": "Technical Architect",
+            "website": "http://www.amtexsystems.com",
+            "startDate": "2014-02-04",
+            "endDate": "2016-07-30",
+            "summary": "Responsible for the overall architecture of 5 products. Built & managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.",
+            "highlights": [
+                "Instudio Designs: Designed, Developed & maintained a distributed & highly scalable E-Commerce solution for the luxury furniture manufacturers.",
+                "Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.",
+                "Maestros Music: Designed the architecture & built an audio streaming server & Mobile apps for iOS, Android & Windows Mobile."
+            ]
+        },
+        {
+            "company": "Smackall Games",
+            "position": "Founder & Technology Head",
+            "website": "http://www.smackall.com",
+            "startDate": "2006-01-05",
+            "endDate": "2016-10-15",
+            "summary": "Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors.",
+            "highlights": [
+                "3 of our products topped the iTunes Global Chart and crossed over a 5 million downloads.",
+                "Built & Managed the backend API servers for most of the apps with Real Time communication capabilities.",
+                "Designed & Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.",
+                "Designed & built a app based on patent-pending ID-GPS concept.",
+                "Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).",
+                "Our Product was awarded A'Design Award 2012",
+                "Managed to grow the company from 2 member team to 20 developers and offered App/Game development services for Mobile platforms."
+            ]
+        },
+        {
+            "company": "Software Developer",
+            "position": "Real Image Media Technology",
+            "website": "http://www.realimage.com",
+            "startDate": "2006-01-06",
+            "endDate": "2005-01-05",
+            "highlights": [
+                "Worked as an early member of software development team for Qube Cinema server.",
+                "Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu."
+            ]
+        }
+    ],
+    "volunteer": [
+        {
+            "organization": "Bullet Physics",
+            "website": "http://bulletphysics.org",
+            "highlights": [
+                "Contributing to the best open source physics simulation software in the market",
+                "Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor for the community."
+            ]
+        },
+        {
+            "organization": "Irrlicht Renderer",
+            "website": "http://irrlicht.sourceforge.net",
+            "highlights": [
+                "Started using Irrlicht since 2010 & contributed to the community in various aspects.",
+                "Individually ported the engine to Google NaCl platform to make it possible to run the engine within a browser. This effort has made the engine to support a completely new platform."
+            ]
+        },
+        {
+            "organization": "Iyan 3D Professional",
+            "website": "https://github.com/codetiger/Iyan3d",
+            "highlights": [
+                "Designed & built an fully functional 3d animation editor app for mobile platforms",
+                "Supports iOS, Android & ready to be ported for other platforms.",
+                "Built with support for OpenGL ES, iOS Metal & OpenGL",
+                "Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering"
+            ]
+        },
+        {
+            "organization": "Kinect UIRT",
+            "website": "https://github.com/codetiger/Kinect-UIRT",
+            "highlights": [
+                "A hobby project that ended up in the big press & eventually forced me to make it open source. The goal was to build an embedded system to learn and detect user’s gestures from depth maps generated by Kinect sensors and control Home appliances like TV and AC"
+            ]
+        }
+    ],
+    "education": [
+        {
+            "institution": "P.S.N.A College of Engineering & Technology",
+            "area": "Mechanical Engineering",
+            "studyType": "Bachelor",
+            "startDate": "2000-04-01",
+            "endDate": "2004-04-01"
+        }
+    ],
+    "awards": [
+        {
+            "title": "Rank #1 in India & #127 globally in AI Programming Challenge",
+            "date": "2011-11-01",
+            "awarder": "University of Waterloo & Sponsor by Google",
+            "summary": "The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents."
+        },
+        {
+            "title": "A'Design Award 2012",
+            "date": "2012-11-01",
+            "awarder": "A'Design Award",
+            "summary": "ID-GPS Concept based Mobile app"
+        }
+    ],
+    "skills": [
+        {
+            "name": "Mobile App",
+            "level": "Master",
+            "keywords": [
+                "iOS SDK",
+                "Android SDK & NDK",
+                "React Native",
+                "Phonegap"
+            ]
+        },
+        {
+            "name": "Web Front-End",
+            "level": "Master",
+            "keywords": [
+                "ReactJS",
+                "AngularJS",
+                "JQuery",
+                "Materialize"
+            ]
+        },
+        {
+            "name": "Back-End",
+            "level": "Master",
+            "keywords": [
+                "Python",
+                "Java",
+                "PHP",
+                "Swift",
+                "Go"
+            ]
+        }
+    ],
+    "languages": [
+        {
+            "language": "English",
+            "fluency": "Native speaker"
+        },
+        {
+            "language": "Tamil",
+            "fluency": "Native speaker"
+        },
+        {
+            "language": "Telugu",
+            "fluency": "Native speaker"
+        }
+    ]
+}
