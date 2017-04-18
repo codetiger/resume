@@ -1,0 +1,751 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope itemtype="http://schema.org/Article">
+  <head>
+    <title>Harishankar Narayanan－Software Architect</title>
+    <meta name="author" content="Harishankar Narayanan">
+
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      .paper-card-wide.mdl-card {
+  flex-direction: row;
+  width: 1024px;
+  box-sizing: content-box;
+  background: #fff;
+
+  margin: 0 auto;
+  margin-top: 28px;
+}
+
+.left-card-wide.mdl-card {
+  float: left;
+  width: 30%;
+  background: #6298CB;
+}
+
+.profile-card img {
+  width: 80%;
+  max-width: 100%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-transition: -webkit-box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
+  -webkit-box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.06);
+
+  display: block;
+  margin: 0 auto;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+.right-card-wide.mdl-card {
+  float: right;
+  width: 70%;
+  background: #E0E0E0;
+}
+
+.white-text {
+  color: #FFF;
+}
+
+.summary-container {
+  top: 40px;
+  position: relative;
+}
+
+.white-icon {
+  color: #FFF;
+  position: absolute;
+  padding:20px;
+}
+
+.white-details {
+  color: #FFF;
+  left: 68px;
+  margin-left: 20%;
+  display: block;
+  text-decoration: none;
+  font-style: normal;
+  font-weight: 200;
+}
+
+.name-tag {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0 auto;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.designation-tag {
+  text-align: center;
+  font-size: 1.25rem;
+  text-decoration: none;
+  font-style: normal;
+  font-weight: 100;
+  margin: 0 auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  border: none;
+  outline: 0;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  line-height: 1.25rem;
+  background: #EEE;
+  color: rgba(0, 0, 0, .88);
+  font-size: .875rem;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+a {
+  color: rgba(0, 0, 0, .64);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+footer .profiles {
+  margin-bottom: 56px;
+}
+
+footer .profiles a:not(:last-of-type) {
+  border-right: 1px solid rgba(0,0,0,.4);
+  margin-right: .6em;
+  padding-right: .8em;
+}
+
+footer #copyright {
+  color: rgba(0, 0, 0, .4);
+}
+
+#resume #main .list ul li:not(:first-child) {
+  margin-top: 28px;
+}
+
+#resume #main .list ul li h3 {
+  font-weight: 400;
+  font-size: 1em;
+  margin-bottom: 4px;
+}
+
+#resume #main .list ul li h3.title {
+  font-weight: 700;
+  color: rgba(0, 0, 0, .88);
+}
+
+#resume #main .list ul li h3.subtitle {
+  font-weight: 600;
+  color: rgba(0, 0, 0, .64);
+}
+
+#resume #main .list ul li h3.location,
+#resume #main .list ul li h3.time {
+  color: rgba(0, 0, 0, .64);
+}
+
+#resume #main .list ul li h3.time .period {
+  color: rgba(0, 0, 0, .64);
+}
+
+#resume #main .list ul li .left,
+#resume #main .list ul li .right {
+  width: 50%;
+}
+
+#resume #main .list ul li .left {
+  padding-right: 48px;
+}
+
+#resume #main .list ul li .right {
+  padding-left: 48px;
+}
+
+#resume #main .list ul li .description {
+  font-size: 1em;
+  color: rgba(0, 0, 0, .64);
+}
+
+#resume #main .list ul li .description p {
+  margin-bottom: 12px;
+}
+
+#resume #main .list ul li .description p:last-of-type {
+  margin-bottom: 0;
+}
+
+#resume #main #contact.list ul li,
+#resume #main #skills.list ul li {
+  font-size: 1em;
+  line-height: 1.25rem;
+}
+
+#resume #main #contact.list ul li:not(:first-child),
+#resume #main #skills.list ul li:not(:first-child) {
+  margin-top: 12px;
+}
+
+#resume {
+  margin: 40px auto;
+  padding: 40px;
+  max-width: 768px;
+  box-sizing: content-box;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+}
+
+.resume-section {
+  margin-top: 28px;
+  display: block;
+}
+
+.sectionLeft {
+  float: left;
+  /*width: 132px;*/
+}
+
+.sectionRight {
+  float: right;
+  width: 635px;
+}
+
+h1#name {
+  font-size: 2.57em;
+  line-height: 2.5rem;
+  color: rgba(0, 0, 0, .88);
+  font-weight: 600;
+  position: relative;
+  margin-top: 2px;
+}
+
+.current-position {
+  font-size: 1em;
+  font-weight: 600;
+  margin-right: 4px;
+  color: rgba(0, 0, 0, .88);
+  margin-top: 7px;
+}
+
+ul.subContact {
+  font-size: 1em;
+  margin-top: 12px;
+}
+
+ul.subContact li {
+  display: inline-block;
+  color: rgba(0, 0, 0, .64);
+  margin-right: 8px;
+}
+
+ul.subContact li a {
+  color: rgba(0, 0, 0, .64);
+}
+
+ul.subContact li:not(:last-of-type) {
+  border-right: 1px solid rgba(0, 0, 0, .4);
+  margin-right: .6em;
+  padding-right: .8em;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: text-bottom;
+}
+
+.subContact svg {
+  fill: rgba(0, 0, 0, .64);
+}
+
+.resumeSection {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1em;
+  color: #3d79f2;
+}
+
+.about-me {
+  color: rgba(0, 0, 0, .64);
+  font-size: 1em;
+}
+
+.spacing-small #resume {
+  padding: 49px 0;
+}
+
+.spacing-small #top .subAbout {
+  margin-top: 20px;
+}
+
+.spacing-small .resume-section {
+  margin-top: 20px;
+}
+
+.spacing-small #resume #main .list ul li:not(:first-child) {
+  margin-top: 20px;
+}
+
+.spacing-small #resume #main .list ul li:first-child {
+  margin-top: 0;
+}
+
+.spacing-small #resume #main #contact.list ul li:not(:first-child),
+.spacing-small #resume #main #skills.list ul li:not(:first-child) {
+  margin-top: 4px;
+}
+
+.spacing-large #resume {
+  padding: 81px 0 73px;
+}
+
+.spacing-large #top .subAbout {
+  margin-top: 44px;
+}
+
+.spacing-large #resume #main .list ul {
+  margin-top: 0;
+}
+
+.spacing-large #resume #main .list ul li {
+  margin-top: 20px;
+}
+
+.spacing-large #resume #main .list ul li:first-child {
+  margin-top: 0;
+}
+
+.spacing-large .currentPosition {
+  position: relative;
+  margin-top: 7px;
+}
+
+.spacing-large ul.subContact {
+  margin-top: 12px;
+}
+
+.spacing-large .resume-section {
+  margin-top: 44px;
+}
+
+#skills {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.skills {
+  width: 50%;
+  padding-right: 5px;
+}
+
+.skills h3.title,
+.skills ul li {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-size: 1em;
+  color: rgba(0, 0, 0, .64);
+}
+
+.skills h3.title {
+  font-weight: 700;
+  color: rgba(0, 0, 0, .88);
+}
+
+@media screen and (max-width:850px) {
+  .sectionLeft,
+  .sectionRight {
+    float: none;
+    width: 100%;
+  }
+  .spacing-small h2.resumeSection {
+    margin-bottom: 4px;
+  }
+  .spacing-large h2.resumeSection,
+  h2.resumeSection {
+    margin-bottom: 12px;
+  }
+  .mobile-hide {
+    display: none;
+  }
+  .desktop-hide {
+    display: block;
+  }
+  .left,
+  .right {
+    float: none;
+    padding: 0;
+    width: 100%;
+  }
+  #resume #main .list ul li .description {
+    margin-top: 4px;
+  }
+  #resume {
+    margin-top: 0;
+    border: none;
+    box-shadow: none;
+  }
+  .skills {
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 0;
+  }
+  .skills:not(:first-child) {
+    margin-top: 28px;
+  }
+}
+
+@media screen and (max-width:420px) {
+  body {
+    font-size: 1rem;
+  }
+  #resume {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
+
+@media print {
+  #top h1#name span {
+    font-weight: 100;
+  }
+  #resume {
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+  body {
+    margin-top: 17px;
+    background: 0 0;
+  }
+  .sectionLeft,
+  .sectionRight {
+    float: none;
+    width: 100%;
+  }
+  .spacing-small h2.resumeSection {
+    margin-bottom: 4px;
+  }
+  .spacing-large h2.resumeSection,
+  h2.resumeSection {
+    margin-bottom: 12px;
+  }
+  .mobile-hide {
+    display: none;
+  }
+  .desktop-hide {
+    display: block;
+  }
+  .left,
+  .right {
+    float: none;
+    padding: 0;
+    width: 100%;
+  }
+  #resume #main .list ul li .description {
+    margin-top: 4px;
+  }
+  #resume {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  #resume #main .list ul li h3.time .period {
+    display: none;
+  }
+  #skills {
+    page-break-inside: avoid;
+  }
+
+  footer {
+    display: none;
+  }
+}
+
+    </style>
+  </head>
+<body>
+  <div class="paper-card-wide mdl-card mdl-shadow--6dp">
+    <div class="left-card-wide mdl-card">
+        <div class="profile-card">
+          <img src="./harishankar.jpg"/>
+        </div>
+        <h1 class="name-tag white-text">Harishankar Narayanan</h1>
+          <h2 class="designation-tag white-text">Software Architect</h2>
+          <div class="summary-container">
+            <span class="white-icon"><i class="material-icons">description</i></span>
+            <span class="white-details">A full-stack engineer with passion to build great products and demonstrated skills in designing software architecture for Mobile platforms & Enterprise Back-end. I have architected & built horizontally scalable, reliable back-ends using distributed RESTful API services, clustered NoSQL DBs and web/mobile based front-ends with modern, highly interactive UIs.</span>
+          </div>
+          <div class="summary-container">
+            <span class="white-icon"><i class="material-icons">location</i></span>
+            <span class="white-details">[object Object]</span>
+          </div>
+          <div class="summary-container">
+            <span class="white-icon"><i class="material-icons">email</i></span>
+            <span class="white-details">nharishankar@gmail.com</span>
+          </div>
+          <div class="summary-container">
+            <span class="white-icon"><i class="material-icons">phone</i></span>
+            <span class="white-details">+91 9940177422</span>
+          </div>
+    </div>
+    <div class="right-card-wide mdl-card">
+    </div>
+  </div>
+
+  <main id="resume">
+    <header class="inside">
+      <h1 id="name">Harishankar Narayanan</h1>
+      <h2 class="current-position">Software Architect</h2>
+      <ul class="subContact">
+          <li class="location"><span class="icon"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" class="style-scope iron-icon"></path></g></svg></span> Chennai</li>
+        <li class="website"><span class="icon"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" class="style-scope iron-icon"></path></g></svg></span><a href="http://https://richardhendricks.com"> https://richardhendricks.com</a></li>
+        <li class="email"><span class="icon"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" class="style-scope iron-icon"></path></g></svg></span><a href="mailto:nharishankar@gmail.com"> nharishankar@gmail.com</a></li>
+        <li class="phone"><span class="icon"><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" class="style-scope iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope iron-icon"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" class="style-scope iron-icon"></path></g></svg></span> +91 9940177422</li>
+      </ul>
+    </header>
+    <article id="main">
+      <div class="inside">
+        <section class="resume-section subAbout">
+          <section class="sectionLeft">
+            <h2 id="about-title" class="resumeSection">Summary</h2>
+          </section>
+          <section class="sectionRight">
+            <p class="about-me">A full-stack engineer with passion to build great products and demonstrated skills in designing software architecture for Mobile platforms & Enterprise Back-end. I have architected & built horizontally scalable, reliable back-ends using distributed RESTful API services, clustered NoSQL DBs and web/mobile based front-ends with modern, highly interactive UIs.</p>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+        <section class="resume-section">
+          <section class="sectionLeft">
+            <h2 class="resumeSection">Work</h2>
+          </section>
+          <section class="sectionRight">
+            <div class="list">
+              <ul>
+                <li class="experience">
+                  <h3 class="title">Altimetrik Inc – Architect, CC Lead, AnyDevice Capability Centre</h3> 
+                  <h3 class="time">2016-10-21 – Present</h3> 
+                  <div class="description">
+                    <p>Provided Technical Leadership for Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools & frameworks using emerging technologies.</p>
+                  </div>
+<!--                   
+                  <ul class="highlights">
+                    <li>RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
+                    <li>mBaas Platform: Led architecture design &amp; development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services</li>
+                    <li>Responsible for all technology related activities for AnyDevice CC. Actively involved in RFP, RFQ, until product delivery for various clients.</li>
+                  </ul>
+                   -->
+                </li>
+                <li class="experience">
+                  <h3 class="title">Amtex Inc – Technical Architect</h3> 
+                  <h3 class="time">2014-02-04 – 2016-07-30</h3> 
+                  <div class="description">
+                    <p>Responsible for the overall architecture of 5 products. Built & managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.</p>
+                  </div>
+<!--                   
+                  <ul class="highlights">
+                    <li>Instudio Designs: Designed, Developed &amp; maintained a distributed &amp; highly scalable E-Commerce solution for the luxury furniture manufacturers.</li>
+                    <li>Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.</li>
+                    <li>Maestros Music: Designed the architecture &amp; built an audio streaming server &amp; Mobile apps for iOS, Android &amp; Windows Mobile.</li>
+                  </ul>
+                   -->
+                </li>
+                <li class="experience">
+                  <h3 class="title">Smackall Games – Founder &amp; Technology Head</h3> 
+                  <h3 class="time">2006-01-05 – 2016-10-15</h3> 
+                  <div class="description">
+                    <p>Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors.</p>
+                  </div>
+<!--                   
+                  <ul class="highlights">
+                    <li>3 of our products topped the iTunes Global Chart and crossed over a 5 million downloads.</li>
+                    <li>Built &amp; Managed the backend API servers for most of the apps with Real Time communication capabilities.</li>
+                    <li>Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
+                    <li>Designed &amp; built a app based on patent-pending ID-GPS concept.</li>
+                    <li>Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
+                    <li>Our Product was awarded A&#x27;Design Award 2012</li>
+                    <li>Managed to grow the company from 2 member team to 20 developers and offered App/Game development services for Mobile platforms.</li>
+                  </ul>
+                   -->
+                </li>
+                <li class="experience">
+                  <h3 class="title">Software Developer – Real Image Media Technology</h3> 
+                  <h3 class="time">2006-01-06 – 2005-01-05</h3> 
+<!--                   
+                  <ul class="highlights">
+                    <li>Worked as an early member of software development team for Qube Cinema server.</li>
+                    <li>Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu.</li>
+                  </ul>
+                   -->
+                </li>
+              </ul>
+            </div>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+
+        <section class="resume-section">
+          <section class="sectionLeft">
+            <h2 class="resumeSection">Education</h2>
+          </section>
+          <section class="sectionRight">
+            <div id="education" class="list">
+              <ul id="educations">
+                <li class="education">
+                  <h3 class="title">P.S.N.A College of Engineering &amp; Technology</h3>
+                  <h3 class="subtitle">Bachelor</h3>
+                  <h3 class="time">2000-04-01 - 2004-04-01</h3>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+
+        <section class="resume-section">
+          <section class="sectionLeft">
+            <h2 class="resumeSection">Awards</h2>
+          </section>
+          <section class="sectionRight">
+            <div id="awards" class="list">
+              <ul id="awards">
+                <li class="award">
+                  <h3 class="title">Rank #1 in India &amp; #127 globally in AI Programming Challenge</h3>
+                  <h3 class="subtitle">University of Waterloo &amp; Sponsor by Google</h3>
+                  <h3 class="time">2011-11-01</h3>
+                  <div class="description">
+                    <p>The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents.</p>
+                  </div>
+                </li>
+                <li class="award">
+                  <h3 class="title">A&#x27;Design Award 2012</h3>
+                  <h3 class="subtitle">A&#x27;Design Award</h3>
+                  <h3 class="time">2012-11-01</h3>
+                  <div class="description">
+                    <p>ID-GPS Concept based Mobile app</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+
+
+        <section class="resume-section">
+          <section class="sectionLeft">
+            <h2 class="resumeSection">Skills</h2>
+          </section>
+          <section class="sectionRight" id="skills">
+            <div class="skills">
+              <h3 class="title">Mobile App</h3>
+              <ul>
+                <li>iOS SDK</li>
+                <li>Android SDK &amp; NDK</li>
+                <li>React Native</li>
+                <li>Phonegap</li>
+              </ul>
+            </div>
+            <div class="skills">
+              <h3 class="title">Web Front-End</h3>
+              <ul>
+                <li>ReactJS</li>
+                <li>AngularJS</li>
+                <li>JQuery</li>
+                <li>Materialize</li>
+              </ul>
+            </div>
+            <div class="skills">
+              <h3 class="title">Back-End</h3>
+              <ul>
+                <li>Python</li>
+                <li>Java</li>
+                <li>PHP</li>
+                <li>Swift</li>
+                <li>Go</li>
+              </ul>
+            </div>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+
+        <section class="resume-section">
+          <section class="sectionLeft">
+            <h2 class="resumeSection">Languages</h2>
+          </section>
+          <section class="sectionRight">
+            <div id="languages" class="list">
+              <ul id="languages">
+                <li class="lang">
+                  <h3 class="title">English</h3>
+                  <div class="description">
+                    <p>Native speaker</p>
+                  </div>
+                </li>
+                <li class="lang">
+                  <h3 class="title">Tamil</h3>
+                  <div class="description">
+                    <p>Native speaker</p>
+                  </div>
+                </li>
+                <li class="lang">
+                  <h3 class="title">Telugu</h3>
+                  <div class="description">
+                    <p>Native speaker</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <div class="clearfix"></div>
+        </section>
+
+      </div>
+    </article>
+  </main>
+  <footer>
+    <div class="profiles">
+      <a href="https://github.com/codetiger">Github</a>
+      <a href="https://www.linkedin.com/in/code42tiger/">LinkedIn</a>
+    </div>
+  </footer>
+</body>
+</html>
