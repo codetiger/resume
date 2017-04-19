@@ -1,6 +1,7 @@
-.paper-card-wide.mdl-card {
+.paper-card.mdl-card {
   flex-direction: row;
   width: 1024px;
+  height: 1000px;
   box-sizing: content-box;
   background: #fff;
 
@@ -8,10 +9,16 @@
   margin-top: 28px;
 }
 
-.left-card-wide.mdl-card {
+.left-card.mdl-card {
   float: left;
   width: 30%;
   background: #6298CB;
+}
+
+.right-card.mdl-card {
+  float: right;
+  width: 70%;
+  background: #E0E0E0;
 }
 
 .profile-card img {
@@ -30,35 +37,45 @@
   margin-bottom: 10%;
 }
 
-.right-card-wide.mdl-card {
-  float: right;
-  width: 70%;
-  background: #E0E0E0;
-}
-
 .white-text {
   color: #FFF;
 }
 
 .summary-container {
+  display: table-row;
   top: 40px;
   position: relative;
 }
 
+.table-column {
+  display: table-cell;
+}
+
 .white-icon {
+  display: table-cell;
   color: #FFF;
   position: absolute;
-  padding:20px;
+  margin-left: 20px;
 }
 
 .white-details {
-  color: #FFF;
-  left: 68px;
-  margin-left: 20%;
   display: block;
+  color: #FFF;
+  margin-left: 70px;
+  margin-right: 20px;
   text-decoration: none;
   font-style: normal;
-  font-weight: 200;
+  font-size: 1rem;
+  font-weight: 140;
+}
+
+.line-splitter {
+  height: 1px;
+  width: 100%;
+  background: #5587B7;
+  margin: 20px;
+  margin-left: 70px;
+  position: relative;
 }
 
 .name-tag {
