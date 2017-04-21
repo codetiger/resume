@@ -6,7 +6,7 @@
         "email": "nharishankar@gmail.com",
         "phone": "+91 9940177422",
         "website": "https://richardhendricks.com",
-        "summary": "A full-stack engineer with passion to build great products and demonstrated skills in designing software architecture for Mobile platforms & Enterprise Back-end. I have architected & built horizontally scalable, reliable back-ends using distributed RESTful API services, clustered NoSQL DBs and web/mobile based front-ends with modern, highly interactive UIs.",
+        "summary": "A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.",
         "location": {
             "address": "61, Muthu Street, A12 - Roohi Aswat, Royapettah",
             "postalCode": "600014",
@@ -17,13 +17,15 @@
         "profiles": [
             {
                 "network": "Github",
-                "username": "codetiger",
+                "icon" : "mdi-github-face",
+                "username": "github.com/codetiger",
                 "url": "https://github.com/codetiger"
             },
             {
                 "network": "LinkedIn",
-                "username": "Harishankar",
-                "url": "https://www.linkedin.com/in/code42tiger/"
+                "icon" : "mdi-linkedin-box",
+                "username": "linkedin.com/in/code42tiger",
+                "url": "https://linkedin.com/in/code42tiger/"
             }
         ]
     },
@@ -34,16 +36,15 @@
             "website": "https://www.altimetrik.com",
             "startDate": "2016-10-21",
             "endDate": "Present",
-            "summary": "Provided Technical Leadership for Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools & frameworks using emerging technologies.",
+            "summary": "Provided Technical Leadership for Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools & frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.",
             "highlights": [
                 "RMAD Framework: Led architecture design & development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.",
-                "mBaas Platform: Led architecture design & development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services",
-                "Responsible for all technology related activities for AnyDevice CC. Actively involved in RFP, RFQ, until product delivery for various clients."
+                "mBaas Platform: Led architecture design & development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services"
             ]
         },
         {
             "company": "Amtex Inc",
-            "position": "Technical Architect",
+            "position": "Technical Architect, Consultant",
             "website": "http://www.amtexsystems.com",
             "startDate": "2014-02-04",
             "endDate": "2016-07-30",
@@ -60,15 +61,11 @@
             "website": "http://www.smackall.com",
             "startDate": "2006-01-05",
             "endDate": "2016-10-15",
-            "summary": "Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors.",
+            "summary": "Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.",
             "highlights": [
-                "3 of our products topped the iTunes Global Chart and crossed over a 5 million downloads.",
-                "Built & Managed the backend API servers for most of the apps with Real Time communication capabilities.",
+                "3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A'Design Award 2012",
                 "Designed & Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.",
-                "Designed & built a app based on patent-pending ID-GPS concept.",
-                "Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).",
-                "Our Product was awarded A'Design Award 2012",
-                "Managed to grow the company from 2 member team to 20 developers and offered App/Game development services for Mobile platforms."
+                "Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model)."
             ]
         },
         {
