@@ -22,7 +22,7 @@
 .paper-card.mdl-card {
   flex-direction: row;
   width: 1024px;
-  height: 1500px;
+  height: 2500px;
   box-sizing: content-box;
   background: #fff;
 
@@ -117,13 +117,15 @@
 }
 
 .workexp-card {
-  width: 90%;
+  width: 93.5%;
+  min-height: 100px;
   box-sizing: content-box;
   background: #fff;
 
-  margin: 0 auto;
-  margin-top: 28px;
-  margin-bottom: 28px;
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .grey-text {
@@ -145,43 +147,112 @@
   margin-left: 24px;
   font-style: normal;
   font-weight: 600;
+  margin-bottom: 0;
 }
 
 .work {
   text-align: left;
   margin-left: 24px;
   font-style: normal;
+  margin-right: 24px;
 }
 
 .title {
-  font-size: 1.4rem;
+  float: left;
+  font-size: 1.5rem;
   font-weight: 600;
+  margin-top: 24px;
+  margin-right: 0;
 }
 
 .exp {
   font-size: 1.2rem;
   font-weight: 200;
+  margin-bottom: 12px;
 }
 
 .summary {
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   font-weight: 100;
   line-height: 120%;
 }
 
 .highlights {
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   font-weight: 100;
-  margin-left: 48px;
+  margin-left: 32px;
+  margin-top: 0;
 }
 
-.line-splitter-grey {
-  height: 1px;
-  width: 100%;
-  background: #CCC;
-  margin: 14px;
+.award-date {
+  float: right;
+  font-size: 1.2rem;
+  font-weight: 200;
+  margin-top: 24px;
+  text-align: right;
+  margin-right: 24px;
+}
+
+.title-icons {
+  font-size: 26px;
+}
+
+.skill-title-tag {
+  font-size: 2.4rem;
+  margin: 0 auto;
   margin-left: 24px;
-  position: relative;
+  margin-top: 48px;
+}
+
+.skill-name {
+  font-size: 1.4rem;
+  margin: 0 auto;
+  margin-left: 24px;
+  margin-top:24px;
+}
+
+.mdl-chip {
+  height: 24px;
+  line-height: 24px;
+  font-size: 10px;
+  color: #fff;
+  background-color: #9AB9D7;
+}
+
+.keyword-cards {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.score-slider {
+  color: #fff;
+  background-color: #fff;
+}
+
+.grid-container {
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction:initial;
+}
+
+.volunteer-card {
+  width: 45%;
+  height: 220px;
+  box-sizing: content-box;
+  background: #fff;
+
+  margin-left: 24px;
+  margin-right: 0;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.volunteer-highlights {
+  font-size: 1.0rem;
+  font-weight: 100;
+  margin-left: 0px;
+  margin-right: 12px;
+  margin-top: 12px;
 }
 
     </style>
@@ -228,51 +299,199 @@
             </a>
           </div>
           <div class="summary-container"><div class="line-splitter"></div></div>
+
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Professional Skills</h2>
+            <h3 class="skill-name white-text">Mobile App</h3>
+
+            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="95" tabindex="0" disabled>
+
+            <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">iOS</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Android</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">ReactNative</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Cordova</span>
+              </span>
+            </div>
+            <h3 class="skill-name white-text">Back-End</h3>
+
+            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="75" tabindex="0" disabled>
+
+            <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Python</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Java</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">PHP</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Go</span>
+              </span>
+            </div>
+            <h3 class="skill-name white-text">Web Front-End</h3>
+
+            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="80" tabindex="0" disabled>
+
+            <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">ReactJS</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">AngularJS</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">JQuery</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Material Design</span>
+              </span>
+            </div>
+            <h3 class="skill-name white-text">Machine Learning</h3>
+
+            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="55" tabindex="0" disabled>
+
+            <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">TensorFlow</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Keras</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Theano</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Torch</span>
+              </span>
+            </div>
+        </div>
+
     </div>
     <div class="right-card mdl-card">
-      <div class="workexp-card mdl-card mdl-shadow--2dp">
-        <h3 class="card-title-tag grey-text"><i class="material-icons">work</i> Work Experience</h3>
+      <h3 class="card-title-tag blue-text"><span class="mdi mdi-trophy-award mdi-32px"> Awards</h3>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
           <div>
-              <span class="work title grey-text">Architect, CC Lead, AnyDevice Capability Centre @ <a href="https://www.altimetrik.com" class="blue-text">Altimetrik Inc</a></span><br>
-              <p><span class="work exp grey-text">2016-10-21 to Present</span></p>
-              <p class="work summary grey-text">Provided Technical Leadership for Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
-                <ul class="work highlights grey-text">
-                    <li>RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
-                    <li>mBaas Platform: Led architecture design &amp; development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services</li>
-                </ul>
+            <div class="work title grey-text">Ranked #127 (#1 in India) in AI Programming Challenge</div>
+            <div class="award-date blue-text">2011</div>
+          </div>
+            <br>
+          <span class="work exp blue-text">University of Waterloo &amp; Sponsor by Google</span>
 
-              <div class="line-splitter-grey"></div>
-              <span class="work title grey-text">Technical Architect, Consultant @ <a href="http://www.amtexsystems.com" class="blue-text">Amtex Inc</a></span><br>
-              <p><span class="work exp grey-text">2014-02-04 to 2016-07-30</span></p>
-              <p class="work summary grey-text">Responsible for the overall architecture of 5 products. Built &amp; managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.</p>
-                <ul class="work highlights grey-text">
-                    <li>Instudio Designs: Designed, Developed &amp; maintained a distributed &amp; highly scalable E-Commerce solution for the luxury furniture manufacturers.</li>
-                    <li>Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.</li>
-                    <li>Maestros Music: Designed the architecture &amp; built an audio streaming server &amp; Mobile apps for iOS, Android &amp; Windows Mobile.</li>
-                </ul>
+          <p class="work summary grey-text">The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents.</p>
 
-              <div class="line-splitter-grey"></div>
-              <span class="work title grey-text">Founder &amp; Technology Head @ <a href="http://www.smackall.com" class="blue-text">Smackall Games</a></span><br>
-              <p><span class="work exp grey-text">2006-01-05 to 2016-10-15</span></p>
-              <p class="work summary grey-text">Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile &amp; Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment &amp; Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.</p>
-                <ul class="work highlights grey-text">
-                    <li>3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012</li>
-                    <li>Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
-                    <li>Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
-                </ul>
+          
+        </div>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <div>
+            <div class="work title grey-text">A&#x27;Design Award 2012</div>
+            <div class="award-date blue-text">2012</div>
+          </div>
+            <br>
+          <span class="work exp blue-text">A&#x27;Design Award</span>
 
-              <div class="line-splitter-grey"></div>
-              <span class="work title grey-text">Real Image Media Technology @ <a href="http://www.realimage.com" class="blue-text">Software Developer</a></span><br>
-              <p><span class="work exp grey-text">2006-01-06 to 2005-01-05</span></p>
-              
-                <ul class="work highlights grey-text">
-                    <li>Worked as an early member of software development team for Qube Cinema server.</li>
-                    <li>Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu.</li>
-                </ul>
+          <p class="work summary grey-text">Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d.</p>
 
-              <div class="line-splitter-grey"></div>
+          
+        </div>
+
+      <h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> 12yrs Experience</h3>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <span class="work title grey-text">Architect, CC Lead, AnyDevice Capability Centre <a href="https://www.altimetrik.com" class="blue-text">@Altimetrik Inc</a></span><br>
+
+          <span class="work exp blue-text">2016-10-21 to Present</span>
+
+          <p class="work summary grey-text">Provided Technical Leadership for Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
+
+            <ul class="work highlights grey-text">
+                <li>RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
+                <li>mBaas Platform: Led architecture design &amp; development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services</li>
+            </ul>
+          
+        </div>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <span class="work title grey-text">Technical Architect, Consultant <a href="http://www.amtexsystems.com" class="blue-text">@Amtex Inc</a></span><br>
+
+          <span class="work exp blue-text">2014-02-04 to 2016-07-30</span>
+
+          <p class="work summary grey-text">Responsible for the overall architecture of 5 products. Built &amp; managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.</p>
+
+            <ul class="work highlights grey-text">
+                <li>Instudio Designs: Designed, Developed &amp; maintained a distributed &amp; highly scalable E-Commerce solution for the luxury furniture manufacturers.</li>
+                <li>Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.</li>
+                <li>Maestros Music: Designed the architecture &amp; built an audio streaming server &amp; Mobile apps for iOS, Android &amp; Windows Mobile.</li>
+            </ul>
+          
+        </div>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <span class="work title grey-text">Founder &amp; Technology Head <a href="http://www.smackall.com" class="blue-text">@Smackall Games</a></span><br>
+
+          <span class="work exp blue-text">2006-01-05 to 2016-10-15</span>
+
+          <p class="work summary grey-text">Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile &amp; Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment &amp; Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.</p>
+
+            <ul class="work highlights grey-text">
+                <li>3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012</li>
+                <li>Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
+                <li>Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
+            </ul>
+          
+        </div>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <span class="work title grey-text">Real Image Media Technology <a href="http://www.realimage.com" class="blue-text">@Software Developer</a></span><br>
+
+          <span class="work exp blue-text">2006-01-06 to 2005-01-05</span>
+
+          <p class="work summary grey-text">Responsible for implementing content security in digital cinema server using HASP (Hardware Against Software Piracy).</p>
+
+            <ul class="work highlights grey-text">
+                <li>Worked as an early member of software development team for Qube Cinema server.</li>
+                <li>Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu.</li>
+            </ul>
+          
+        </div>
+
+      <h3 class="card-title-tag blue-text"><span class="mdi mdi-book-open mdi-32px"> Open Source</h3>
+      <div class="grid-container">
+          <div class="volunteer-card mdl-card mdl-shadow--2dp">
+            <a href="http://bulletphysics.org" class="blue-text"><span class="work title blue-text">Bullet Physics</span></a><br>
+              <ul class="volunteer-highlights grey-text">
+                  <li>Contributing to the best open source physics simulation software in the market</li>
+                  <li>Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor for the community.</li>
+              </ul>
+          </div>
+          <div class="volunteer-card mdl-card mdl-shadow--2dp">
+            <a href="http://irrlicht.sourceforge.net" class="blue-text"><span class="work title blue-text">Irrlicht Renderer</span></a><br>
+              <ul class="volunteer-highlights grey-text">
+                  <li>Started using Irrlicht since 2010 &amp; contributed to the community in various aspects.</li>
+                  <li>Individually ported the engine to Google NaCl platform to make it possible to run the engine within a browser. This effort has made the engine to support a completely new platform.</li>
+              </ul>
+          </div>
+          <div class="volunteer-card mdl-card mdl-shadow--2dp">
+            <a href="https://github.com/codetiger/Iyan3d" class="blue-text"><span class="work title blue-text">Iyan 3D Professional</span></a><br>
+              <ul class="volunteer-highlights grey-text">
+                  <li>Designed &amp; built an fully functional 3d animation editor for iOS &amp; Android platforms</li>
+                  <li>Built with support for OpenGL ES, iOS Metal &amp; OpenGL</li>
+                  <li>Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering</li>
+              </ul>
+          </div>
+          <div class="volunteer-card mdl-card mdl-shadow--2dp">
+            <a href="https://github.com/codetiger/Kinect-UIRT" class="blue-text"><span class="work title blue-text">Kinect UIRT</span></a><br>
+              <ul class="volunteer-highlights grey-text">
+                  <li>A hobby project that ended up in the big press &amp; eventually forced me to make it open source. The goal was to build an embedded system to learn and detect user’s gestures from depth maps generated by Kinect sensors and control Home appliances like TV and AC</li>
+              </ul>
           </div>
       </div>
+
     </div>
   </div>
 

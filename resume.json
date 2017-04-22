@@ -74,6 +74,7 @@
             "website": "http://www.realimage.com",
             "startDate": "2006-01-06",
             "endDate": "2005-01-05",
+            "summary": "Responsible for implementing content security in digital cinema server using HASP (Hardware Against Software Piracy).",
             "highlights": [
                 "Worked as an early member of software development team for Qube Cinema server.",
                 "Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu."
@@ -101,8 +102,7 @@
             "organization": "Iyan 3D Professional",
             "website": "https://github.com/codetiger/Iyan3d",
             "highlights": [
-                "Designed & built an fully functional 3d animation editor app for mobile platforms",
-                "Supports iOS, Android & ready to be ported for other platforms.",
+                "Designed & built an fully functional 3d animation editor for iOS & Android platforms",
                 "Built with support for OpenGL ES, iOS Metal & OpenGL",
                 "Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering"
             ]
@@ -126,48 +126,61 @@
     ],
     "awards": [
         {
-            "title": "Rank #1 in India & #127 globally in AI Programming Challenge",
-            "date": "2011-11-01",
+            "title": "Ranked #127 (#1 in India) in AI Programming Challenge",
+            "date": "2011",
             "awarder": "University of Waterloo & Sponsor by Google",
             "summary": "The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents."
         },
         {
             "title": "A'Design Award 2012",
-            "date": "2012-11-01",
+            "date": "2012",
             "awarder": "A'Design Award",
-            "summary": "ID-GPS Concept based Mobile app"
+            "summary": "Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d."
         }
     ],
     "skills": [
         {
             "name": "Mobile App",
             "level": "Master",
+            "score": "95",
             "keywords": [
-                "iOS SDK",
-                "Android SDK & NDK",
-                "React Native",
-                "Phonegap"
-            ]
-        },
-        {
-            "name": "Web Front-End",
-            "level": "Master",
-            "keywords": [
-                "ReactJS",
-                "AngularJS",
-                "JQuery",
-                "Materialize"
+                "iOS",
+                "Android",
+                "ReactNative",
+                "Cordova"
             ]
         },
         {
             "name": "Back-End",
             "level": "Master",
+            "score": "75",
             "keywords": [
                 "Python",
                 "Java",
                 "PHP",
-                "Swift",
                 "Go"
+            ]
+        },
+        {
+            "name": "Web Front-End",
+            "level": "Master",
+            "score": "80",
+            "keywords": [
+                "ReactJS",
+                "AngularJS",
+                "JQuery",
+                "Material Design"
+            ]
+        },
+        {
+            "name": "Machine Learning",
+            "level": "Master",
+            "score": "55",
+            "keywords": [
+                "TensorFlow",
+                "Keras",
+                "Theano",
+                "Torch"
             ]
         }
     ],

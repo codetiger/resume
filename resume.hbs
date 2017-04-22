@@ -68,27 +68,87 @@
           <div class="summary-container"><div class="line-splitter"></div></div>
         {{/each}}
       {{/resume.basics}}
+
+      {{#if resume.skills}}
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Professional Skills</h2>
+          {{#resume.skills}}
+            <h3 class="skill-name white-text">{{name}}</h3>
+
+            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="{{score}}" tabindex="0" disabled>
+
+            <div class="keyword-cards">
+              {{#keywords}}
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">{{.}}</span>
+              </span>
+              {{/keywords}}
+            </div>
+          {{/resume.skills}}
+        </div>
+      {{/if}}
+
     </div>
     <div class="right-card mdl-card">
-      <div class="workexp-card mdl-card mdl-shadow--2dp">
-        <h3 class="card-title-tag grey-text"><i class="material-icons">work</i> Work Experience</h3>
+      <h3 class="card-title-tag blue-text"><span class="mdi mdi-trophy-award mdi-32px"> Awards</h3>
+      {{#each resume.awards}}
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
           <div>
-            {{#each resume.work}}
-              {{#if position}}<span class="work title grey-text">{{position}}{{#if company}} @ <a href="{{website}}" class="blue-text">{{company}}</a>{{/if}}</span><br>
-              <p><span class="work exp grey-text">{{startDate}} to {{endDate}}</span></p>{{/if}}
-              {{#if summary}}<p class="work summary grey-text">{{summary}}</p>{{/if}}
-              {{#if highlights.length}}
-                <ul class="work highlights grey-text">
-                  {{#each highlights}}
-                    <li>{{.}}</li>
-                  {{/each}}
-                </ul>
-              {{/if}}
-
-              <div class="line-splitter-grey"></div>
-            {{/each}}
+            {{#if title}}<div class="work title grey-text">{{title}}</div>{{/if}}
+            {{#if date}}<div class="award-date blue-text">{{date}}</div>{{/if}}
           </div>
+            <br>
+          {{#if date}}<span class="work exp blue-text">{{awarder}}</span>{{/if}}
+
+          {{#if summary}}<p class="work summary grey-text">{{summary}}</p>{{/if}}
+
+          {{#if highlights.length}}
+            <ul class="work highlights grey-text">
+              {{#each highlights}}
+                <li>{{.}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+          
+        </div>
+      {{/each}}
+
+      <h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> 12yrs Experience</h3>
+      {{#each resume.work}}
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
+          {{#if position}}<span class="work title grey-text">{{position}}{{#if company}} <a href="{{website}}" class="blue-text">@{{company}}</a>{{/if}}</span><br>
+
+          <span class="work exp blue-text">{{startDate}} to {{endDate}}</span>{{/if}}
+
+          {{#if summary}}<p class="work summary grey-text">{{summary}}</p>{{/if}}
+
+          {{#if highlights.length}}
+            <ul class="work highlights grey-text">
+              {{#each highlights}}
+                <li>{{.}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+          
+        </div>
+      {{/each}}
+
+      <h3 class="card-title-tag blue-text"><span class="mdi mdi-book-open mdi-32px"> Open Source</h3>
+      <div class="grid-container">
+        {{#each resume.volunteer}}
+          <div class="volunteer-card mdl-card mdl-shadow--2dp">
+            {{#if organization}}<a href="{{website}}" class="blue-text"><span class="work title blue-text">{{organization}}</span></a><br>{{/if}}
+            {{#if highlights.length}}
+              <ul class="volunteer-highlights grey-text">
+                {{#each highlights}}
+                  <li>{{.}}</li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </div>
+        {{/each}}
       </div>
+
     </div>
   </div>
 
