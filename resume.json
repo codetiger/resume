@@ -6,7 +6,7 @@
         "email": "nharishankar@gmail.com",
         "phone": "+91 9940177422",
         "website": "https://richardhendricks.com",
-        "summary": "A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.",
+        "summary": "A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. Have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.",
         "location": {
             "address": "61, Muthu Street, A12 - Roohi Aswat, Royapettah",
             "postalCode": "600014",
@@ -36,7 +36,7 @@
             "website": "https://www.altimetrik.com",
             "startDate": "2016-10-21",
             "endDate": "Present",
-            "summary": "Provided Technical Leadership for Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools & frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.",
+            "summary": "Responsible for Technical Leadership in Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products with a team of 100+ developers. Built acceleration tools & frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.",
             "highlights": [
                 "RMAD Framework: Led architecture design & development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.",
                 "mBaas Platform: Led architecture design & development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services"
@@ -63,7 +63,7 @@
             "endDate": "2016-10-15",
             "summary": "Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.",
             "highlights": [
-                "3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A'Design Award 2012",
+                "3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A'Design Award 2012.",
                 "Designed & Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.",
                 "Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model)."
             ]
@@ -87,7 +87,7 @@
             "website": "http://bulletphysics.org",
             "highlights": [
                 "Contributing to the best open source physics simulation software in the market",
-                "Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor for the community."
+                "Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community."
             ]
         },
         {
@@ -120,8 +120,8 @@
             "institution": "P.S.N.A College of Engineering & Technology",
             "area": "Mechanical Engineering",
             "studyType": "Bachelor",
-            "startDate": "2000-04-01",
-            "endDate": "2004-04-01"
+            "startDate": "2000",
+            "endDate": "2004"
         }
     ],
     "awards": [

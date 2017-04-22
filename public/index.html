@@ -24,7 +24,7 @@
   width: 1024px;
   height: 2500px;
   box-sizing: content-box;
-  background: #fff;
+  background: var(--primaryColor);
 
   margin: 0 auto;
   margin-top: 28px;
@@ -34,13 +34,13 @@
 .left-card.mdl-card {
   float: left;
   width: 30%;
-  background: #6298CB;
+  background: var(--secondaryColor);
 }
 
 .right-card.mdl-card {
   float: right;
   width: 70%;
-  background: #E0E0E0;
+  background: var(--primaryDarkColor);
 }
 
 .profile-card img {
@@ -61,7 +61,7 @@
 
 .white-text {
   font-family: Calibri;
-  color: #FFF;
+  color: var(--primaryColor);
 }
 
 .summary-container {
@@ -76,14 +76,14 @@
 
 .white-icon {
   display: table-cell;
-  color: #FFF;
+  color: var(--primaryColor);
   position: absolute;
   margin-left: 20px;
 }
 
 .white-details {
   display: block;
-  color: #FFF;
+  color: var(--primaryColor);
   margin-left: 70px;
   margin-right: 20px;
   font-family: Calibri;
@@ -93,7 +93,7 @@
 .line-splitter {
   height: 1px;
   width: 100%;
-  background: #5587B7;
+  background: var(--secondaryDarkColor);
   margin: 14px;
   margin-left: 70px;
   position: relative;
@@ -120,7 +120,7 @@
   width: 93.5%;
   min-height: 100px;
   box-sizing: content-box;
-  background: #fff;
+  background: var(--primaryColor);
 
   margin-left: 24px;
   margin-right: 24px;
@@ -135,7 +135,7 @@
 
 .blue-text {
   font-family: Calibri;
-  color: #6298CB;
+  color: var(--secondaryColor);
   text-decoration: none;
   font-style: normal;
 }
@@ -198,7 +198,8 @@
 }
 
 .skill-title-tag {
-  font-size: 2.4rem;
+  font-size: 2.2rem;
+  font-weight: 600;
   margin: 0 auto;
   margin-left: 24px;
   margin-top: 48px;
@@ -215,18 +216,13 @@
   height: 24px;
   line-height: 24px;
   font-size: 10px;
-  color: #fff;
-  background-color: #9AB9D7;
+  color: var(--primaryColor);
+  background-color: #7EAAD4;
 }
 
 .keyword-cards {
   margin-left: 24px;
   margin-right: 24px;
-}
-
-.score-slider {
-  color: #fff;
-  background-color: #fff;
 }
 
 .grid-container {
@@ -239,7 +235,7 @@
   width: 45%;
   height: 220px;
   box-sizing: content-box;
-  background: #fff;
+  background: var(--primaryColor);
 
   margin-left: 24px;
   margin-right: 0;
@@ -255,6 +251,122 @@
   margin-top: 12px;
 }
 
+.edu-digree {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 auto;
+  margin-left: 24px;
+}
+
+.edu-institution {
+  font-size: 1.0rem;
+  margin: 0 auto;
+  margin-left: 24px;
+}
+
+:root {
+  --primaryColor: #fff;
+  --primaryDarkColor: #E0E0E0;
+  --secondaryColor: #6298CB;
+  --secondaryDarkColor: #5587B7;
+
+  --sliderHeight: 2px;
+  --sliderThumbSize: 16px;
+  --sliderThumbRadius: 8px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 80%;
+  margin-left: 24px;
+  margin-right: 24px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: var(--sliderHeight);
+  cursor: pointer;
+  animate: 0.2s;
+  background: var(--secondaryDarkColor);
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+input[type=range]::-webkit-slider-thumb {
+  border: 0px solid #000000;
+  height: var(--sliderThumbSize);
+  width: var(--sliderThumbSize);
+  border-radius: var(--sliderThumbRadius);
+  background: var(--primaryColor);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -3.6px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: var(--secondaryDarkColor);
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: var(--sliderHeight);
+  cursor: pointer;
+  animate: 0.2s;
+  background: var(--secondaryDarkColor);
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+input[type=range]::-moz-range-progress {
+  width: 100%;
+  height: var(--sliderHeight);
+  cursor: pointer;
+  animate: 0.2s;
+  background: var(--primaryColor);
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+input[type=range]::-moz-range-thumb {
+  border: 0px solid #000000;
+  height: var(--sliderThumbSize);
+  width: var(--sliderThumbSize);
+  border-radius: var(--sliderThumbRadius);
+  background: var(--primaryColor);
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: var(--sliderHeight);
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  border-width: 20px 0;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: var(--secondaryDarkColor);
+  border: 0px solid #000101;
+  border-radius: 50px;
+}
+input[type=range]::-ms-fill-upper {
+  background: var(--primaryColor);
+  border: 0px solid #000101;
+  border-radius: 50px;
+}
+input[type=range]::-ms-thumb {
+  border: 0px solid #000000;
+  height: var(--sliderThumbSize);
+  width: var(--sliderThumbSize);
+  border-radius: var(--sliderThumbRadius);
+  background: var(--primaryColor);
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: var(--secondaryDarkColor);
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: var(--primaryColor);
+}
+
     </style>
   </head>
 <body>
@@ -267,7 +379,7 @@
           <h2 class="designation-tag white-text">Software Architect</h2>
           <div class="summary-container">
             <span class="white-icon"><i class="material-icons">description</i></span>
-            <div class="table-column"><span class="white-details">A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.</span></div>
+            <div class="table-column"><span class="white-details">A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. Have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.</span></div>
           </div>
         <div class="summary-container"><div class="line-splitter"></div></div>
           <div class="summary-container">
@@ -304,7 +416,7 @@
           <h2 class="skill-title-tag white-text">Professional Skills</h2>
             <h3 class="skill-name white-text">Mobile App</h3>
 
-            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="95" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="95" tabindex="0" disabled>
 
             <div class="keyword-cards">
               <span class="mdl-chip">
@@ -322,7 +434,7 @@
             </div>
             <h3 class="skill-name white-text">Back-End</h3>
 
-            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="75" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="75" tabindex="0" disabled>
 
             <div class="keyword-cards">
               <span class="mdl-chip">
@@ -340,7 +452,7 @@
             </div>
             <h3 class="skill-name white-text">Web Front-End</h3>
 
-            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="80" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="80" tabindex="0" disabled>
 
             <div class="keyword-cards">
               <span class="mdl-chip">
@@ -358,7 +470,7 @@
             </div>
             <h3 class="skill-name white-text">Machine Learning</h3>
 
-            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="55" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="55" tabindex="0" disabled>
 
             <div class="keyword-cards">
               <span class="mdl-chip">
@@ -374,6 +486,29 @@
                   <span class="mdl-chip__text">Torch</span>
               </span>
             </div>
+        </div>
+
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Education</h2>
+            <span class="edu-digree white-text">Bachelor of Mechanical Engineering</span>
+            <span class="edu-institution white-text">P.S.N.A College of Engineering &amp; Technology</span>
+            <span class="edu-institution white-text">2004</span>
+            <div class="line-splitter"></div>
+        </div>
+
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Languages</h2>
+          <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">English</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Tamil</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Telugu</span>
+              </span>
+          </div>
         </div>
 
     </div>
@@ -410,7 +545,7 @@
 
           <span class="work exp blue-text">2016-10-21 to Present</span>
 
-          <p class="work summary grey-text">Provided Technical Leadership for Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products. Managed the mobile division with a team of 100+ developers. Responsible for building acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
+          <p class="work summary grey-text">Responsible for Technical Leadership in Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products with a team of 100+ developers. Built acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
 
             <ul class="work highlights grey-text">
                 <li>RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
@@ -440,7 +575,7 @@
           <p class="work summary grey-text">Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile &amp; Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment &amp; Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.</p>
 
             <ul class="work highlights grey-text">
-                <li>3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012</li>
+                <li>3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012.</li>
                 <li>Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
                 <li>Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
             </ul>
@@ -466,7 +601,7 @@
             <a href="http://bulletphysics.org" class="blue-text"><span class="work title blue-text">Bullet Physics</span></a><br>
               <ul class="volunteer-highlights grey-text">
                   <li>Contributing to the best open source physics simulation software in the market</li>
-                  <li>Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor for the community.</li>
+                  <li>Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community.</li>
               </ul>
           </div>
           <div class="volunteer-card mdl-card mdl-shadow--2dp">

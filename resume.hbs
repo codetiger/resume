@@ -75,7 +75,7 @@
           {{#resume.skills}}
             <h3 class="skill-name white-text">{{name}}</h3>
 
-            <input class="mdl-slider mdl-js-slider score-slider" type="range" min="0" max="100" value="{{score}}" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="{{score}}" tabindex="0" disabled>
 
             <div class="keyword-cards">
               {{#keywords}}
@@ -85,6 +85,31 @@
               {{/keywords}}
             </div>
           {{/resume.skills}}
+        </div>
+      {{/if}}
+
+      {{#if resume.education.length}}
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Education</h2>
+          {{#resume.education}}
+            <span class="edu-digree white-text">{{studyType}} of {{area}}</span>
+            <span class="edu-institution white-text">{{institution}}</span>
+            <span class="edu-institution white-text">{{endDate}}</span>
+            <div class="line-splitter"></div>
+          {{/resume.education}}
+        </div>
+      {{/if}}
+
+      {{#if resume.languages.length}}
+        <div class="summary-container">
+          <h2 class="skill-title-tag white-text">Languages</h2>
+          <div class="keyword-cards">
+            {{#resume.languages}}
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">{{language}}</span>
+              </span>
+            {{/resume.languages}}
+          </div>
         </div>
       {{/if}}
 
