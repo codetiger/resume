@@ -84,7 +84,7 @@
     "volunteer": [
         {
             "organization": "Bullet Physics",
-            "website": "http://bulletphysics.org",
+            "website": "https://github.com/bulletphysics/bullet3",
             "highlights": [
                 "Contributing to the best open source physics simulation software in the market",
                 "Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community."
