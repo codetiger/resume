@@ -281,14 +281,13 @@ input[type=range] {
   margin-left: 24px;
   margin-right: 24px;
 }
-input[type=range]:focus {
-  outline: none;
+
+input[type=range]{
+    -webkit-appearance: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: var(--sliderHeight);
-  cursor: pointer;
-  animate: 0.2s;
   background: var(--secondaryDarkColor);
   border-radius: 25px;
   border: 0px solid #000101;
@@ -299,19 +298,22 @@ input[type=range]::-webkit-slider-thumb {
   width: var(--sliderThumbSize);
   border-radius: var(--sliderThumbRadius);
   background: var(--primaryColor);
-  cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -3.6px;
+  margin-top: -4px;
+}
+input[type=range]:focus {
+  outline: none;  
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: var(--secondaryDarkColor);
+  background: var(--primaryColor);
 }
+
 input[type=range]::-moz-range-track {
   width: 100%;
   height: var(--sliderHeight);
   cursor: pointer;
   animate: 0.2s;
-  background: var(--secondaryDarkColor);
+  background: var(--primaryColor);
   border-radius: 25px;
   border: 0px solid #000101;
 }
@@ -332,6 +334,7 @@ input[type=range]::-moz-range-thumb {
   background: var(--primaryColor);
   cursor: pointer;
 }
+
 input[type=range]::-ms-track {
   width: 100%;
   height: var(--sliderHeight);
@@ -468,19 +471,22 @@ input[type=range]:focus::-ms-fill-upper {
                   <span class="mdl-chip__text">Material Design</span>
               </span>
             </div>
-            <h3 class="skill-name white-text">Machine Learning</h3>
+            <h3 class="skill-name white-text">Machine Learning Frameworks</h3>
 
-            <input class="score-slider" type="range" min="0" max="100" value="55" tabindex="0" disabled>
+            <input class="score-slider" type="range" min="0" max="100" value="65" tabindex="0" disabled>
 
             <div class="keyword-cards">
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">R Language</span>
+              </span>
+              <span class="mdl-chip">
+                  <span class="mdl-chip__text">Caret</span>
+              </span>
               <span class="mdl-chip">
                   <span class="mdl-chip__text">TensorFlow</span>
               </span>
               <span class="mdl-chip">
                   <span class="mdl-chip__text">Keras</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Theano</span>
               </span>
               <span class="mdl-chip">
                   <span class="mdl-chip__text">Torch</span>
@@ -541,9 +547,22 @@ input[type=range]:focus::-ms-fill-upper {
 
       <h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> 12yrs Experience</h3>
         <div class="workexp-card mdl-card mdl-shadow--2dp">
+          <span class="work title grey-text">Engineering Manager <a href="https://www.caratlane.com" class="blue-text">@CaratLane</a></span><br>
+
+          <span class="work exp blue-text">2017-08-03 to Present</span>
+
+          <p class="work summary grey-text">Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.</p>
+
+            <ul class="work highlights grey-text">
+                <li>Taking complete ownership for the technology behind India&#x27;s largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.</li>
+                <li>Designed and Transformed the existing Monolithic giant architecture to micro-services</li>
+            </ul>
+          
+        </div>
+        <div class="workexp-card mdl-card mdl-shadow--2dp">
           <span class="work title grey-text">Architect, CC Lead, AnyDevice Capability Centre <a href="https://www.altimetrik.com" class="blue-text">@Altimetrik Inc</a></span><br>
 
-          <span class="work exp blue-text">2016-10-21 to Present</span>
+          <span class="work exp blue-text">2016-10-21 to 2016-07-31</span>
 
           <p class="work summary grey-text">Responsible for Technical Leadership in Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products with a team of 100+ developers. Built acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
 
@@ -601,7 +620,7 @@ input[type=range]:focus::-ms-fill-upper {
             <a href="https://github.com/bulletphysics/bullet3" class="blue-text"><span class="work title blue-text">Bullet Physics</span></a><br>
               <ul class="volunteer-highlights grey-text">
                   <li>Contributing to the best open source physics simulation software in the market</li>
-                  <li>Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community.</li>
+                  <li>Starting from bug reporting to optimizing compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community.</li>
               </ul>
           </div>
           <div class="volunteer-card mdl-card mdl-shadow--2dp">

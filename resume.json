@@ -31,11 +31,23 @@
     },
     "work": [
         {
+            "company": "CaratLane",
+            "position": "Engineering Manager",
+            "website": "https://www.caratlane.com",
+            "startDate": "2017-08-03",
+            "endDate": "Present",
+            "summary": "Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.",
+            "highlights": [
+                "Taking complete ownership for the technology behind India's largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.",
+                "Designed and Transformed the existing Monolithic giant architecture to micro-services"
+            ]
+        },
+        {
             "company": "Altimetrik Inc",
             "position": "Architect, CC Lead, AnyDevice Capability Centre",
             "website": "https://www.altimetrik.com",
             "startDate": "2016-10-21",
-            "endDate": "Present",
+            "endDate": "2016-07-31",
             "summary": "Responsible for Technical Leadership in Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products with a team of 100+ developers. Built acceleration tools & frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.",
             "highlights": [
                 "RMAD Framework: Led architecture design & development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.",
@@ -87,7 +99,7 @@
             "website": "https://github.com/bulletphysics/bullet3",
             "highlights": [
                 "Contributing to the best open source physics simulation software in the market",
-                "Starting from bug reporting to optimising compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community."
+                "Starting from bug reporting to optimizing compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community."
             ]
         },
         {
@@ -173,13 +185,14 @@
             ]
         },
         {
-            "name": "Machine Learning",
+            "name": "Machine Learning Frameworks",
             "level": "Master",
-            "score": "55",
+            "score": "65",
             "keywords": [
+                "R Language",
+                "Caret",
                 "TensorFlow",
                 "Keras",
-                "Theano",
                 "Torch"
             ]
         }
