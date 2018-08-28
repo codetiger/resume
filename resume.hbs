@@ -138,12 +138,12 @@
         </div>
       {{/each}}
 
-      <h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> 12yrs Experience</h3>
+      {{#if resume.totalExp}}<h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> {{resume.totalExp}} yrs Experience</h3>{{/if}}
       {{#each resume.work}}
         <div class="workexp-card mdl-card mdl-shadow--2dp">
           {{#if position}}<span class="work title grey-text">{{position}}{{#if company}} <a href="{{website}}" class="blue-text">@{{company}}</a>{{/if}}</span><br>
 
-          <span class="work exp blue-text">{{startDate}} to {{endDate}}</span>{{/if}}
+          <span class="work exp blue-text">{{startDate}} to {{#if endDate}}{{endDate}}{{else}}Present{{/if}}</span>{{/if}}
 
           {{#if summary}}<p class="work summary grey-text">{{summary}}</p>{{/if}}
 

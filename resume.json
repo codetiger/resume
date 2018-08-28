@@ -29,13 +29,13 @@
             }
         ]
     },
+    "totalExp": "13",
     "work": [
         {
             "company": "CaratLane",
             "position": "Engineering Manager",
             "website": "https://www.caratlane.com",
             "startDate": "2017-08-03",
-            "endDate": "Present",
             "summary": "Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.",
             "highlights": [
                 "Taking complete ownership for the technology behind India's largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.",
@@ -132,45 +132,69 @@
             "institution": "P.S.N.A College of Engineering & Technology",
             "area": "Mechanical Engineering",
             "studyType": "Bachelor",
-            "startDate": "2000",
-            "endDate": "2004"
+            "startDate": "2000-05-04",
+            "endDate": "2004-06-10"
         }
     ],
     "awards": [
         {
             "title": "Ranked #127 (#1 in India) in AI Programming Challenge",
-            "date": "2011",
+            "date": "2011-11-26",
             "awarder": "University of Waterloo & Sponsor by Google",
             "summary": "The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents."
         },
         {
             "title": "A'Design Award 2012",
-            "date": "2012",
+            "date": "2013-03-24",
             "awarder": "A'Design Award",
             "summary": "Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d."
         }
     ],
     "skills": [
         {
-            "name": "Mobile App",
+            "name": "Back-end",
             "level": "Master",
             "score": "95",
             "keywords": [
-                "iOS",
-                "Android",
-                "ReactNative",
-                "Cordova"
+                "NodeJS",
+                "Go",
+                "Python",
+                "PHP",
+                "Java"
             ]
         },
         {
-            "name": "Back-End",
+            "name": "Database",
             "level": "Master",
-            "score": "75",
+            "score": "90",
             "keywords": [
-                "Python",
-                "Java",
-                "PHP",
-                "Go"
+                "MySQL",
+                "MongoDB",
+                "Elastic Search",
+                "Redis",
+                "DynamoDB"
+            ]
+        },
+        {
+            "name": "Mobile App",
+            "level": "Master",
+            "score": "85",
+            "keywords": [
+                "iOS",
+                "Android",
+                "ReactNative"
+            ]
+        },
+        {
+            "name": "Machine Learning Frameworks",
+            "level": "Master",
+            "score": "65",
+            "keywords": [
+                "R",
+                "Caret",
+                "TensorFlow",
+                "Keras",
+                "Torch"
             ]
         },
         {
@@ -179,21 +203,7 @@
             "score": "80",
             "keywords": [
                 "ReactJS",
-                "AngularJS",
-                "JQuery",
-                "Material Design"
-            ]
-        },
-        {
-            "name": "Machine Learning Frameworks",
-            "level": "Master",
-            "score": "65",
-            "keywords": [
-                "R Language",
-                "Caret",
-                "TensorFlow",
-                "Keras",
-                "Torch"
+                "JQuery"
             ]
         }
     ],
