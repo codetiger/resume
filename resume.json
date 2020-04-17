@@ -29,13 +29,25 @@
             }
         ]
     },
-    "totalExp": "13",
+    "totalExp": "16",
     "work": [
+        {
+            "company": "Volante Technologies",
+            "position": "Associate Director for Product Development",
+            "website": "https://www.volantetech.com",
+            "startDate": "2019-01-31",
+            "summary": "Manaing overall technical architecture for the various products. Responsible for Architecture design to deliverable for the overall product development.",
+            "highlights": [
+                "Taking ownership for the architecture and technology behind the payment engine VolPay.",
+                "Part of the Architecture Review Board and responsible for the overall technical leadership acorss the company."
+            ]
+        },
         {
             "company": "CaratLane",
             "position": "Engineering Manager",
             "website": "https://www.caratlane.com",
             "startDate": "2017-08-03",
+            "endDate": "2019-01-25",
             "summary": "Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.",
             "highlights": [
                 "Taking complete ownership for the technology behind India's largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.",

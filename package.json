@@ -9,7 +9,6 @@
   },
   "license": "The Unlicense",
   "dependencies": {
-    "handlebars": "^4.0.11",
-    "phantomjs": "^2.1.7"
+    "handlebars": "^4.0.11"
   }
 }
