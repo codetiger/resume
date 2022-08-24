@@ -5,7 +5,7 @@
         "picture": "./harishankar.jpg",
         "email": "nharishankar@gmail.com",
         "phone": "+91 9940177422",
-        "summary": "A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. Have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.",
+        "summary": "A passionate engineer with experience in designing and building software architecture for highly scalable products.",
         "location": {
             "city": "Chennai",
             "countryCode": "IN",
@@ -38,7 +38,7 @@
             "position": "Senior Director - Product Development",
             "website": "https://www.volantetech.com",
             "startDate": "2019-01-31",
-            "summary": "Reasponsible for design to deployment of the most advanced payment processing engine in the industry.",
+            "summary": "Responsible for design to deployment of the most advanced payment processing engine in the industry.",
             "highlights": [
                 "Lead a team of architects responsible for the architecture and technology behind the payment engine VolPay.",
                 "Redesigned a classic Java based monolith to Cloud-native, serverless microservice over a period of 3 yrs.",
