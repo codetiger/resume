@@ -10,10 +10,6 @@ Install
 
 		npm install
 
-To run within a local webserver
-
-		npm install -g resume-cli
-
 and then use
 
-		resume serve
+		npm run start
