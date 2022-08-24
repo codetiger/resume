@@ -1,681 +1,445 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" itemscope itemtype="http://schema.org/Article">
-  <head>
-    <title>Harishankar Narayanan－Software Architect</title>
-    <meta name="author" content="Harishankar Narayanan">
+<!doctype html>
+<html>
 
-    <script src="material.min.js"></script>
-    <link rel="stylesheet" href="material.indigo-pink.min.css">
-    <link rel="stylesheet" href="icon.css">
-    <link href="MaterialDesign-Webfont/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
+<head>
 
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimal-ui">
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-      @font-face {
-    font-family: Calibri;
-    src: url(calibril.ttf);
-}
+	<title>Harishankar Narayanan</title>
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
 
-.paper-card.mdl-card {
-  flex-direction: row;
-  width: 1024px;
-  height: 2500px;
-  box-sizing: content-box;
-  background: var(--primaryColor);
-
-  margin: 0 auto;
-  margin-top: 28px;
-  margin-bottom: 28px;
-}
-
-.left-card.mdl-card {
-  float: left;
-  width: 30%;
-  background: var(--secondaryColor);
-}
-
-.right-card.mdl-card {
-  float: right;
-  width: 70%;
-  background: var(--primaryDarkColor);
-}
-
-.profile-card img {
-  width: 80%;
-  max-width: 100%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  -webkit-transition: -webkit-box-shadow 0.3s ease;
-  transition: box-shadow 0.3s ease;
-  -webkit-box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.06);
-  box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.06);
-
-  display: block;
-  margin: 0 auto;
-  margin-top: 10%;
-  margin-bottom: 10%;
-}
-
-.white-text {
-  font-family: Calibri;
-  color: var(--primaryColor);
-}
-
-.summary-container {
-  display: table-row;
-  top: 40px;
-  position: relative;
-}
-
-.table-column {
-  display: table-cell;
-}
-
-.white-icon {
-  display: table-cell;
-  color: var(--primaryColor);
-  position: absolute;
-  margin-left: 20px;
-}
-
-.white-details {
-  display: block;
-  color: var(--primaryColor);
-  margin-left: 70px;
-  margin-right: 20px;
-  font-family: Calibri;
-  font-size: 1.2rem;
-}
-
-.line-splitter {
-  height: 1px;
-  width: 100%;
-  background: var(--secondaryDarkColor);
-  margin: 14px;
-  margin-left: 70px;
-  position: relative;
-}
-
-.name-tag {
-  text-align: center;
-  font-size: 3rem;
-  margin: 0 auto;
-  font-style: normal;
-  font-weight: 600;
-}
-
-.designation-tag {
-  text-align: center;
-  font-size: 2rem;
+	<style>a {
+  color: #364fc7;
   text-decoration: none;
-  font-style: normal;
-  font-weight: 200;
-  margin: 0 auto;
 }
 
-.workexp-card {
-  width: 93.5%;
-  min-height: 100px;
-  box-sizing: content-box;
-  background: var(--primaryColor);
-
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-top: 12px;
-  margin-bottom: 12px;
+.lt-dash::before {
+  content: "- ";
 }
 
-.grey-text {
-  font-family: Calibri;
-  color: #626262;
+@media print {
+  ul,
+  .item {
+    page-break-inside: avoid;
+  }
 }
-
-.blue-text {
-  font-family: Calibri;
-  color: var(--secondaryColor);
-  text-decoration: none;
-  font-style: normal;
-}
-
-.card-title-tag {
-  text-align: left;
-  font-size: 2rem;
-  margin-top: 24px;
-  margin-left: 24px;
-  font-style: normal;
-  font-weight: 600;
-  margin-bottom: 0;
-}
-
-.work {
-  text-align: left;
-  margin-left: 24px;
-  font-style: normal;
-  margin-right: 24px;
-}
-
-.title {
-  float: left;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 24px;
-  margin-right: 0;
-}
-
-.exp {
-  font-size: 1.2rem;
-  font-weight: 200;
-  margin-bottom: 12px;
-}
-
-.summary {
-  font-size: 1.2rem;
-  font-weight: 100;
-  line-height: 120%;
-}
-
-.highlights {
-  font-size: 1.2rem;
-  font-weight: 100;
-  margin-left: 32px;
-  margin-top: 0;
-}
-
-.award-date {
-  float: right;
-  font-size: 1.2rem;
-  font-weight: 200;
-  margin-top: 24px;
-  text-align: right;
-  margin-right: 24px;
-}
-
-.title-icons {
-  font-size: 26px;
-}
-
-.skill-title-tag {
-  font-size: 2.2rem;
-  font-weight: 600;
-  margin: 0 auto;
-  margin-left: 24px;
-  margin-top: 48px;
-}
-
-.skill-name {
-  font-size: 1.4rem;
-  margin: 0 auto;
-  margin-left: 24px;
-  margin-top:24px;
-}
-
-.mdl-chip {
-  height: 24px;
-  line-height: 24px;
-  font-size: 10px;
-  color: var(--primaryColor);
-  background-color: #7EAAD4;
-}
-
-.keyword-cards {
-  margin-left: 24px;
-  margin-right: 24px;
-}
-
-.grid-container {
-  display: flex;
-  flex-flow: row wrap;
-  flex-direction:initial;
-}
-
-.volunteer-card {
-  width: 45%;
-  height: 220px;
-  box-sizing: content-box;
-  background: var(--primaryColor);
-
-  margin-left: 24px;
-  margin-right: 0;
-  margin-top: 12px;
-  margin-bottom: 12px;
-}
-
-.volunteer-highlights {
-  font-size: 1.0rem;
-  font-weight: 100;
-  margin-left: 0px;
-  margin-right: 12px;
-  margin-top: 12px;
-}
-
-.edu-digree {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 auto;
-  margin-left: 24px;
-}
-
-.edu-institution {
-  font-size: 1.0rem;
-  margin: 0 auto;
-  margin-left: 24px;
-}
-
-:root {
-  --primaryColor: #fff;
-  --primaryDarkColor: #E0E0E0;
-  --secondaryColor: #6298CB;
-  --secondaryDarkColor: #5587B7;
-
-  --sliderHeight: 2px;
-  --sliderThumbSize: 16px;
-  --sliderThumbRadius: 8px;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  width: 80%;
-  margin-left: 24px;
-  margin-right: 24px;
-}
-
-input[type=range]{
-    -webkit-appearance: none;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: var(--sliderHeight);
-  background: var(--secondaryDarkColor);
-  border-radius: 25px;
-  border: 0px solid #000101;
-}
-input[type=range]::-webkit-slider-thumb {
-  border: 0px solid #000000;
-  height: var(--sliderThumbSize);
-  width: var(--sliderThumbSize);
-  border-radius: var(--sliderThumbRadius);
-  background: var(--primaryColor);
-  -webkit-appearance: none;
-  margin-top: -4px;
-}
-input[type=range]:focus {
-  outline: none;  
-}
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: var(--primaryColor);
-}
-
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: var(--sliderHeight);
-  cursor: pointer;
-  animate: 0.2s;
-  background: var(--primaryColor);
-  border-radius: 25px;
-  border: 0px solid #000101;
-}
-input[type=range]::-moz-range-progress {
-  width: 100%;
-  height: var(--sliderHeight);
-  cursor: pointer;
-  animate: 0.2s;
-  background: var(--primaryColor);
-  border-radius: 25px;
-  border: 0px solid #000101;
-}
-input[type=range]::-moz-range-thumb {
-  border: 0px solid #000000;
-  height: var(--sliderThumbSize);
-  width: var(--sliderThumbSize);
-  border-radius: var(--sliderThumbRadius);
-  background: var(--primaryColor);
-  cursor: pointer;
-}
-
-input[type=range]::-ms-track {
-  width: 100%;
-  height: var(--sliderHeight);
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  border-width: 20px 0;
-  color: transparent;
-}
-input[type=range]::-ms-fill-lower {
-  background: var(--secondaryDarkColor);
-  border: 0px solid #000101;
-  border-radius: 50px;
-}
-input[type=range]::-ms-fill-upper {
-  background: var(--primaryColor);
-  border: 0px solid #000101;
-  border-radius: 50px;
-}
-input[type=range]::-ms-thumb {
-  border: 0px solid #000000;
-  height: var(--sliderThumbSize);
-  width: var(--sliderThumbSize);
-  border-radius: var(--sliderThumbRadius);
-  background: var(--primaryColor);
-  cursor: pointer;
-}
-input[type=range]:focus::-ms-fill-lower {
-  background: var(--secondaryDarkColor);
-}
-input[type=range]:focus::-ms-fill-upper {
-  background: var(--primaryColor);
-}
-
-    </style>
-  </head>
-<body>
-  <div class="paper-card mdl-card mdl-shadow--6dp">
-    <div class="left-card mdl-card">
-          <div class="profile-card">
-            <img src="./harishankar.jpg"/>
-          </div>
-        <h1 class="name-tag white-text">Harishankar Narayanan</h1>
-          <h2 class="designation-tag white-text">Software Architect</h2>
-          <div class="summary-container">
-            <span class="white-icon"><i class="material-icons">description</i></span>
-            <div class="table-column"><span class="white-details">A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms & Enterprise back-end. Have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.</span></div>
-          </div>
-        <div class="summary-container"><div class="line-splitter"></div></div>
-          <div class="summary-container">
-            <span class="white-icon"><i class="material-icons">location_on</i></span>
-            <div class="table-column"><span class="white-details">Chennai</span></div>
-          </div>
-        <div class="summary-container"><div class="line-splitter"></div></div>
-          <div class="summary-container">
-            <span class="white-icon"><i class="material-icons">email</i></span>
-            <div class="table-column"><span class="white-details">nharishankar@gmail.com</span></div>
-          </div>
-        <div class="summary-container"><div class="line-splitter"></div></div>
-          <div class="summary-container">
-            <span class="white-icon"><i class="material-icons">phone</i></span>
-            <div class="table-column"><span class="white-details">+91 9940177422</span></div>
-          </div>
-        <div class="summary-container"><div class="line-splitter"></div></div>
-          <div class="summary-container">
-            <a href=https://github.com/codetiger>
-              <span class="white-icon"><span class="mdi mdi-github-face mdi-24px"></span></span>
-              <div class="table-column"><span class="white-details">github.com/codetiger</span></div>
-            </a>
-          </div>
-          <div class="summary-container"><div class="line-splitter"></div></div>
-          <div class="summary-container">
-            <a href=https://linkedin.com/in/code42tiger/>
-              <span class="white-icon"><span class="mdi mdi-linkedin-box mdi-24px"></span></span>
-              <div class="table-column"><span class="white-details">linkedin.com/in/code42tiger</span></div>
-            </a>
-          </div>
-          <div class="summary-container"><div class="line-splitter"></div></div>
-
-        <div class="summary-container">
-          <h2 class="skill-title-tag white-text">Professional Skills</h2>
-            <h3 class="skill-name white-text">Back-end</h3>
-
-            <input class="score-slider" type="range" min="0" max="100" value="95" tabindex="0" disabled>
-
-            <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">NodeJS</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Go</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Python</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">PHP</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Java</span>
-              </span>
-            </div>
-            <h3 class="skill-name white-text">Database</h3>
-
-            <input class="score-slider" type="range" min="0" max="100" value="90" tabindex="0" disabled>
-
-            <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">MySQL</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">MongoDB</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Elastic Search</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Redis</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">DynamoDB</span>
-              </span>
-            </div>
-            <h3 class="skill-name white-text">Mobile App</h3>
-
-            <input class="score-slider" type="range" min="0" max="100" value="85" tabindex="0" disabled>
-
-            <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">iOS</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Android</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">ReactNative</span>
-              </span>
-            </div>
-            <h3 class="skill-name white-text">Machine Learning Frameworks</h3>
-
-            <input class="score-slider" type="range" min="0" max="100" value="65" tabindex="0" disabled>
-
-            <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">R</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Caret</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">TensorFlow</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Keras</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Torch</span>
-              </span>
-            </div>
-            <h3 class="skill-name white-text">Web Front-End</h3>
-
-            <input class="score-slider" type="range" min="0" max="100" value="80" tabindex="0" disabled>
-
-            <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">ReactJS</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">JQuery</span>
-              </span>
-            </div>
-        </div>
-
-        <div class="summary-container">
-          <h2 class="skill-title-tag white-text">Education</h2>
-            <span class="edu-digree white-text">Bachelor of Mechanical Engineering</span>
-            <span class="edu-institution white-text">P.S.N.A College of Engineering &amp; Technology</span>
-            <span class="edu-institution white-text">2004-06-10</span>
-            <div class="line-splitter"></div>
-        </div>
-
-        <div class="summary-container">
-          <h2 class="skill-title-tag white-text">Languages</h2>
-          <div class="keyword-cards">
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">English</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Tamil</span>
-              </span>
-              <span class="mdl-chip">
-                  <span class="mdl-chip__text">Telugu</span>
-              </span>
-          </div>
-        </div>
-
-    </div>
-    <div class="right-card mdl-card">
-      <h3 class="card-title-tag blue-text"><span class="mdi mdi-trophy-award mdi-32px"> Awards</h3>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <div>
-            <div class="work title grey-text">Ranked #127 (#1 in India) in AI Programming Challenge</div>
-            <div class="award-date blue-text">2011-11-26</div>
-          </div>
-            <br>
-          <span class="work exp blue-text">University of Waterloo &amp; Sponsor by Google</span>
-
-          <p class="work summary grey-text">The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents.</p>
-
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <div>
-            <div class="work title grey-text">A&#x27;Design Award 2012</div>
-            <div class="award-date blue-text">2013-03-24</div>
-          </div>
-            <br>
-          <span class="work exp blue-text">A&#x27;Design Award</span>
-
-          <p class="work summary grey-text">Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d.</p>
-
-          
-        </div>
-
-      <h3 class="card-title-tag blue-text"><i class="material-icons title-icons">work</i> 16 yrs Experience</h3>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Associate Director for Product Development <a href="https://www.volantetech.com" class="blue-text">@Volante Technologies</a></span><br>
-
-          <span class="work exp blue-text">2019-01-31 to Present</span>
-
-          <p class="work summary grey-text">Manaing overall technical architecture for the various products. Responsible for Architecture design to deliverable for the overall product development.</p>
-
-            <ul class="work highlights grey-text">
-                <li>Taking ownership for the architecture and technology behind the payment engine VolPay.</li>
-                <li>Part of the Architecture Review Board and responsible for the overall technical leadership acorss the company.</li>
-            </ul>
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Engineering Manager <a href="https://www.caratlane.com" class="blue-text">@CaratLane</a></span><br>
-
-          <span class="work exp blue-text">2017-08-03 to 2019-01-25</span>
-
-          <p class="work summary grey-text">Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.</p>
-
-            <ul class="work highlights grey-text">
-                <li>Taking complete ownership for the technology behind India&#x27;s largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.</li>
-                <li>Designed and Transformed the existing Monolithic giant architecture to micro-services</li>
-            </ul>
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Architect, CC Lead, AnyDevice Capability Centre <a href="https://www.altimetrik.com" class="blue-text">@Altimetrik Inc</a></span><br>
-
-          <span class="work exp blue-text">2016-10-21 to 2016-07-31</span>
-
-          <p class="work summary grey-text">Responsible for Technical Leadership in Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products with a team of 100+ developers. Built acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
-
-            <ul class="work highlights grey-text">
-                <li>RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
-                <li>mBaas Platform: Led architecture design &amp; development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services</li>
-            </ul>
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Technical Architect, Consultant <a href="http://www.amtexsystems.com" class="blue-text">@Amtex Inc</a></span><br>
-
-          <span class="work exp blue-text">2014-02-04 to 2016-07-30</span>
-
-          <p class="work summary grey-text">Responsible for the overall architecture of 5 products. Built &amp; managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.</p>
-
-            <ul class="work highlights grey-text">
-                <li>Instudio Designs: Designed, Developed &amp; maintained a distributed &amp; highly scalable E-Commerce solution for the luxury furniture manufacturers.</li>
-                <li>Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.</li>
-                <li>Maestros Music: Designed the architecture &amp; built an audio streaming server &amp; Mobile apps for iOS, Android &amp; Windows Mobile.</li>
-            </ul>
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Founder &amp; Technology Head <a href="http://www.smackall.com" class="blue-text">@Smackall Games</a></span><br>
-
-          <span class="work exp blue-text">2006-01-05 to 2016-10-15</span>
-
-          <p class="work summary grey-text">Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile &amp; Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment &amp; Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.</p>
-
-            <ul class="work highlights grey-text">
-                <li>3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012.</li>
-                <li>Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
-                <li>Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
-            </ul>
-          
-        </div>
-        <div class="workexp-card mdl-card mdl-shadow--2dp">
-          <span class="work title grey-text">Real Image Media Technology <a href="http://www.realimage.com" class="blue-text">@Software Developer</a></span><br>
-
-          <span class="work exp blue-text">2006-01-06 to 2005-01-05</span>
-
-          <p class="work summary grey-text">Responsible for implementing content security in digital cinema server using HASP (Hardware Against Software Piracy).</p>
-
-            <ul class="work highlights grey-text">
-                <li>Worked as an early member of software development team for Qube Cinema server.</li>
-                <li>Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu.</li>
-            </ul>
-          
-        </div>
-
-      <h3 class="card-title-tag blue-text"><span class="mdi mdi-book-open mdi-32px"> Open Source</h3>
-      <div class="grid-container">
-          <div class="volunteer-card mdl-card mdl-shadow--2dp">
-            <a href="https://github.com/bulletphysics/bullet3" class="blue-text"><span class="work title blue-text">Bullet Physics</span></a><br>
-              <ul class="volunteer-highlights grey-text">
-                  <li>Contributing to the best open source physics simulation software in the market</li>
-                  <li>Starting from bug reporting to optimizing compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community.</li>
-              </ul>
-          </div>
-          <div class="volunteer-card mdl-card mdl-shadow--2dp">
-            <a href="http://irrlicht.sourceforge.net" class="blue-text"><span class="work title blue-text">Irrlicht Renderer</span></a><br>
-              <ul class="volunteer-highlights grey-text">
-                  <li>Started using Irrlicht since 2010 &amp; contributed to the community in various aspects.</li>
-                  <li>Individually ported the engine to Google NaCl platform to make it possible to run the engine within a browser. This effort has made the engine to support a completely new platform.</li>
-              </ul>
-          </div>
-          <div class="volunteer-card mdl-card mdl-shadow--2dp">
-            <a href="https://github.com/codetiger/Iyan3d" class="blue-text"><span class="work title blue-text">Iyan 3D Professional</span></a><br>
-              <ul class="volunteer-highlights grey-text">
-                  <li>Designed &amp; built an fully functional 3d animation editor for iOS &amp; Android platforms</li>
-                  <li>Built with support for OpenGL ES, iOS Metal &amp; OpenGL</li>
-                  <li>Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering</li>
-              </ul>
-          </div>
-          <div class="volunteer-card mdl-card mdl-shadow--2dp">
-            <a href="https://github.com/codetiger/Kinect-UIRT" class="blue-text"><span class="work title blue-text">Kinect UIRT</span></a><br>
-              <ul class="volunteer-highlights grey-text">
-                  <li>A hobby project that ended up in the big press &amp; eventually forced me to make it open source. The goal was to build an embedded system to learn and detect user’s gestures from depth maps generated by Kinect sensors and control Home appliances like TV and AC</li>
-              </ul>
-          </div>
-      </div>
-
-    </div>
-  </div>
-
+</style>
+
+</head>
+
+<body class="sans-serif black bg-white">
+	<div id="resume" class="mw8 center mb6 pa3">
+		<header class="tc pv4">
+			<img src="./harishankar.jpg" class="br3 h4 w4" alt="avatar">
+			<h1 class="f4 fw6">Harishankar Narayanan</h1>
+			<h2 class="f6 fw2 ttu tracked gray">Senior Director - Product Development</h2>
+		</header>
+		<section id="basics">
+			<div class="contact flex justify-between">
+				<ul class="list pl0">
+					
+					<li class="mb1"><a href="mailto:nharishankar@gmail.com">nharishankar@gmail.com</a></li>
+					<li class="mb1">+91 9940177422</li>
+				</ul>
+		
+				<ul class="list pl0 tr">
+					<li class="mb1 network">
+						<span class="ttl gray">Github / </span><a href="https://github.com/codetiger">github.com/codetiger</a>
+					</li>
+					<li class="mb1 network">
+						<span class="ttl gray">LinkedIn / </span><a href="https://linkedin.com/in/code42tiger/">linkedin.com/in/code42tiger</a>
+					</li>
+					<li class="mb1 network">
+						<span class="ttl gray">Blog / </span><a href="https://codetiger.github.io/blog/">Codetiger</a>
+					</li>
+				</ul>
+			</div>
+		
+			<div class="summary lh-copy">
+				<p>A full-stack engineer with passion to build great products and proven skills in designing software architecture for Mobile platforms &amp; Enterprise back-end. Have built scalable, reliable back-ends using distributed RESTful services, clustered NoSQL DBs and web/mobile front-ends with modern, highly interactive UIs.</p>
+			</div>
+		</section>
+		<section id="skills">
+			<h2 class="f3 fw5 lh-copy mt4">Skills</h2>
+			<div class="flex flex-wrap">
+				<div class="item w-25">
+					<h3 class="f4 fw4 mb0 mt0 lh-copy name">
+						Programming Skills
+					</h3>
+					<h4 class="level f7 fw3 black-50 tracked ttu mt0">Master</h4>
+					<ul class="list pl0">
+						<li class="mb1 lt-dash">Go</li>
+						<li class="mb1 lt-dash">C &amp; C++</li>
+						<li class="mb1 lt-dash">Python</li>
+						<li class="mb1 lt-dash">Javascript</li>
+						<li class="mb1 lt-dash">Java</li>
+					</ul>
+				</div>
+				<div class="item w-25">
+					<h3 class="f4 fw4 mb0 mt0 lh-copy name">
+						Database
+					</h3>
+					<h4 class="level f7 fw3 black-50 tracked ttu mt0">Master</h4>
+					<ul class="list pl0">
+						<li class="mb1 lt-dash">MongoDB</li>
+						<li class="mb1 lt-dash">Cassandra</li>
+						<li class="mb1 lt-dash">Oracle</li>
+						<li class="mb1 lt-dash">Elastic Search</li>
+						<li class="mb1 lt-dash">Redis</li>
+					</ul>
+				</div>
+				<div class="item w-25">
+					<h3 class="f4 fw4 mb0 mt0 lh-copy name">
+						Messaging
+					</h3>
+					<h4 class="level f7 fw3 black-50 tracked ttu mt0">Master</h4>
+					<ul class="list pl0">
+						<li class="mb1 lt-dash">Kafka</li>
+						<li class="mb1 lt-dash">IBM MQ</li>
+						<li class="mb1 lt-dash">Active MQ</li>
+						<li class="mb1 lt-dash">Rabbit MQ</li>
+						<li class="mb1 lt-dash">Amazon MQ</li>
+					</ul>
+				</div>
+				<div class="item w-25">
+					<h3 class="f4 fw4 mb0 mt0 lh-copy name">
+						Concepts Interested
+					</h3>
+					<h4 class="level f7 fw3 black-50 tracked ttu mt0">Master</h4>
+					<ul class="list pl0">
+						<li class="mb1 lt-dash">High throughput system design</li>
+						<li class="mb1 lt-dash">Event-driven architecture</li>
+						<li class="mb1 lt-dash">Microservices architecture</li>
+						<li class="mb1 lt-dash">Performant system design</li>
+						<li class="mb1 lt-dash">ML &amp; AI</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section id="work">
+			<h2 class="f3 fw5 lh-copy mt4">Experience</h2>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					Volante Technologies
+				</h3>
+		
+				<div class="website">
+					<a href="https://www.volantetech.com">https://www.volantetech.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Senior Director - Product Development
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2019-01-31
+					</span>
+					<span class="endDate">
+						&rarr; Present
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Reasponsible for design to deployment of the most advanced payment processing engine in the industry.</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">Lead a team of architects responsible for the architecture and technology behind the payment engine VolPay.</li>
+					<li class="mb2 lt-dash">Redesigned a classic Java based monolith to Cloud-native, serverless microservice over a period of 3 yrs.</li>
+					<li class="mb2 lt-dash">Transformed the application designed for on-prem to support SaaS offering.</li>
+					<li class="mb2 lt-dash">Guided the development team and non-functional team to modernise the process using industry standard tools.</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					CaratLane
+				</h3>
+		
+				<div class="website">
+					<a href="https://www.caratlane.com">https://www.caratlane.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Engineering Manager
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2017-08-03
+					</span>
+					<span class="endDate">
+						&rarr; 2019-01-25
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">Lead the software division behind India&#x27;s largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.</li>
+					<li class="mb2 lt-dash">Designed and Transformed the existing Monolithic giant architecture to micro-services</li>
+					<li class="mb2 lt-dash">Modernised the development process during a complete redesign of Core services behind the e-commerce platform.</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					Altimetrik Inc
+				</h3>
+		
+				<div class="website">
+					<a href="https://www.altimetrik.com">https://www.altimetrik.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Architect, CC Lead, AnyDevice Capability Centre
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2016-10-21
+					</span>
+					<span class="endDate">
+						&rarr; 2016-07-31
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Responsible for Technical Leadership in Mobile &amp; Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks &amp; products with a team of 100+ developers. Built acceleration tools &amp; frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">RMAD Framework: Led architecture design &amp; development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.</li>
+					<li class="mb2 lt-dash">mBaas Platform: Led architecture design &amp; development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					Amtex Inc
+				</h3>
+		
+				<div class="website">
+					<a href="http://www.amtexsystems.com">http://www.amtexsystems.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Technical Architect, Consultant
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2014-02-04
+					</span>
+					<span class="endDate">
+						&rarr; 2016-07-30
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Responsible for the overall architecture of 5 products. Built &amp; managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">Instudio Designs: Designed, Developed &amp; maintained a distributed &amp; highly scalable E-Commerce solution for the luxury furniture manufacturers.</li>
+					<li class="mb2 lt-dash">Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.</li>
+					<li class="mb2 lt-dash">Maestros Music: Designed the architecture &amp; built an audio streaming server &amp; Mobile apps for iOS, Android &amp; Windows Mobile.</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					Smackall Games
+				</h3>
+		
+				<div class="website">
+					<a href="http://www.smackall.com">http://www.smackall.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Founder &amp; Technology Head
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2006-01-05
+					</span>
+					<span class="endDate">
+						&rarr; 2016-10-15
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile &amp; Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment &amp; Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A&#x27;Design Award 2012.</li>
+					<li class="mb2 lt-dash">Designed &amp; Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.</li>
+					<li class="mb2 lt-dash">Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model).</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="name f4 fw5 lh-copy mb0">
+					Software Developer
+				</h3>
+		
+				<div class="website">
+					<a href="http://www.realimage.com">http://www.realimage.com</a>
+				</div>
+		
+				<h3 class="position f5 fw5 lh-copy mb0">
+					Real Image Media Technology
+				</h3>
+		
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2006-01-06
+					</span>
+					<span class="endDate">
+						&rarr; 2005-01-05
+					</span>
+				</div>
+				<div class="summary lh-copy">
+					<p>Responsible for implementing content security in digital cinema server using HASP (Hardware Against Software Piracy).</p>
+				</div>
+				<ul class="highlights list pl2">
+					<li class="mb2 lt-dash">Worked as an early member of software development team for Qube Cinema server.</li>
+					<li class="mb2 lt-dash">Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu.</li>
+				</ul>
+			</div>
+		</section>
+		<section id="volunteer">
+			<h2 class="f3 fw5 lh-copy mt4">Volunteer</h2>
+			<div class="item">
+				<h3 class="company f4 fw5 lh-copy mb0">
+					Bullet Physics
+				</h3>
+				<div class="website">
+					<a href="https://github.com/bulletphysics/bullet3">https://github.com/bulletphysics/bullet3</a>
+				</div>
+		
+		
+				<div class="gray fw2 date">
+					<span class="endDate">
+						&rarr; Present
+					</span>
+				</div>
+		
+				<ul class="highlights list pl2">
+					<li class="lt-dash mb1">Contributing to the best open source physics simulation software in the market</li>
+					<li class="lt-dash mb1">Starting from bug reporting to optimizing compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community.</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="company f4 fw5 lh-copy mb0">
+					Irrlicht Renderer
+				</h3>
+				<div class="website">
+					<a href="http://irrlicht.sourceforge.net">http://irrlicht.sourceforge.net</a>
+				</div>
+		
+		
+				<div class="gray fw2 date">
+					<span class="endDate">
+						&rarr; Present
+					</span>
+				</div>
+		
+				<ul class="highlights list pl2">
+					<li class="lt-dash mb1">Started using Irrlicht since 2010 &amp; contributed to the community in various aspects.</li>
+					<li class="lt-dash mb1">Individually ported the engine to Google NaCl platform to make it possible to run the engine within a browser. This effort has made the engine to support a completely new platform.</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="company f4 fw5 lh-copy mb0">
+					Iyan 3D Professional
+				</h3>
+				<div class="website">
+					<a href="https://github.com/codetiger/Iyan3d">https://github.com/codetiger/Iyan3d</a>
+				</div>
+		
+		
+				<div class="gray fw2 date">
+					<span class="endDate">
+						&rarr; Present
+					</span>
+				</div>
+		
+				<ul class="highlights list pl2">
+					<li class="lt-dash mb1">Designed &amp; built an fully functional 3d animation editor for iOS &amp; Android platforms</li>
+					<li class="lt-dash mb1">Built with support for OpenGL ES, iOS Metal &amp; OpenGL</li>
+					<li class="lt-dash mb1">Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering</li>
+				</ul>
+			</div>
+			<div class="item">
+				<h3 class="company f4 fw5 lh-copy mb0">
+					Kinect UIRT
+				</h3>
+				<div class="website">
+					<a href="https://github.com/codetiger/Kinect-UIRT">https://github.com/codetiger/Kinect-UIRT</a>
+				</div>
+		
+		
+				<div class="gray fw2 date">
+					<span class="endDate">
+						&rarr; Present
+					</span>
+				</div>
+		
+				<ul class="highlights list pl2">
+					<li class="lt-dash mb1">A hobby project that ended up in the big press &amp; eventually forced me to make it open source. The goal was to build an embedded system to learn and detect user&#x27;s gestures from depth maps generated by Kinect sensors and control Home appliances like TV and AC</li>
+				</ul>
+			</div>
+		</section>
+		<section id="education">
+			<h2 class="f3 fw5 lh-copy mt4">Education</h2>
+			<div class="item">
+				<h3 class="company f4 fw5 lh-copy mb0">P.S.N.A College of Engineering &amp; Technology</h3>
+				<h4 class="company f5 fw5 mt0 mb2">
+					Mechanical Engineering
+				</h4>
+				<h4 class="position f5 fw5 lh-copy mt3 mb0">
+					Bachelor
+		
+				</h4>
+				<div class="gray fw2 date">
+					<span class="startDate">
+						2000-05-04
+					</span>
+					<span class="endDate">
+						&rarr; 2004-06-10
+					</span>
+				</div>
+		
+			</div>
+		</section>
+		<section id="awards">
+			<h2 class="f3 fw5 lh-copy mt5">Awards</h2>
+			<div class="item">
+				<h3 class="position f4 fw5 lh-copy mb0">
+					Ranked #127 (#1 in India) in AI Programming Challenge
+				</h3>
+				<h4 class="position f5 fw5 lh-copy mt3 mb0">
+					University of Waterloo &amp; Sponsor by Google
+				</h4>
+		
+				<div class="gray fw2 date">
+					2011-11-26
+				</div>
+				
+				<div class="summary">
+					<p>The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents.</p>
+				</div>
+			</div>
+			<div class="item">
+				<h3 class="position f4 fw5 lh-copy mb0">
+					A&#x27;Design Award 2012
+				</h3>
+				<h4 class="position f5 fw5 lh-copy mt3 mb0">
+					A&#x27;Design Award
+				</h4>
+		
+				<div class="gray fw2 date">
+					2013-03-24
+				</div>
+				
+				<div class="summary">
+					<p>Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d.</p>
+				</div>
+			</div>
+		</section>
+	</div>
 </body>
+
 </html>

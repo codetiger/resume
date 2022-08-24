@@ -1,14 +1,19 @@
 {
-  "name": "jsonresume-material-design",
+  "name": "jsonresume-harishankar",
   "version": "1.0.0",
-  "description": "Material Design Template for JSON Resume",
+  "description": "JSON Resume",
   "author": "Harishankar Narayanan",
   "repository": {
     "type": "git",
     "url": "https://github.com/codetiger/resume"
   },
+  "scripts": {
+    "start": "resumed render resume.json -o ./public/index.html -t tachyons-clean",
+    "validate": "resumed validate resume.json"
+  },
   "license": "The Unlicense",
   "dependencies": {
-    "handlebars": "^4.7.7"
+    "jsonresume-theme-tachyons-clean": "^0.0.9",
+    "resumed": "^1.0.3"
   }
 }
