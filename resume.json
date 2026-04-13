@@ -1,233 +1,178 @@
 {
-    "basics": {
-        "name": "Harishankar Narayanan",
-        "label": "Senior Director - Product Development",
-        "picture": "./harishankar.jpg",
-        "email": "nharishankar@gmail.com",
-        "phone": "+91 9940177422",
-        "summary": "Results driven engineering leader with successful track records of designing and delivering highly scalable systems for like Payment processor for banks, eCommerce, and gaming. Most recently, I lead architecture team at Volante responisble for SaaSifying the product. \n\tI also have 15+ years of programming experience building and optimizing large scale distributed systems with low latency to support real-time payment processing and orchestration.",
-        "location": {
-            "city": "Chennai",
-            "countryCode": "IN",
-            "region": "Tamil Nadu"
-        },
-        "profiles": [
-            {
-                "network": "Github",
-                "icon" : "mdi-github-face",
-                "username": "github.com/codetiger",
-                "url": "https://github.com/codetiger"
-            },
-            {
-                "network": "LinkedIn",
-                "icon" : "mdi-linkedin-box",
-                "username": "linkedin.com/in/code42tiger",
-                "url": "https://linkedin.com/in/code42tiger/"
-            },
-            {
-                "network": "Blog",
-                "username": "Codetiger",
-                "url": "https://codetiger.github.io/blog/"
-            }
-            
-        ]
+  "basics": {
+    "name": "Harishankar Narayanan",
+    "label": "Senior Director - Product Development",
+    "pictures": ["./harishankar.png", "./harishankar1.png"],
+    "email": "nharishankar@gmail.com",
+    "phone": "+91 9940177422",
+    "summary": "Engineering leader with 20+ years of hands-on experience designing highly scalable, low-latency distributed systems for real-time payment processing. At Global Payments, I lead enterprise payment product engineering teams in India. At Volante, I improved the performance of the payment processing platform by 6x and led the transformation from an on-prem monolith to a cloud-native SaaS offering. My career spans from writing rendering engines and ML systems in C++ to leading 300+ developer organizations across payments, eCommerce, and gaming.",
+    "location": {
+      "city": "Chennai",
+      "countryCode": "IN",
+      "region": "Tamil Nadu"
     },
-    "work": [
-        {
-            "company": "Volante Technologies",
-            "position": "Senior Director - Product Development",
-            "website": "https://www.volantetech.com",
-            "startDate": "2019-01-31",
-            "summary": "Responsible for design to deployment of the most advanced payment processing engine in the industry.",
-            "highlights": [
-                "Lead a team of architects responsible for the architecture and technology behind the payment engine VolPay.",
-                "Refactored the overall product for better efficiency. Improved the performance and throughput from 30 TPS to 200+ TPS, bringing down the cost of infra to  huge extend.",
-                "Redesigned a classic Java based monolith to a Cloud-native, serverless architecture. Transformed the application designed for on-prem to support SaaS offering.",
-                "Guided the development team and non-functional team to modernise the process using industry standard tools."
-            ]
-        },
-        {
-            "company": "CaratLane",
-            "position": "Engineering Manager",
-            "website": "https://www.caratlane.com",
-            "startDate": "2017-08-03",
-            "endDate": "2019-01-25",
-            "summary": "Responsible for overall Technical Leadership in all engineering capabilities. Responsible for Architecture design to deliverable for the entire engineering department.",
-            "highlights": [
-                "Lead the software division behind India's largest jewellery e-commerce platform, starting from user experience to fulfilling the Customers orders.",
-                "Designed and Transformed the existing Monolithic giant architecture to micro-services",
-                "Modernised the development process during a complete redesign of Core services behind the e-commerce platform.",
-                "Formed the core ML team and implemented various usecases including product suggestions for customers."
-            ]
-        },
-        {
-            "company": "Altimetrik Inc",
-            "position": "Architect, CC Lead, AnyDevice Capability Centre",
-            "website": "https://www.altimetrik.com",
-            "startDate": "2016-10-21",
-            "endDate": "2016-07-31",
-            "summary": "Responsible for Technical Leadership in Mobile & Web Front-end capability centre (department). Responsible for Architecture design for 4 in-house frameworks & products with a team of 100+ developers. Built acceleration tools & frameworks using emerging technologies. Actively involved in RFP, RFQ, until product delivery for various clients.",
-            "highlights": [
-                "RMAD Framework: Led architecture design & development of a complete IDE on the cloud for mobile/web app development including collaborative code editing, drag-drop based front-end design, simulation and debugging.",
-                "mBaas Platform: Led architecture design & development of Multi-tenant ready mBaas platform. Initially used for Push Notification, Deep linking, User Auth Services and allowed clients to deploy their customised services"
-            ]
-        },
-        {
-            "company": "Amtex Inc",
-            "position": "Technical Architect, Consultant",
-            "website": "http://www.amtexsystems.com",
-            "startDate": "2014-02-04",
-            "endDate": "2016-07-30",
-            "summary": "Responsible for the overall architecture of 5 products. Built & managed the mobile division with a team of 45 developers. Proven ability to rapidly utilise emerging technologies and build reliable enterprise systems.",
-            "highlights": [
-                "Instudio Designs: Designed, Developed & maintained a distributed & highly scalable E-Commerce solution for the luxury furniture manufacturers.",
-                "Inventcare: Built a 911 like emergency system for the Chennai Police Department. Built a reliable cloud based system with Mobile Apps for citizens and CMS for Police.",
-                "Maestros Music: Designed the architecture & built an audio streaming server & Mobile apps for iOS, Android & Windows Mobile."
-            ]
-        },
-        {
-            "company": "Smackall Games",
-            "position": "Founder & Technology Head",
-            "website": "http://www.smackall.com",
-            "startDate": "2006-01-05",
-            "endDate": "2016-10-15",
-            "summary": "Responsible for the overall architecture of our in-house game engine and ported it for iOS, Android, Windows Mobile & Linux platforms. Developed 120+ Mobile apps for various clients in both Entertainment & Enterprise sectors. Managed to build the company from 2 member team to 20 developers and offered App/Game development services.",
-            "highlights": [
-                "3 apps topped the iTunes Global Chart and crossed over a 5 million downloads with one awarded the A'Design Award 2012.",
-                "Designed & Built the entire rendering engine for the app Iyan 3d and added cross platform support. Iyan 3D app (www.iyan3dapp.com) has seen more than 2 million downloads.",
-                "Developed a working prototype for Gesture recognition system. Built a Machine Learning system in C++ for embedded systems using HMM algorithm (Hidden Markov Model)."
-            ]
-        },
-        {
-            "company": "Software Developer",
-            "position": "Real Image Media Technology",
-            "website": "http://www.realimage.com",
-            "startDate": "2006-01-06",
-            "endDate": "2005-01-05",
-            "summary": "Responsible for implementing content security in digital cinema server using HASP (Hardware Against Software Piracy).",
-            "highlights": [
-                "Worked as an early member of software development team for Qube Cinema server.",
-                "Involved in successful installation of the system in around 150 Cinemas around Tamil Nadu."
-            ]
-        }
-    ],
-    "volunteer": [
-        {
-            "organization": "Bullet Physics",
-            "website": "https://github.com/bulletphysics/bullet3",
-            "highlights": [
-                "Contributing to the best open source physics simulation software in the market",
-                "Starting from bug reporting to optimizing compiler settings for best performance in the mobile platforms, I’ve been an active user and contributor to the community."
-            ]
-        },
-        {
-            "organization": "Irrlicht Renderer",
-            "website": "http://irrlicht.sourceforge.net",
-            "highlights": [
-                "Started using Irrlicht since 2010 & contributed to the community in various aspects.",
-                "Individually ported the engine to Google NaCl platform to make it possible to run the engine within a browser. This effort has made the engine to support a completely new platform."
-            ]
-        },
-        {
-            "organization": "Iyan 3D Professional",
-            "website": "https://github.com/codetiger/Iyan3d",
-            "highlights": [
-                "Designed & built an fully functional 3d animation editor for iOS & Android platforms",
-                "Built with support for OpenGL ES, iOS Metal & OpenGL",
-                "Includes a cloud based Ray Tracing renderer built from scratch for HQ Rendering"
-            ]
-        },
-        {
-            "organization": "Kinect UIRT",
-            "website": "https://github.com/codetiger/Kinect-UIRT",
-            "highlights": [
-                "A hobby project that ended up in the big press & eventually forcing me to make it open source. The goal was to build an embedded system to learn and detect user's gestures from depth maps generated by Kinect sensors and control Home appliances like TV and AC"
-            ]
-        }
-    ],
-    "education": [
-        {
-            "institution": "P.S.N.A College of Engineering & Technology",
-            "area": "Mechanical Engineering",
-            "studyType": "Bachelor",
-            "startDate": "2000-05-04",
-            "endDate": "2004-06-10"
-        }
-    ],
-    "awards": [
-        {
-            "title": "Ranked #127 (#1 in India) in AI Programming Challenge",
-            "date": "2011-11-26",
-            "awarder": "University of Waterloo & Sponsor by Google",
-            "summary": "The AI Challenge was an international AI programming contest by the University of Waterloo Computer Science Club. Each participant wrote a self-contained computer program simulating the brain of Ants to compete within a virtual environment against other opponents."
-        },
-        {
-            "title": "A'Design Award 2012",
-            "date": "2013-03-24",
-            "awarder": "A'Design Award",
-            "summary": "Best product design award for GPS system. The app allows user to record the gyroscope sensor data together with GPS coordinates to completely recreate the terrain later in 3d."
-        }
-    ],
-    "skills": [
-        {
-            "name": "Concepts Interested",
-            "level": "Master",
-            "score": "65",
-            "keywords": [
-                "High throughput system design",
-                "Event-driven architecture",
-                "Microservices architecture",
-                "Performant system design",
-                "ML & AI"
-            ]
-        },
-        {
-            "name": "Practices",
-            "level": "Master",
-            "score": "65",
-            "keywords": [
-                "Docker and Kubernetes, OpenShift",
-                "Chaos engineering tools",
-                "Automated CI/CD",
-                "Embracing open-source in design",
-                "Container orchestration"
-            ]
-        },
-        {
-            "name": "Programming Skills",
-            "level": "Master",
-            "score": "95",
-            "keywords": [
-                "Go",
-                "C & C++",
-                "Python",
-                "Javascript",
-                "Java"
-            ]
-        },
-        {
-            "name": "Database",
-            "level": "Master",
-            "score": "90",
-            "keywords": [
-                "MongoDB",
-                "Cassandra",
-                "Oracle",
-                "Elastic Search",
-                "Redis"
-            ]
-        },
-        {
-            "name": "Messaging",
-            "level": "Master",
-            "score": "85",
-            "keywords": [
-                "Kafka",
-                "IBM MQ", 
-                "Active MQ", 
-                "Rabbit MQ",
-                "Amazon MQ"
-            ]
-        }
+    "profiles": [
+      {
+        "network": "Github",
+        "icon": "mdi-github-face",
+        "username": "github.com/codetiger",
+        "url": "https://github.com/codetiger"
+      },
+      {
+        "network": "LinkedIn",
+        "icon": "mdi-linkedin-box",
+        "username": "linkedin.com/in/code42tiger",
+        "url": "https://linkedin.com/in/code42tiger/"
+      },
+      {
+        "network": "Blog",
+        "username": "Codetiger",
+        "url": "https://codetiger.github.io/blog/"
+      }
     ]
+  },
+  "work": [
+    {
+      "company": "Global Payments Inc",
+      "position": "Senior Director - Product Engineering",
+      "website": "https://www.globalpayments.com",
+      "startDate": "2023-11-02",
+      "summary": "Responsible for the enterprise payment product engineering teams in India.",
+      "highlights": [
+        "Lead enterprise payments engineering teams across India with 300+ engineers.",
+        "Oversaw Worldpay's enterprise payment processing platforms serving merchants and large institutions including Netflix, eBay, Amazon, Booking.com, and Airbnb.",
+        "Navigated the product through multiple corporate transitions — from FIS spin-off to Global Payments acquisition — ensuring engineering continuity and delivery.",
+        "Designed and managed development of merchant onboarding across all products and platforms within the Worldpay ecosystem."
+      ]
+    },
+    {
+      "company": "Volante Technologies",
+      "position": "Senior Director - Product Development",
+      "website": "https://www.volantetech.com",
+      "startDate": "2019-01-30",
+      "endDate": "2023-10-30",
+      "summary": "Led the architecture and engineering teams behind VolPay, Volante's payment processing engine serving major banks and financial institutions.",
+      "highlights": [
+        "Led a team of architects driving the technology strategy and platform architecture for the VolPay payment engine, serving clients like BNY, Citi, and Wells Fargo.",
+        "Improved platform performance and throughput by 6x — from 30 TPS to 200+ TPS — significantly reducing infrastructure costs.",
+        "Transformed the product from an on-prem Java monolith to a cloud-native SaaS offering, enabling Volante's first multi-tenant deployments."
+      ]
+    },
+    {
+      "company": "CaratLane",
+      "position": "Engineering Manager",
+      "website": "https://www.caratlane.com",
+      "startDate": "2017-08-03",
+      "endDate": "2019-01-18",
+      "summary": "Led technical strategy and architecture across all engineering teams for India's largest online jewellery platform.",
+      "highlights": [
+        "Led the engineering team powering CaratLane's end-to-end e-commerce platform — from product discovery and user experience through to order fulfilment.",
+        "Redesigned core platform services and architected the migration from a monolithic application to a microservices-based architecture.",
+        "Built the company's first ML team, delivering product recommendation systems that personalised the shopping experience for customers."
+      ]
+    },
+    {
+      "company": "Altimetrik Inc",
+      "position": "Architect, CC Lead, AnyDevice Capability Centre",
+      "website": "https://www.altimetrik.com",
+      "startDate": "2016-10-20",
+      "endDate": "2017-07-31",
+      "summary": "Led technical strategy for the Mobile & Web front-end capability centre, architecting 4 in-house frameworks and products with a team of 100+ developers. Drove client engagements from RFP through to product delivery.",
+      "highlights": [
+        "Architected and led development of RMAD, a cloud-based IDE for mobile and web app development featuring collaborative code editing, drag-and-drop UI design, simulation, and debugging.",
+        "Designed and built a multi-tenant mBaaS platform providing push notifications, deep linking, and authentication services, with support for client-deployed custom services."
+      ]
+    },
+    {
+      "company": "Amtex Inc",
+      "position": "Technical Architect, Consultant",
+      "website": "http://www.amtexsystems.com",
+      "startDate": "2014-02-04",
+      "endDate": "2016-07-30",
+      "summary": "Architected 5 products and built the mobile division from the ground up, leading a team of 45 developers across enterprise and consumer applications.",
+      "highlights": [
+        "Designed and maintained a distributed, highly scalable e-commerce platform for luxury furniture manufacturers (Instudio Designs).",
+        "Built an emergency response system for the Chennai Police Department — a cloud-based platform with citizen-facing mobile apps and a police command centre, modelled after 911 (Inventcare).",
+        "Architected an audio streaming server with cross-platform mobile apps for iOS, Android, and Windows Mobile (Maestros Music)."
+      ]
+    },
+    {
+      "company": "Smackall Games",
+      "position": "Founder & Technology Head",
+      "website": "http://www.smackall.com",
+      "startDate": "2006-01-06",
+      "endDate": "2016-10-15",
+      "summary": "Founded and grew a mobile app and game development studio from 2 to 20 developers. Built a cross-platform game engine for iOS, Android, Windows Mobile, and Linux, and shipped 120+ apps across entertainment and enterprise.",
+      "highlights": [
+        "3 apps topped the iTunes Global Charts with over 5 million combined downloads, including an A'Design Award 2012 winner.",
+        "Designed and built the rendering engine behind Iyan 3D, a cross-platform 3D animation app with over 2 million downloads.",
+        "Built a gesture recognition prototype using a custom Machine Learning system in C++ with Hidden Markov Models, targeting embedded systems."
+      ]
+    },
+    {
+      "company": "Real Image Media Technology",
+      "position": "Software Developer",
+      "website": "http://www.realimage.com",
+      "startDate": "2005-01-05",
+      "endDate": "2006-01-05",
+      "summary": "Early member of the Qube Cinema server team, implementing content security for digital cinema using HASP (Hardware Against Software Piracy). Supported the successful deployment across 150+ cinemas in Tamil Nadu."
+    }
+  ],
+  "volunteer": [],
+  "education": [
+    {
+      "institution": "P.S.N.A College of Engineering & Technology",
+      "area": "Mechanical Engineering",
+      "studyType": "Bachelor",
+      "startDate": "2000-05-04",
+      "endDate": "2004-06-10"
+    }
+  ],
+  "awards": [
+    {
+      "title": "IoT Security Research — Covered by Futurism & ZDNet",
+      "summary": "Reverse engineered a robot vacuum's firmware and protocols, exposing critical security vulnerabilities. Built an open-source replacement firmware in Rust."
+    },
+    {
+      "title": "Ranked #1 in India — Google AI Programming Challenge",
+      "awarder": "University of Waterloo, sponsored by Google",
+      "date": "2011-11-26",
+      "summary": "Built an autonomous agent for an international AI contest, ranking #1 in India (#127 globally) out of thousands of participants."
+    },
+    {
+      "title": "A'Design Award — Best Product Design",
+      "awarder": "A'Design Award & Competition",
+      "date": "2013-03-24",
+      "summary": "Awarded for a GPS-based terrain mapping app that reconstructs real-world terrain as 3D models."
+    }
+  ],
+  "skills": [
+    {
+      "name": "Engineering Leadership",
+      "keywords": [
+        "Team building & scaling",
+        "Engineering strategy",
+        "Cross-functional delivery",
+        "Entrepreneurship"
+      ]
+    },
+    {
+      "name": "Domain Expertise",
+      "keywords": [
+        "Banking & financial payments",
+        "Enterprise & merchant payments",
+        "eCommerce platforms",
+        "Video codec & 3D graphics"
+      ]
+    },
+    {
+      "name": "Architecture & Platform",
+      "keywords": [
+        "High-throughput system",
+        "Event-driven architecture",
+        "Microservices",
+        "Cloud-native"
+      ]
+    }
+  ]
 }
