@@ -155,6 +155,18 @@
 
         .pj { margin-bottom: 1.4rem; }
 
+        .ft {
+            margin-top: 3rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--bd);
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--tx3);
+            letter-spacing: 0.02em;
+        }
+        @keyframes roll { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+        .roll { animation: roll 1.5s ease-in-out; }
+
         @media (max-width: 640px) {
             .pg { padding: 1.5rem 1rem 2rem; }
             .hd {
@@ -275,6 +287,15 @@
                 s5.appendChild(d);
             });
             p.appendChild(s5);
+
+            var ft = e("footer", "ft", "This entire r\u00e9sum\u00e9 is a single HTML file under 8 KB \u2014 with an easter egg hidden inside.");
+            p.appendChild(ft);
+
+            var kc = [38,38,40,40,37,39,37,39,66,65], ki = 0;
+            document.addEventListener("keydown", function (ev) {
+                ki = ev.keyCode === kc[ki] ? ki + 1 : 0;
+                if (ki === kc.length) { ki = 0; document.body.classList.add("roll"); document.body.addEventListener("animationend", function () { document.body.classList.remove("roll"); }, { once: true }); }
+            });
 
             document.title = b[0] + (b[1] ? " \u2014 " + b[1] : "");
 
