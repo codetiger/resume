@@ -15,8 +15,8 @@ RESUME_PATH = ROOT / "resume.json"
 TEMPLATE_NAME = "template.html"
 OUTPUT_PATH = ROOT / "public" / "index.html"
 AVATAR_SIZE = 144
-HEX_RADIUS = 1.5     # fine grid radius (data resolution)
-INDEX_BITS = 6       # bits per cell; palette = 2^INDEX_BITS - 1 colors + transparent at index 0
+HEX_RADIUS = 2       # fine grid radius (data resolution)
+INDEX_BITS = 5       # bits per cell; palette = 2^INDEX_BITS colors
 
 
 def format_date(value):

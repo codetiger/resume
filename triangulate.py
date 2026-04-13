@@ -39,16 +39,16 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
     Generates a pointy-top hexagonal grid inside an inscribed circle.
     Client derives coarse grid (1-level tessellation) for default display.
 
-    Index 0 = transparent. Palette holds 2^index_bits - 1 colors (indices 1..nc).
+    Palette holds 2^index_bits colors (indices 0..nc-1).
 
     Binary layout (little-endian):
         [uint8 fine_radius×10]      hex radius (fixed-point ×10)
         [uint8 index_bits]          bits per cell index
         [uint16 n_cells]            number of cells
-        [uint8 r,g,b] * nc          palette (nc = 2^index_bits - 1)
+        [uint8 r,g,b] * nc          palette (nc = 2^index_bits)
         [packed bits]               ceil(n_cells * index_bits / 8) bytes
     """
-    palette_size = (1 << index_bits) - 1  # reserve index 0 for transparent
+    palette_size = 1 << index_bits
     cr = canvas_size / 2.0  # circle radius
 
     # Generate pointy-top hex grid at fine resolution
@@ -67,21 +67,15 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
     print(f"Hex grid: r={hex_radius}px, {n_cells} cells")
 
     # Step 1: Load image and sample at cell centers (full color depth)
-    img = Image.open(image_path).convert("RGBA")
+    img = Image.open(image_path).convert("RGB")
     img = img.resize((canvas_size, canvas_size), Image.LANCZOS)
-    rgba = np.array(img)
-    alpha = rgba[:, :, 3]
-    rgb = rgba[:, :, :3]
+    rgb = np.array(img)
 
     all_sampled = []
-    opaque = []
-    for j, (cx, cy) in enumerate(cells):
+    for cx, cy in cells:
         px = min(int(cx), canvas_size - 1)
         py = min(int(cy), canvas_size - 1)
-        is_opaque = alpha[py, px] >= 128
-        opaque.append(is_opaque)
-        if is_opaque:
-            all_sampled.append(rgb[py, px])
+        all_sampled.append(rgb[py, px])
 
     # Step 2: Quantize only the sampled colors
     sample_img = Image.new("RGB", (len(all_sampled), 1))
@@ -94,18 +88,12 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
     palette = np.array(pal_data[:palette_size * 3], dtype=np.uint8).reshape(palette_size, 3)
     nc = palette_size
 
-    # Step 3: Map each cell to nearest palette entry
-    # Index 0 = transparent, palette colors are indices 1..nc
+    # Step 3: Map each cell to nearest palette entry (0-based)
     labels = np.empty(n_cells, dtype=np.uint8)
-    sample_cursor = 0
     for j in range(n_cells):
-        if not opaque[j]:
-            labels[j] = 0  # transparent
-        else:
-            color = all_sampled[sample_cursor]
-            sample_cursor += 1
-            dists = np.sum((palette.astype(int) - color.astype(int)) ** 2, axis=1)
-            labels[j] = np.argmin(dists) + 1  # 1-based
+        color = all_sampled[j]
+        dists = np.sum((palette.astype(int) - color.astype(int)) ** 2, axis=1)
+        labels[j] = np.argmin(dists)
 
     # Pack binary: header + palette + bit-packed indices
     buf = struct.pack('<BBH', round(hex_radius * 10), index_bits, n_cells)
