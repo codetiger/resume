@@ -2,7 +2,7 @@
   "basics": {
     "name": "Harishankar Narayanan",
     "label": "Senior Director - Product Development",
-    "pictures": ["./harishankar.png", "./harishankar1.png"],
+    "picture": "./harishankar.png",
     "email": "nharishankar@gmail.com",
     "phone": "+91 9940177422",
     "summary": "Engineering leader with 20+ years of hands-on experience designing highly scalable, low-latency distributed systems for real-time payment processing. At Global Payments, I lead enterprise payment product engineering teams in India. At Volante, I improved the performance of the payment processing platform by 6x and led the transformation from an on-prem monolith to a cloud-native SaaS offering. My career spans from writing rendering engines and ML systems in C++ to leading 300+ developer organizations across payments, eCommerce, and gaming.",

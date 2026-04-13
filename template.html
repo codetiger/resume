@@ -28,14 +28,11 @@
             background: var(--bg);
             color: var(--tx);
             line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
         }
         a { color: var(--ac); text-decoration: none; }
-        a:hover { text-decoration: underline; }
 
         .pg { max-width: var(--mw); margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
-        /* Header */
         .hd {
             display: flex;
             gap: 1.75rem;
@@ -47,14 +44,11 @@
             width: 144px;
             height: 144px;
             border-radius: 50%;
-            flex-shrink: 0;
-            box-shadow: 0 0 0 3px var(--ac2);
             touch-action: none;
         }
         .hd h1 {
             font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
             line-height: 1.2;
         }
         .hd .rl {
@@ -82,15 +76,10 @@
             padding: 0.2rem 0.6rem;
             font-size: 0.78rem;
             font-weight: 500;
-            border: 1px solid var(--bd);
-            border-radius: 6px;
             color: var(--ac);
             text-decoration: none;
-            transition: background 0.15s;
         }
-        .pl a:hover { background: var(--ac2); text-decoration: none; }
 
-        /* Sections */
         .sc { margin-top: var(--sg); }
         .st {
             font-size: 0.7rem;
@@ -99,22 +88,12 @@
             letter-spacing: 0.1em;
             color: var(--tx3);
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .st::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--bd);
         }
 
-        .sm { font-size: 0.95rem; color: var(--tx2); line-height: 1.75; }
+        .sm { font-size: 1rem; color: var(--tx2); line-height: 1.75; }
 
-        /* Entries */
         .en { margin-bottom: 1.75rem; }
-        .en:last-child { margin-bottom: 0; }
+        .en:last-child, .aw:last-child, .pj:last-child { margin-bottom: 0; }
         .et {
             display: flex;
             flex-wrap: wrap;
@@ -123,46 +102,31 @@
             gap: 0.5rem;
         }
         .er { font-size: 1rem; font-weight: 600; }
-        .ed {
+        .ed, .edy {
             font-size: 0.78rem;
             font-family: var(--m);
             color: var(--tx3);
-            white-space: nowrap;
         }
+        .ed { white-space: nowrap; }
         .eo {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: var(--ac);
             font-weight: 500;
             margin-top: 0.1rem;
         }
-        .es {
-            font-size: 0.88rem;
-            color: var(--tx2);
-            margin-top: 0.35rem;
-            line-height: 1.6;
-        }
-        .eh { list-style: none; margin-top: 0.5rem; padding: 0; }
-        .eh li {
-            position: relative;
-            padding-left: 1rem;
+        .es, .as {
             font-size: 0.85rem;
             color: var(--tx2);
+            margin-top: 0.3rem;
+            line-height: 1.6;
+        }
+        .eh { margin-top: 0.5rem; padding-left: 1.2rem; color: var(--tx2); }
+        .eh li {
+            font-size: 0.85rem;
             margin-bottom: 0.3rem;
             line-height: 1.6;
         }
-        .eh li::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0.5rem;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--ac);
-            opacity: 0.4;
-        }
 
-        /* Skills */
         .sg {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -174,54 +138,23 @@
             border-radius: 10px;
             padding: 1rem 1.2rem;
         }
-        .sn { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .sn { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; }
         .stg { display: flex; flex-wrap: wrap; gap: 0.3rem; }
         .stg span {
             padding: 0.15rem 0.55rem;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             background: var(--ac2);
             border-radius: 4px;
             color: var(--ac);
         }
 
-        /* Awards */
         .aw { margin-bottom: 1.2rem; }
-        .aw:last-child { margin-bottom: 0; }
-        .at { font-size: 0.92rem; font-weight: 600; }
+        .edd, .at, .pn { font-size: 0.9rem; font-weight: 600; }
         .am { font-size: 0.78rem; color: var(--tx3); margin-top: 0.1rem; }
-        .as { font-size: 0.85rem; color: var(--tx2); margin-top: 0.25rem; line-height: 1.6; }
-
-        /* Education */
-        .edt {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 0.5rem;
-        }
-        .edd { font-size: 0.92rem; font-weight: 600; }
-        .edy { font-size: 0.78rem; font-family: var(--m); color: var(--tx3); }
         .edi { font-size: 0.85rem; color: var(--tx2); margin-top: 0.1rem; }
 
-        /* Projects */
         .pj { margin-bottom: 1.4rem; }
-        .pj:last-child { margin-bottom: 0; }
-        .pn { font-size: 0.92rem; font-weight: 600; }
-        .pn a { color: var(--ac); }
 
-        /* Print */
-        @media print {
-            :root { --bg: #fff; --sf: #fff; }
-            html { font-size: 11px; }
-            body { background: #fff; }
-            .pg { padding: 0; max-width: 100%; }
-            .sc { margin-top: 1.5rem; }
-            .en, .aw, .pj { page-break-inside: avoid; }
-            a { color: var(--tx) !important; }
-            .pl a { border-color: #ccc; }
-        }
-
-        /* Mobile */
         @media (max-width: 640px) {
             .pg { padding: 1.5rem 1rem 2rem; }
             .hd {
@@ -334,7 +267,7 @@
             var ed = s[5].split(N), s5 = sc("Education");
             ed.forEach(function (r) {
                 if (!r) return;
-                var f = r.split(T), d = e(D, "en"), et = e(D, "edt");
+                var f = r.split(T), d = e(D, "en"), et = e(D, "et");
                 et.appendChild(e(SP, "edd", f[0]));
                 et.appendChild(e(SP, "edy", f[1]));
                 d.appendChild(et);
@@ -345,29 +278,55 @@
 
             document.title = b[0] + (b[1] ? " \u2014 " + b[1] : "");
 
-            {# ── Avatar ── #}
+            {# ── Avatar with 1-level tessellation ── #}
             {% if avatar_mesh_b64 %}
             if (av) {
                 var buf = new Uint8Array(await dz("{{ avatar_mesh_b64 }}"));
                 var dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-                var hr = buf[0], nc = buf[1], ni = buf[2], ncells = dv.getUint16(3, true), o = 5;
+                var hr = buf[0] / 10, ib = buf[1], ncells = dv.getUint16(2, true), o = 4;
+                var nc = (1 << ib) - 1, mask = nc;
                 var pR = [], pG = [], pB = [];
                 for (var i = 0; i < nc; i++) { pR.push(buf[o++]); pG.push(buf[o++]); pB.push(buf[o++]); }
-                var imgIdx = [];
-                for (var j = 0; j < ni; j++) { var idx = []; for (var i = 0; i < ncells; i++) idx.push(buf[o++]); imgIdx.push(idx); }
+                var idx = [], bb = 0, bn = 0;
+                for (var i = 0; i < ncells; i++) { while (bn < ib) { bb = (bb << 8) | buf[o++]; bn += 8; } bn -= ib; idx.push((bb >> bn) & mask); }
 
-                var S = 144, cr = 72, hdx = Math.sqrt(3) * hr, hdy = 1.5 * hr;
-                var cells = [];
-                for (var row = 0; row < S / hdy + 2; row++)
-                    for (var col = 0; col < S / hdx + 2; col++) {
-                        var cx = col * hdx + (row % 2 ? hdx / 2 : 0), cy = row * hdy;
-                        if (Math.sqrt((cx - cr) * (cx - cr) + (cy - cr) * (cy - cr)) + hr * 0.8 <= cr) cells.push([cx, cy]);
+                var S = 144, cr = 72;
+                var hrc = hr * 2;
+
+                {# Generate hex grid at given radius with boundary margin #}
+                function grd(r, m) {
+                    var g = [], dx = Math.sqrt(3) * r, dy = 1.5 * r;
+                    for (var row = 0; row < S / dy + 2; row++)
+                        for (var col = 0; col < S / dx + 2; col++) {
+                            var cx = col * dx + (row % 2 ? dx / 2 : 0), cy = row * dy;
+                            if (Math.sqrt((cx - cr) * (cx - cr) + (cy - cr) * (cy - cr)) + r * m <= cr) g.push([cx, cy]);
+                        }
+                    return g;
+                }
+                var fc = grd(hr, 0.8), cc = grd(hrc, 0.8);
+
+                function hvx(r) {
+                    var x = [], y = [];
+                    for (var v = 0; v < 6; v++) { var a = (Math.PI / 180) * (60 * v - 30); x.push(Math.cos(a) * r); y.push(Math.sin(a) * r); }
+                    return [x, y];
+                }
+                var fv = hvx(hr + 0.3), cv = hvx(hrc);
+
+                {# Average fine cell colors for each coarse cell #}
+                var ci = [], th = hrc * hrc;
+                for (var i = 0; i < cc.length; i++) {
+                    var sr = 0, sg = 0, sb = 0, cnt = 0;
+                    for (var j = 0; j < fc.length; j++) {
+                        var dx = cc[i][0] - fc[j][0], dy = cc[i][1] - fc[j][1];
+                        if (dx * dx + dy * dy < th && idx[j]) {
+                            sr += pR[idx[j] - 1]; sg += pG[idx[j] - 1]; sb += pB[idx[j] - 1]; cnt++;
+                        }
                     }
+                    ci.push(cnt ? "rgb(" + (sr / cnt | 0) + "," + (sg / cnt | 0) + "," + (sb / cnt | 0) + ")" : null);
+                }
 
-                var hx = [], hy = [];
-                for (var v = 0; v < 6; v++) { var a = (Math.PI / 180) * (60 * v - 30); hx.push(Math.cos(a)); hy.push(Math.sin(a)); }
-
-                var cT = new Float32Array(ncells), cH = new Float32Array(ncells);
+                {# Track activation for coarse cells (to suppress on hover) #}
+                var cT = new Float32Array(cc.length), cH = new Float32Array(cc.length);
                 var can = av, ctx = can.getContext("2d");
                 var mx = -999, my = -999, hov = false, af = null;
 
@@ -378,9 +337,9 @@
 
                 function tick(ts) {
                     var now = ts / 1000, any = false;
-                    for (var i = 0; i < cells.length; i++) {
-                        var dx = cells[i][0] - mx, dy = cells[i][1] - my;
-                        if (hov && Math.sqrt(dx * dx + dy * dy) < 28 && ni > 1) { cH[i] = now; cT[i] = 1; }
+                    for (var i = 0; i < cc.length; i++) {
+                        var dx = cc[i][0] - mx, dy = cc[i][1] - my;
+                        if (hov && Math.sqrt(dx * dx + dy * dy) < 28) { cH[i] = now; cT[i] = 1; }
                         else if (cT[i] > 0) { if (now - cH[i] > 3) cT[i] = 0; any = true; }
                     }
                     draw();
@@ -389,16 +348,29 @@
 
                 function draw() {
                     ctx.clearRect(0, 0, S, S);
-                    for (var i = 0; i < cells.length; i++) {
-                        var id = cT[i] > 0 ? imgIdx[1][i] : imgIdx[0][i];
-                        if (id === 255) continue;
-                        var cx = cells[i][0], cy = cells[i][1];
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(cr, cr, cr, 0, Math.PI * 2);
+                    ctx.clip();
+                    {# Pass 1: all fine hexes (base layer, always drawn) #}
+                    for (var i = 0; i < fc.length; i++) {
+                        if (!idx[i]) continue;
                         ctx.beginPath();
-                        for (var v = 0; v < 6; v++) { var px = cx + hr * hx[v], py = cy + hr * hy[v]; v ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+                        for (var v = 0; v < 6; v++) { v ? ctx.lineTo(fc[i][0] + fv[0][v], fc[i][1] + fv[1][v]) : ctx.moveTo(fc[i][0] + fv[0][v], fc[i][1] + fv[1][v]); }
                         ctx.closePath();
-                        ctx.fillStyle = "rgb(" + pR[id] + "," + pG[id] + "," + pB[id] + ")";
+                        ctx.fillStyle = "rgb(" + pR[idx[i] - 1] + "," + pG[idx[i] - 1] + "," + pB[idx[i] - 1] + ")";
                         ctx.fill();
                     }
+                    {# Pass 2: coarse hexes on top, skip activated ones to reveal fine detail #}
+                    for (var i = 0; i < cc.length; i++) {
+                        if (!ci[i] || cT[i]) continue;
+                        ctx.beginPath();
+                        for (var v = 0; v < 6; v++) { v ? ctx.lineTo(cc[i][0] + cv[0][v], cc[i][1] + cv[1][v]) : ctx.moveTo(cc[i][0] + cv[0][v], cc[i][1] + cv[1][v]); }
+                        ctx.closePath();
+                        ctx.fillStyle = ci[i];
+                        ctx.fill();
+                    }
+                    ctx.restore();
                 }
 
                 draw();

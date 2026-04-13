@@ -15,29 +15,43 @@ import base64
 
 import numpy as np
 from PIL import Image
-from scipy.cluster.vq import kmeans2
 
 
-def export_hex_mosaic(image_paths, hex_radius=4, canvas_size=144, palette_size=128):
-    """Export hex mosaic data for multiple images as deflate-compressed base64.
+def _pack_bits(values, bits):
+    """Pack an array of small integers into a bit stream, MSB first."""
+    result = bytearray()
+    buf = 0
+    n = 0
+    for v in values:
+        buf = (buf << bits) | int(v)
+        n += bits
+        while n >= 8:
+            n -= 8
+            result.append((buf >> n) & 0xFF)
+    if n > 0:
+        result.append((buf << (8 - n)) & 0xFF)
+    return bytes(result)
+
+
+def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
+    """Export hex mosaic data for a single image as deflate-compressed base64.
 
     Generates a pointy-top hexagonal grid inside an inscribed circle.
-    Colors are sampled from each image and indexed via a shared k-means palette.
-    Grid positions are deterministic and recomputed client-side.
+    Client derives coarse grid (1-level tessellation) for default display.
+
+    Index 0 = transparent. Palette holds 2^index_bits - 1 colors (indices 1..nc).
 
     Binary layout (little-endian):
-        [uint8 hex_radius]          hex cell radius in canvas pixels
-        [uint8 nc]                  palette size
-        [uint8 n_images]            number of images
-        [uint16 n_cells]            number of hex cells
-        [uint8 r,g,b] * nc          shared color palette
-        [uint8 idx] * n_cells       image 0 color indices
-        [uint8 idx] * n_cells       image 1 color indices (if present)
-        ...
+        [uint8 fine_radius×10]      hex radius (fixed-point ×10)
+        [uint8 index_bits]          bits per cell index
+        [uint16 n_cells]            number of cells
+        [uint8 r,g,b] * nc          palette (nc = 2^index_bits - 1)
+        [packed bits]               ceil(n_cells * index_bits / 8) bytes
     """
+    palette_size = (1 << index_bits) - 1  # reserve index 0 for transparent
     cr = canvas_size / 2.0  # circle radius
 
-    # Generate pointy-top hex grid inside circle
+    # Generate pointy-top hex grid at fine resolution
     dx = math.sqrt(3) * hex_radius
     dy = 1.5 * hex_radius
     cells = []  # (cx, cy) in canvas pixel coords
@@ -50,62 +64,53 @@ def export_hex_mosaic(image_paths, hex_radius=4, canvas_size=144, palette_size=1
                 cells.append((cx, cy))
 
     n_cells = len(cells)
-    n_images = len(image_paths)
-    print(f"Hex grid: r={hex_radius}px, {n_cells} cells, {n_images} images")
+    print(f"Hex grid: r={hex_radius}px, {n_cells} cells")
 
-    # Sample colors from each image at cell centers (255 = transparent)
-    all_opaque_colors = []
-    image_colors = []    # RGB per cell (only meaningful for opaque cells)
-    image_alpha = []     # True = opaque, False = transparent per cell
-    for img_path in image_paths:
-        img = Image.open(img_path).convert("RGBA")
-        img = img.resize((canvas_size, canvas_size), Image.LANCZOS)
-        rgba = np.array(img)
-        alpha = rgba[:, :, 3]
-        rgb = np.array(img.convert("RGB"))
+    # Step 1: Load image and sample at cell centers (full color depth)
+    img = Image.open(image_path).convert("RGBA")
+    img = img.resize((canvas_size, canvas_size), Image.LANCZOS)
+    rgba = np.array(img)
+    alpha = rgba[:, :, 3]
+    rgb = rgba[:, :, :3]
 
-        colors = []
-        opaque_flags = []
-        for cx, cy in cells:
-            px = min(int(cx), canvas_size - 1)
-            py = min(int(cy), canvas_size - 1)
-            is_opaque = alpha[py, px] >= 128
-            opaque_flags.append(is_opaque)
-            if is_opaque:
-                colors.append(rgb[py, px])
-            else:
-                colors.append([0, 0, 0])  # placeholder, won't enter palette
-        colors = np.array(colors, dtype=np.uint8)
-        image_colors.append(colors)
-        image_alpha.append(opaque_flags)
-        # Only include opaque cells in palette building
-        opaque_colors = colors[np.array(opaque_flags)]
-        if len(opaque_colors) > 0:
-            all_opaque_colors.append(opaque_colors)
+    all_sampled = []
+    opaque = []
+    for j, (cx, cy) in enumerate(cells):
+        px = min(int(cx), canvas_size - 1)
+        py = min(int(cy), canvas_size - 1)
+        is_opaque = alpha[py, px] >= 128
+        opaque.append(is_opaque)
+        if is_opaque:
+            all_sampled.append(rgb[py, px])
 
-    # Build shared palette from opaque cells only
-    combined = np.vstack(all_opaque_colors).astype(np.float64)
-    nc = min(palette_size, len(np.unique(combined, axis=0)))
-    palette, _ = kmeans2(combined, nc, minit='points', iter=20)
-    palette = np.clip(np.round(palette), 0, 255).astype(np.uint8)
+    # Step 2: Quantize only the sampled colors
+    sample_img = Image.new("RGB", (len(all_sampled), 1))
+    for k, c in enumerate(all_sampled):
+        sample_img.putpixel((k, 0), (int(c[0]), int(c[1]), int(c[2])))
+    quantized_sample = sample_img.quantize(colors=palette_size, method=Image.Quantize.MEDIANCUT)
 
-    # Map each image's colors to palette indices (255 = transparent)
-    image_labels = []
-    for colors, opaque_flags in zip(image_colors, image_alpha):
-        dists = np.linalg.norm(
-            colors[:, None].astype(float) - palette[None, :].astype(float), axis=2)
-        labels = np.argmin(dists, axis=1).astype(np.uint8)
-        # Mark transparent cells with sentinel 255
-        for i, is_opaque in enumerate(opaque_flags):
-            if not is_opaque:
-                labels[i] = 255
-        image_labels.append(labels)
+    pal_data = quantized_sample.getpalette()
+    # Always pad to full palette_size so JS decoder reads correct offset
+    palette = np.array(pal_data[:palette_size * 3], dtype=np.uint8).reshape(palette_size, 3)
+    nc = palette_size
 
-    # Pack binary
-    buf = struct.pack('<BBBH', hex_radius, nc, n_images, n_cells)
+    # Step 3: Map each cell to nearest palette entry
+    # Index 0 = transparent, palette colors are indices 1..nc
+    labels = np.empty(n_cells, dtype=np.uint8)
+    sample_cursor = 0
+    for j in range(n_cells):
+        if not opaque[j]:
+            labels[j] = 0  # transparent
+        else:
+            color = all_sampled[sample_cursor]
+            sample_cursor += 1
+            dists = np.sum((palette.astype(int) - color.astype(int)) ** 2, axis=1)
+            labels[j] = np.argmin(dists) + 1  # 1-based
+
+    # Pack binary: header + palette + bit-packed indices
+    buf = struct.pack('<BBH', round(hex_radius * 10), index_bits, n_cells)
     buf += palette.tobytes()
-    for labels in image_labels:
-        buf += labels.tobytes()
+    buf += _pack_bits(labels, index_bits)
 
     raw_size = len(buf)
     compressed = zlib.compress(buf, 9)

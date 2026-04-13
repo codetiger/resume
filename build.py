@@ -15,8 +15,8 @@ RESUME_PATH = ROOT / "resume.json"
 TEMPLATE_NAME = "template.html"
 OUTPUT_PATH = ROOT / "public" / "index.html"
 AVATAR_SIZE = 144
-HEX_RADIUS = 2
-PALETTE_SIZE = 32
+HEX_RADIUS = 1.5     # fine grid radius (data resolution)
+INDEX_BITS = 6       # bits per cell; palette = 2^INDEX_BITS - 1 colors + transparent at index 0
 
 
 def format_date(value):
@@ -139,14 +139,13 @@ def prebake_data(resume):
     return b64
 
 
-def build_avatar_mesh(image_paths):
-    """Generate compressed hex mosaic data from avatar images."""
-    existing = [p for p in image_paths if p.exists()]
-    if not existing:
-        print("No avatar images found, skipping mesh generation")
+def build_avatar_mesh(image_path):
+    """Generate compressed hex mosaic data from single avatar image."""
+    if not image_path or not image_path.exists():
+        print("No avatar image found, skipping mesh generation")
         return None
     from triangulate import export_hex_mosaic
-    return export_hex_mosaic([str(p) for p in existing], HEX_RADIUS, AVATAR_SIZE, PALETTE_SIZE)
+    return export_hex_mosaic(str(image_path), HEX_RADIUS, AVATAR_SIZE, INDEX_BITS)
 
 
 def inline_css_vars(css):
@@ -185,6 +184,7 @@ def minify_css(css):
     css = re.sub(r'\s*([{}:;,>~+])\s*', r'\1', css)       # spaces around punctuation
     css = re.sub(r';}', '}', css)                          # trailing semicolons
     css = inline_css_vars(css)
+    css = re.sub(r'(?<![0-9])0(\.\d+)', r'\1', css)  # 0.5rem → .5rem
     return css.strip()
 
 
@@ -229,9 +229,9 @@ def minify_html(html):
 
 def build():
     resume = json.loads(RESUME_PATH.read_text(encoding="utf-8"))
-    pictures = resume.get("basics", {}).get("pictures", [])
-    avatar_paths = [ROOT / p for p in pictures]
-    avatar_mesh_b64 = build_avatar_mesh(avatar_paths)
+    picture = resume.get("basics", {}).get("picture", "")
+    avatar_path = ROOT / picture if picture else None
+    avatar_mesh_b64 = build_avatar_mesh(avatar_path)
 
     env = Environment(
         loader=FileSystemLoader(ROOT),
