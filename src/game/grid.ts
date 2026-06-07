@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { DIRECTION_DELTA, PALETTE, noise, type Direction } from '../core';
 import type { TileKind } from './tile';
 import { createTile } from './tile';
 import { createEffects, type Effects, type ReachTarget } from './effects';
@@ -10,6 +11,7 @@ import {
   createShiftDecoration,
   createExplosiveDecoration,
   createCountdownDecoration,
+  type Decoration,
   type Countdown,
 } from './decoration';
 
@@ -25,8 +27,6 @@ const TILE_FALL_FLOOR = -6;     // world Y at which the tile is gone from view
 // Tune these to change the countdown — e.g. a faster fuse or more steps.
 export const BLAST_COUNT_FROM = 3;        // numbers shown before it blows (3,2,1)
 export const BLAST_COUNT_INTERVAL = 0.6;  // seconds each number stays on screen
-
-export type Direction = 'right' | 'left' | 'forward' | 'back';
 
 export interface CellDef {
   kind: TileKind;
@@ -85,6 +85,18 @@ export interface Level {
   remaining: () => number;
 }
 
+/** The free-running cube-grid decoration for a tile kind (blast handled separately). */
+function makeDecorationForKind(cell: CellDef): Decoration | null {
+  switch (cell.kind) {
+    case 'arrow':            return cell.dir ? createArrowDecoration(cell.dir, PALETTE.decoration.arrow) : null;
+    case 'base':             return createBaseDecoration(PALETTE.decoration.base);
+    case 'disappear-normal': return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
+    case 'disappear-line':   return createDisappearLineDecoration(cell.sweepDir ?? 'row', PALETTE.decoration['disappear-line']);
+    case 'shift':            return createShiftDecoration(PALETTE.decoration.shift);
+    default:                 return null;
+  }
+}
+
 export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeight: number): Level {
   const rows = layout.length;
   const cols = Math.max(...layout.map((r) => r.length));
@@ -129,11 +141,11 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     for (let col = 0; col < layout[row].length; col++) {
       const cell = layout[row][col];
       if (!cell) continue;
-      const { kind } = cell;
-      const tile = createTile({ kind, template });
+      const tile = createTile({ kind: cell.kind, template });
       const pos = cellToWorld(col, row);
       tile.position.copy(pos);
       group.add(tile);
+
       const key = `${col},${row}`;
       tiles.set(key, tile);
       cellDefs.set(key, cell);
@@ -141,31 +153,21 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       bobs.set(key, {
         group: tile,
         baseY: pos.y,
-        phase: det(col * 17 + row * 31) * Math.PI * 2,
-        freq: 2.0 + det(col * 13 + row * 7) * 1.5,
-        amp: 0.008 + det(col * 23 + row * 11) * 0.012,
+        phase: noise(col * 17 + row * 31) * Math.PI * 2,
+        freq: 2.0 + noise(col * 13 + row * 7) * 1.5,
+        amp: 0.008 + noise(col * 23 + row * 11) * 0.012,
       });
 
-      if (kind === 'explosive') {
+      if (cell.kind === 'explosive') {
         // Blast tiles carry a free-running pulse plus a hidden countdown overlay
         // that only appears once the blast is armed.
-        const normal = createExplosiveDecoration(0xf87171);
-        const countdown = createCountdownDecoration(0xfff1b8);
-        tile.add(normal.group);
-        tile.add(countdown.group);
-        decorationUpdaters.push(normal.update);
-        explosiveVisuals.set(key, { normal: normal.group, countdown });
+        const pulse = createExplosiveDecoration(PALETTE.decoration.explosive);
+        const countdown = createCountdownDecoration(PALETTE.decoration.countdown);
+        tile.add(pulse.group, countdown.group);
+        decorationUpdaters.push(pulse.update);
+        explosiveVisuals.set(key, { normal: pulse.group, countdown });
       } else {
-        const dec = (() => {
-          switch (kind) {
-            case 'arrow':            return cell.dir ? createArrowDecoration(cell.dir, 0xfde047) : null;
-            case 'base':             return createBaseDecoration(0xe2e8f0);
-            case 'disappear-normal': return createDisappearNormalDecoration(0x4ade80);
-            case 'disappear-line':   return createDisappearLineDecoration(cell.sweepDir ?? 'row', 0xfb923c);
-            case 'shift':            return createShiftDecoration(0x22d3ee);
-            default:                 return null;
-          }
-        })();
+        const dec = makeDecorationForKind(cell);
         if (dec) {
           tile.add(dec.group);
           decorationUpdaters.push(dec.update);
@@ -184,8 +186,8 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     const tile = tiles.get(key)!;
     const bob = bobs.get(key)!;
     // Deterministic per-tile tumble so falling tiles don't drop in lock-step.
-    const spinX = (det(key.length + bob.phase) - 0.5) * 5;
-    const spinZ = (det(bob.freq * 7 + bob.amp) - 0.5) * 5;
+    const spinX = (noise(key.length + bob.phase) - 0.5) * 5;
+    const spinZ = (noise(bob.freq * 7 + bob.amp) - 0.5) * 5;
     anims.push({ tile, startTime: elapsed + delay, baseY: bob.baseY, spinX, spinZ });
   }
 
@@ -241,7 +243,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
         c += dc;
         r += dr;
       }
-      if (targets.length) effects.spawnProjectile({ origin, color: 0xea580c, targets, startTime: elapsed });
+      if (targets.length) effects.spawnProjectile({ origin, color: PALETTE.effect.lineSphere, targets, startTime: elapsed });
     }
   }
 
@@ -262,7 +264,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       if (!cellDefs.has(k)) continue;
       effects.spawnProjectile({
         origin,
-        color: 0xdc2626,
+        color: PALETTE.effect.blastSphere,
         targets: [{ pos: sphereOrigin(c, r), onReach: () => reachTile(k) }],
         startTime: elapsed,
       });
@@ -330,10 +332,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
       case 'arrow': {
         if (!toDef.dir) break;
-        const D: Record<Direction, [number, number]> = {
-          right: [1, 0], left: [-1, 0], forward: [0, 1], back: [0, -1],
-        };
-        const [dc, dr] = D[toDef.dir];
+        const [dc, dr] = DIRECTION_DELTA[toDef.dir];
         // Always push in the arrow's direction. The caller decides whether the
         // target is solid ground (a move) or empty space (a fall off the edge).
         return { type: 'slide', dir: toDef.dir, toCol: col + dc, toRow: row + dr };
@@ -446,62 +445,21 @@ export function parseLayout(rows: string[]): LevelLayout {
   );
 }
 
-// Demo level: 5×5 board demonstrating every tile kind.
-// Base at (1,2). Row-wipe at (1,0) clears its row; col-wipe at (1,1) clears its column.
+// Demo level: 5×5 board demonstrating every tile kind. Base at (1,2); row-wipe
+// at (1,0), col-wipe at (1,1); shift pair (2,1)↔(2,3). See parseLayout for chars.
 //
-//   col:  0        1        2        3        4
-//  row 0: n        r        x        n        n
-//  row 1: n        c        t₁       n        n
-//  row 2: n        B        n        n        a→back
-//  row 3: n        n        t₁       n        n
-//  row 4: n        r        n        c        n
-//
-// Shift pair t₁: (2,1) ↔ (2,3)
-// Arrow at (4,2) slides the cube to (4,1) (dir:'back')
-export const DEMO_LAYOUT: LevelLayout = [
-  /* row 0 */
-  [
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-line', sweepDir: 'row' },
-    { kind: 'explosive' },
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-normal' },
-  ],
-  /* row 1 */
-  [
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-line', sweepDir: 'col' },
-    { kind: 'shift', shiftId: 1 },
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-normal' },
-  ],
-  /* row 2 */
-  [
-    { kind: 'disappear-normal' },
-    { kind: 'base' },
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-normal' },
-    { kind: 'arrow', dir: 'back' },
-  ],
-  /* row 3 */
-  [
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-normal' },
-    { kind: 'shift', shiftId: 1 },
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-normal' },
-  ],
-  /* row 4 */
-  [
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-line', sweepDir: 'row' },
-    { kind: 'disappear-normal' },
-    { kind: 'disappear-line', sweepDir: 'col' },
-    { kind: 'disappear-normal' },
-  ],
-];
-
-function det(seed: number): number {
-  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-}
+//   col:  0  1  2  3  4
+//  row 0: n  r  x  n  n
+//  row 1: n  c  t  n  n
+//  row 2: n  b  n  n  a   ← arrow forced to 'back'
+//  row 3: n  n  t  n  n
+//  row 4: n  r  n  c  n
+export const DEMO_LAYOUT: LevelLayout = parseLayout([
+  'nrxnn',
+  'nctnn',
+  'nbnna',
+  'nntnn',
+  'nrncn',
+]);
+// The lone arrow slides the cube back toward base rather than the parser default.
+DEMO_LAYOUT[2][4]!.dir = 'back';

@@ -1,0 +1,60 @@
+import type { TileKind } from './game/tile';
+
+// Shared primitives used across the engine and game modules: the cardinal
+// movement direction, its grid delta, a deterministic noise hash, and the
+// colour palette. Keeping these in one place avoids the three duplicate
+// `Direction` unions and the scattered magic hex literals the modules grew.
+
+export type Direction = 'right' | 'left' | 'forward' | 'back';
+
+/** Grid step for each direction, as [dCol, dRow]. */
+export const DIRECTION_DELTA: Record<Direction, [number, number]> = {
+  right:   [ 1,  0],
+  left:    [-1,  0],
+  forward: [ 0,  1],
+  back:    [ 0, -1],
+};
+
+/** Deterministic pseudo-random in [0, 1) from a seed — stable per-tile jitter. */
+export function noise(seed: number): number {
+  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+export const PALETTE = {
+  /** Platform-mesh body colour per tile kind (neon-edged trim glow). */
+  tileBody: {
+    'base':             0xf1f5f9, // off-white   — start / finish
+    'disappear-normal': 0x16a34a, // green       — standard disappear
+    'disappear-line':   0xea580c, // deep orange — row/col wipe
+    'arrow':            0xfacc15, // yellow      — forced slide rail
+    'shift':            0x0891b2, // cyan        — teleport portal
+    'explosive':        0xdc2626, // red         — blast radius
+  } satisfies Record<TileKind, number>,
+  /** Dark panel body — reads as PBR depth rather than flat black. */
+  tileTrim: 0x1a3352,
+
+  /** Animated cube-grid overlay colour per tile kind. */
+  decoration: {
+    'base':             0xe2e8f0,
+    'disappear-normal': 0x4ade80,
+    'disappear-line':   0xfb923c,
+    'arrow':            0xfde047,
+    'shift':            0x22d3ee,
+    'explosive':        0xf87171,
+    'countdown':        0xfff1b8,
+  },
+
+  /** Travelling effect spheres / swirl. */
+  effect: {
+    lineSphere:    0xea580c,
+    blastSphere:   0xdc2626,
+    teleportSwirl: 0x22d3ee,
+  },
+
+  /** Player cube materials. */
+  player: {
+    body: 0x00ccff, // neon cyan
+    dark: 0x334455, // structural parts fallback
+  },
+} as const;

@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 
-// Transient visual effects: glowing spheres that fly out of triggered special
-// tiles (removing tiles as they arrive) and the swirl vortex that consumes /
-// releases the player block on a shift teleport. Everything is time-based off the
-// same elapsed clock the rest of the game uses; the manager derives its own dt.
+// Transient visual effects: glowing spheres that fly out of triggered tiles
+// (removing tiles as they arrive) and the swirl vortex that consumes / releases
+// the player block on a shift teleport. Everything is time-based off the same
+// elapsed clock as the rest of the game; the manager derives its own dt.
 
 const SPHERE_RADIUS = 0.11;
-const SPHERE_SPEED = 9;          // world units / s (~6.4 tiles/s at step 1.4)
-const SPHERE_FADE = 0.12;        // s to fade the sphere once its last tile is reached
+const SPHERE_SPEED = 9;          // world units / s
+const SPHERE_FADE = 0.12;        // s to fade a sphere once its last tile is reached
 const SWIRL_SPIN = 7;            // rad/s the orbiting swirl lines rotate
 const SWIRL_DURATION = 0.44;     // s a teleport vortex lives (≈ shrink + grow)
 const DT_CLAMP = 0.1;            // ignore huge gaps (tab refocus) so nothing teleports
 
-// ── shared, app-lifetime resources (never disposed) ──────────────────────────
+// Shared, app-lifetime resources, freed by Effects.dispose().
 const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 18, 18);
 const ringGeo = new THREE.TorusGeometry(SPHERE_RADIUS * 1.7, 0.012, 8, 40);
 const vortexRingGeo = new THREE.TorusGeometry(0.32, 0.03, 10, 48);
@@ -35,30 +35,64 @@ function makeHaloTexture(): THREE.Texture {
 }
 const haloTex = makeHaloTexture();
 
+/** Any material we fade by ramping opacity to zero before disposal. */
+type FadeMaterial = THREE.Material & { opacity: number };
+
+function additiveMaterial(color: number): THREE.MeshBasicMaterial {
+  return new THREE.MeshBasicMaterial({
+    color,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    depthWrite: false,
+  });
+}
+
+function makeHalo(color: number, scale: number): { sprite: THREE.Sprite; material: THREE.SpriteMaterial } {
+  const material = new THREE.SpriteMaterial({
+    map: haloTex,
+    color,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    depthWrite: false,
+  });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.setScalar(scale);
+  return { sprite, material };
+}
+
 export interface ReachTarget {
   pos: THREE.Vector3;
   onReach: () => void;
 }
 
+export interface SpawnProjectileOptions {
+  origin: THREE.Vector3;
+  color: number;
+  targets: ReachTarget[];
+  startTime: number;
+  speed?: number;
+}
+
+export interface SpawnSwirlOptions {
+  pos: THREE.Vector3;
+  color: number;
+  startTime: number;
+}
+
 export interface Effects {
   group: THREE.Group;
   /** A glowing sphere that travels origin→targets, firing each onReach as it passes. */
-  spawnProjectile(o: {
-    origin: THREE.Vector3;
-    color: number;
-    targets: ReachTarget[];
-    startTime: number;
-    speed?: number;
-  }): void;
+  spawnProjectile(opts: SpawnProjectileOptions): void;
   /** A large swirl vortex that grows, spins, and fades at a point. */
-  spawnSwirl(o: { pos: THREE.Vector3; color: number; startTime: number }): void;
+  spawnSwirl(opts: SpawnSwirlOptions): void;
   update(elapsed: number): void;
+  dispose(): void;
 }
 
 interface Projectile {
   mesh: THREE.Group;          // sphere + halo + swirl child
   swirl: THREE.Group;         // orbiting lines (spun each frame)
-  mats: THREE.Material[];     // per-instance materials to dispose + fade
+  mats: FadeMaterial[];       // per-instance materials to fade then dispose
   origin: THREE.Vector3;
   dir: THREE.Vector3;
   startTime: number;
@@ -73,7 +107,7 @@ interface Projectile {
 
 interface Swirl {
   mesh: THREE.Group;
-  mats: THREE.Material[];
+  mats: FadeMaterial[];
   startTime: number;
 }
 
@@ -83,7 +117,7 @@ export function createEffects(): Effects {
   const swirls: Swirl[] = [];
   let lastElapsed: number | null = null;
 
-  function buildSphere(color: number): { mesh: THREE.Group; swirl: THREE.Group; mats: THREE.Material[] } {
+  function buildSphere(color: number): { mesh: THREE.Group; swirl: THREE.Group; mats: FadeMaterial[] } {
     const mesh = new THREE.Group();
 
     const coreMat = new THREE.MeshStandardMaterial({
@@ -94,28 +128,14 @@ export function createEffects(): Effects {
       metalness: 0.0,
       transparent: true,
     });
-    const core = new THREE.Mesh(sphereGeo, coreMat);
-    mesh.add(core);
+    mesh.add(new THREE.Mesh(sphereGeo, coreMat));
 
-    const haloMat = new THREE.SpriteMaterial({
-      map: haloTex,
-      color,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-    });
-    const halo = new THREE.Sprite(haloMat);
-    halo.scale.setScalar(SPHERE_RADIUS * 6);
-    mesh.add(halo);
+    const halo = makeHalo(color, SPHERE_RADIUS * 6);
+    mesh.add(halo.sprite);
 
     // Two tilted rings parented to a child group that spins → swirl lines.
     const swirl = new THREE.Group();
-    const ringMat = new THREE.MeshBasicMaterial({
-      color,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-    });
+    const ringMat = additiveMaterial(color);
     const ringA = new THREE.Mesh(ringGeo, ringMat);
     ringA.rotation.set(Math.PI / 2.3, 0, 0);
     const ringB = new THREE.Mesh(ringGeo, ringMat);
@@ -123,54 +143,47 @@ export function createEffects(): Effects {
     swirl.add(ringA, ringB);
     mesh.add(swirl);
 
-    return { mesh, swirl, mats: [coreMat, haloMat, ringMat] };
+    return { mesh, swirl, mats: [coreMat, halo.material, ringMat] };
   }
 
-  function spawnProjectile(o: {
-    origin: THREE.Vector3; color: number; targets: ReachTarget[]; startTime: number; speed?: number;
-  }): void {
-    if (o.targets.length === 0) return;
-    const last = o.targets[o.targets.length - 1].pos;
-    const dir = last.clone().sub(o.origin);
+  function spawnProjectile(opts: SpawnProjectileOptions): void {
+    if (opts.targets.length === 0) return;
+    const last = opts.targets[opts.targets.length - 1].pos;
+    const dir = last.clone().sub(opts.origin);
     const totalDist = dir.length();
     if (totalDist < 1e-4) {
       // Degenerate (target on top of origin): just fire callbacks immediately.
-      for (const t of o.targets) t.onReach();
+      for (const t of opts.targets) t.onReach();
       return;
     }
     dir.normalize();
 
-    const { mesh, swirl, mats } = buildSphere(o.color);
-    mesh.position.copy(o.origin);
+    const { mesh, swirl, mats } = buildSphere(opts.color);
+    mesh.position.copy(opts.origin);
     mesh.visible = false;
     group.add(mesh);
 
     projectiles.push({
       mesh, swirl, mats,
-      origin: o.origin.clone(),
+      origin: opts.origin.clone(),
       dir,
-      startTime: o.startTime,
-      speed: o.speed ?? SPHERE_SPEED,
+      startTime: opts.startTime,
+      speed: opts.speed ?? SPHERE_SPEED,
       distance: 0,
       totalDist,
-      targets: o.targets.map((t) => ({ cumDist: t.pos.clone().sub(o.origin).dot(dir), onReach: t.onReach })),
+      targets: opts.targets.map((t) => ({ cumDist: t.pos.clone().sub(opts.origin).dot(dir), onReach: t.onReach })),
       nextIdx: 0,
       fadeAge: 0,
       started: false,
     });
   }
 
-  function spawnSwirl(o: { pos: THREE.Vector3; color: number; startTime: number }): void {
+  function spawnSwirl(opts: SpawnSwirlOptions): void {
     const mesh = new THREE.Group();
-    mesh.position.copy(o.pos);
+    mesh.position.copy(opts.pos);
     mesh.visible = false;
 
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: o.color,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-    });
+    const ringMat = additiveMaterial(opts.color);
     const ringA = new THREE.Mesh(vortexRingGeo, ringMat);
     ringA.rotation.x = Math.PI / 2;             // lie flat over the tile
     const ringB = new THREE.Mesh(vortexRingGeo, ringMat);
@@ -178,22 +191,14 @@ export function createEffects(): Effects {
     ringB.scale.setScalar(0.6);
     mesh.add(ringA, ringB);
 
-    const haloMat = new THREE.SpriteMaterial({
-      map: haloTex,
-      color: o.color,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false,
-    });
-    const halo = new THREE.Sprite(haloMat);
-    halo.scale.setScalar(1.1);
-    mesh.add(halo);
+    const halo = makeHalo(opts.color, 1.1);
+    mesh.add(halo.sprite);
 
     group.add(mesh);
-    swirls.push({ mesh, mats: [ringMat, haloMat], startTime: o.startTime });
+    swirls.push({ mesh, mats: [ringMat, halo.material], startTime: opts.startTime });
   }
 
-  function disposeNode(mesh: THREE.Group, mats: THREE.Material[]): void {
+  function disposeNode(mesh: THREE.Group, mats: FadeMaterial[]): void {
     group.remove(mesh);
     for (const m of mats) m.dispose();
   }
@@ -224,7 +229,7 @@ export function createEffects(): Effects {
         p.fadeAge += dt;
         const k = Math.max(0, 1 - p.fadeAge / SPHERE_FADE);
         p.mesh.scale.setScalar(k);
-        for (const m of p.mats) (m as THREE.Material & { opacity: number }).opacity = k;
+        for (const m of p.mats) m.opacity = k;
         if (p.fadeAge >= SPHERE_FADE) {
           disposeNode(p.mesh, p.mats);
           projectiles.splice(i, 1);
@@ -245,13 +250,23 @@ export function createEffects(): Effects {
         continue;
       }
       // Grow 0.3→1.3, opacity ramps in then out, fast spin.
-      const scale = 0.3 + t * 1.0;
-      s.mesh.scale.setScalar(scale);
+      s.mesh.scale.setScalar(0.3 + t * 1.0);
       s.mesh.rotation.y += dt * SWIRL_SPIN * 1.6;
       const opacity = Math.sin(t * Math.PI);   // 0→1→0
-      for (const m of s.mats) (m as THREE.Material & { opacity: number }).opacity = opacity;
+      for (const m of s.mats) m.opacity = opacity;
     }
   }
 
-  return { group, spawnProjectile, spawnSwirl, update };
+  function dispose(): void {
+    for (let i = projectiles.length - 1; i >= 0; i--) disposeNode(projectiles[i].mesh, projectiles[i].mats);
+    for (let i = swirls.length - 1; i >= 0; i--) disposeNode(swirls[i].mesh, swirls[i].mats);
+    projectiles.length = 0;
+    swirls.length = 0;
+    sphereGeo.dispose();
+    ringGeo.dispose();
+    vortexRingGeo.dispose();
+    haloTex.dispose();
+  }
+
+  return { group, spawnProjectile, spawnSwirl, update, dispose };
 }

@@ -34,68 +34,35 @@
       }
       #hud-counter span { color: rgba(200, 240, 255, 0.9); font-weight: 700; }
 
-      /* Win overlay */
-      #win-overlay {
+      /* Win / Game-over overlays — shared shell, per-state colour accents. */
+      .overlay {
         position: fixed; inset: 0; z-index: 30;
         display: none; flex-direction: column; align-items: center; justify-content: center;
         background: rgba(5, 10, 18, 0.88);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
-      #win-overlay h2 {
+      .overlay h2 {
         font-size: clamp(1.6rem, 5vw, 3rem);
         font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-        color: #7ef7c8;
-        text-shadow: 0 0 32px rgba(100,255,180,0.6);
         margin-bottom: 0.5rem;
       }
-      #win-overlay p {
+      .overlay p {
         font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase;
         color: rgba(140, 220, 255, 0.6); margin-bottom: 2rem;
       }
-      #win-restart {
-        padding: 0.65rem 2rem; border: 1px solid rgba(100,255,180,0.4);
-        background: transparent; color: #7ef7c8;
+      .overlay button {
+        padding: 0.65rem 2rem; background: transparent; border: 1px solid;
         font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
         cursor: pointer; border-radius: 4px;
         transition: background 0.2s, color 0.2s;
       }
-      #win-restart:hover { background: rgba(100,255,180,0.12); }
-
-      /* Game-over overlay */
-      #game-over-overlay {
-        position: fixed; inset: 0; z-index: 30;
-        display: none; flex-direction: column; align-items: center; justify-content: center;
-        background: rgba(5, 10, 18, 0.88);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-      #game-over-overlay h2 {
-        font-size: clamp(1.6rem, 5vw, 3rem);
-        font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-        color: #ff6b6b;
-        text-shadow: 0 0 32px rgba(255,107,107,0.55);
-        margin-bottom: 0.5rem;
-      }
-      #game-over-overlay p {
-        font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase;
-        color: rgba(140, 220, 255, 0.6); margin-bottom: 2rem;
-      }
-      #gameover-restart {
-        padding: 0.65rem 2rem; border: 1px solid rgba(255,107,107,0.45);
-        background: transparent; color: #ff6b6b;
-        font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
-        cursor: pointer; border-radius: 4px;
-        transition: background 0.2s, color 0.2s;
-      }
-      #gameover-restart:hover { background: rgba(255,107,107,0.12); }
-
-      /* No-WebGL / Skip & read fallback panel — hidden by default. */
-      #fallback {
-        position: fixed; inset: 0; z-index: 20; overflow: auto; background: #f8fafc; color: #0f172a;
-        display: none;
-      }
-      #fallback.show { display: block; }
+      #win-overlay h2 { color: #7ef7c8; text-shadow: 0 0 32px rgba(100,255,180,0.6); }
+      #win-overlay button { border-color: rgba(100,255,180,0.4); color: #7ef7c8; }
+      #win-overlay button:hover { background: rgba(100,255,180,0.12); }
+      #game-over-overlay h2 { color: #ff6b6b; text-shadow: 0 0 32px rgba(255,107,107,0.55); }
+      #game-over-overlay button { border-color: rgba(255,107,107,0.45); color: #ff6b6b; }
+      #game-over-overlay button:hover { background: rgba(255,107,107,0.12); }
     </style>
   </head>
   <body>
@@ -106,13 +73,13 @@
         <div class="name">Harishankar&nbsp;Narayanan</div>
         <div>Senior Director · Product Engineering</div>
       </div>
-      <div class="hint">Scroll, or press → to begin</div>
+      <div class="hint">Arrow keys or WASD to move</div>
     </div>
 
     <noscript>
       <div style="position:fixed;inset:0;padding:2rem;background:#fff;color:#000;overflow:auto;z-index:99">
         <p>This page is interactive and requires JavaScript. The static résumé is available at
-          <a href="./resume.html">resume.html</a>.</p>
+          <a href="./public/">public/index.html</a>.</p>
       </div>
     </noscript>
 
@@ -120,19 +87,17 @@
       Tiles remaining: <span id="hud-remaining">—</span>
     </div>
 
-    <div id="win-overlay" role="dialog" aria-modal="true" aria-label="Level complete">
+    <div id="win-overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Level complete">
       <h2>Level&nbsp;Clear</h2>
       <p>All tiles cleared — you made it back to base.</p>
       <button id="win-restart">Play again</button>
     </div>
 
-    <div id="game-over-overlay" role="dialog" aria-modal="true" aria-label="Game over">
+    <div id="game-over-overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Game over">
       <h2>Game&nbsp;Over</h2>
       <p>You fell off the edge.</p>
       <button id="gameover-restart">Try again</button>
     </div>
-
-    <div id="fallback" aria-hidden="true"></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

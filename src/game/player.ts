@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-
-export type RollDirection = 'right' | 'left' | 'forward' | 'back';
+import type { Direction } from '../core';
 
 const ROLL_DURATION = 0.18;             // seconds for one 90° roll
 const ROLLS_PER_MOVE = 2;               // two rolls land the cube on the next tile
@@ -19,17 +18,17 @@ const TELEPORT_SPIN = 24;               // rad / s spin during the whole transit
 
 export interface PlayerOptions {
   model: THREE.Group;
-  tileHeight?: number;
-  cubeSize?: number;
+  tileHeight: number;
+  cubeSize: number;
 }
 
 export interface Player {
   group: THREE.Group;
   update: (elapsed: number) => void;
   /** Queue a move in the given direction. Each move is two consecutive rolls. */
-  move: (dir: RollDirection) => void;
+  move: (dir: Direction) => void;
   /** Roll once into the given direction, then fall off the edge (no platform ahead). */
-  fall: (dir: RollDirection) => void;
+  fall: (dir: Direction) => void;
   isMoving: () => boolean;
   /** True once the cube has fallen off the edge and dropped out of view. */
   hasFallen: () => boolean;
@@ -39,19 +38,18 @@ export interface Player {
   teleport: (dest: THREE.Vector3) => void;
 }
 
-export function createPlayer({
-  model,
-  tileHeight = 0.275,
-  cubeSize = 0.7,
-}: PlayerOptions): Player {
+export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Player {
   const S = cubeSize;
   const yFloor = tileHeight / 2;        // world Y of tile top
   const restY = yFloor + S / 2;         // world Y of cube centre when at rest
 
-  // Per-direction roll geometry. pivotOffset = (cube centre → pivot edge),
-  // axis = world rotation axis (using right-hand rule), delta = world translation
-  // after one full 90° roll.
-  const ROLL: Record<RollDirection, { pivotOffset: THREE.Vector3; axis: THREE.Vector3; delta: THREE.Vector3 }> = {
+  // Per-direction roll geometry. A roll tips the cube 90° about its leading
+  // bottom edge:
+  //   pivotOffset = vector from the cube centre to that edge (e.g. right edge,
+  //                 floor level → (+S/2, -S/2, 0) for 'right');
+  //   axis        = world rotation axis (right-hand rule);
+  //   delta       = net world translation after one full 90° roll.
+  const ROLL: Record<Direction, { pivotOffset: THREE.Vector3; axis: THREE.Vector3; delta: THREE.Vector3 }> = {
     right:   { pivotOffset: new THREE.Vector3( S/2, -S/2,  0  ), axis: new THREE.Vector3( 0, 0,-1), delta: new THREE.Vector3( S, 0, 0) },
     left:    { pivotOffset: new THREE.Vector3(-S/2, -S/2,  0  ), axis: new THREE.Vector3( 0, 0, 1), delta: new THREE.Vector3(-S, 0, 0) },
     forward: { pivotOffset: new THREE.Vector3( 0,  -S/2,  S/2 ), axis: new THREE.Vector3( 1, 0, 0), delta: new THREE.Vector3( 0, 0, S) },
@@ -66,13 +64,13 @@ export function createPlayer({
   const restQuat = new THREE.Quaternion();
   group.position.copy(restPos);
 
-  const queue: RollDirection[] = [];
-  let active: RollDirection | null = null;
+  const queue: Direction[] = [];
+  let active: Direction | null = null;
   let activeStart = 0;
 
   // Falling state. `pendingFall` marks that the queued roll should drop into a fall
   // when it finishes; `falling` is the gravity-drop phase; `fell` is the terminal flag.
-  let pendingFall: RollDirection | null = null;
+  let pendingFall: Direction | null = null;
   let falling = false;
   let fallStart = 0;
   let fell = false;
