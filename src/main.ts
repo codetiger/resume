@@ -26,6 +26,10 @@ const SWIRL_Y = tileHeight / 2 + CUBE_SIZE / 2;
 const player = createPlayer({ model: playerModel, tileHeight, cubeSize: CUBE_SIZE });
 scene.add(player.group);
 
+// A blast that reaches the cube's tile destroys the ground under it: the block
+// drops straight down, and the frame loop's fall check ends the game.
+level.setOnPlayerLost(() => player.drop());
+
 // ─── game state ─────────────────────────────────────────────────────────────
 // playerCol/Row: where the cube currently rests. prevCol/Row: captured the moment
 // a move is accepted (used to guard shift tiles from teleporting straight back).

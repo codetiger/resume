@@ -33,6 +33,8 @@ export interface Player {
   move: (dir: Direction) => void;
   /** Roll once into the given direction, then fall off the edge (no platform ahead). */
   fall: (dir: Direction) => void;
+  /** Drop straight down — the tile was destroyed under the cube (caught in a blast). */
+  drop: () => void;
   isMoving: () => boolean;
   /** True once the cube has fallen off the edge and dropped out of view. */
   hasFallen: () => boolean;
@@ -75,6 +77,9 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
   // Falling state. `pendingFall` marks that the queued roll should drop into a fall
   // when it finishes; `falling` is the gravity-drop phase; `fell` is the terminal flag.
   let pendingFall: Direction | null = null;
+  // `pendingDrop` marks a straight-down drop (tile destroyed under the cube),
+  // resolved in update() into the shared `falling` gravity phase.
+  let pendingDrop = false;
   let falling = false;
   let fallStart = 0;
   let fell = false;
@@ -137,6 +142,18 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
           applyRest();
         }
         return;
+      }
+
+      // The ground was destroyed under the cube: let go and drop straight down,
+      // with a little tumble, reusing the gravity phase below.
+      if (pendingDrop && !falling && !active && queue.length === 0 && !teleporting) {
+        falling = true;
+        fallStart = elapsed;
+        fallBase.copy(group.position);
+        fallQuat.copy(group.quaternion);
+        fallDir.set(0, 0, 0);            // no horizontal drift — it falls in place
+        fallAxis = ROLL.right.axis;
+        pendingDrop = false;
       }
 
       if (!falling && !active && queue.length > 0) {
@@ -213,8 +230,12 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
       queue.push(dir);          // a single roll tips the cube over the edge…
       pendingFall = dir;        // …then it drops out of view.
     },
+    drop() {
+      if (active || queue.length > 0 || falling || fell || teleporting || pendingTeleport) return;
+      pendingDrop = true;
+    },
     isMoving() {
-      return active !== null || queue.length > 0 || falling || teleporting || pendingTeleport !== null;
+      return active !== null || queue.length > 0 || falling || teleporting || pendingTeleport !== null || pendingDrop;
     },
     hasFallen() {
       return fell;
@@ -225,6 +246,7 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
       queue.length = 0;
       active = null;
       pendingFall = null;
+      pendingDrop = false;
       falling = false;
       fell = false;
       pendingTeleport = null;

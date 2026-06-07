@@ -83,6 +83,8 @@ export interface Level {
   isBase: (col: number, row: number) => boolean;
   isWon: (playerCol: number, playerRow: number) => boolean;
   remaining: () => number;
+  /** Register a callback fired once when a blast destroys the tile under the player. */
+  setOnPlayerLost: (fn: () => void) => void;
 }
 
 /** The free-running cube-grid decoration for a tile kind (blast handled separately). */
@@ -121,6 +123,13 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   const explosiveVisuals = new Map<string, { normal: THREE.Group; countdown: Countdown }>();
   const blastTimers = new Map<string, { startTime: number }>();
   const triggeredLines = new Set<string>();
+
+  // Player tracking so a detonating blast can tell when the cube is caught in it.
+  // playerKey is refreshed each frame from update()'s activeKey; onPlayerLost is
+  // wired up by main.ts and fired (once) the moment a blast destroys the cube's tile.
+  let playerKey: string | null = null;
+  let playerLost = false;
+  let onPlayerLost: (() => void) | null = null;
 
   const step = TILE_SIZE + TILE_GAP;
   const offsetX = -((cols - 1) * step) / 2;
@@ -247,13 +256,35 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     }
   }
 
+  // Fire the player-lost callback once if the cube is sitting on `key` as it goes.
+  function losePlayerIfOn(key: string): void {
+    if (playerLost || key !== playerKey) return;
+    playerLost = true;
+    onPlayerLost?.();
+  }
+
+  // What a blast does to a neighbouring tile when its sphere arrives. Unlike a
+  // line sphere (reachTile), a blast destroys whatever it touches — green tiles,
+  // arrows, shift portals and spent line tiles all fall away. Explosives chain
+  // (their own fuse lights instead) and line tiles fire their sweep before
+  // collapsing. The base is indestructible. If the cube is on the tile, it drops.
+  function blastHit(key: string): void {
+    const def = cellDefs.get(key);
+    if (!def || def.kind === 'base') return;
+    if (def.kind === 'explosive') { igniteBlast(key, frameElapsed); return; }
+    if (def.kind === 'disappear-line') activateLine(key, frameElapsed);
+    removeTile(key, frameElapsed);
+    losePlayerIfOn(key);
+  }
+
   function detonateBlast(key: string, elapsed: number): void {
     blastTimers.delete(key);
     explosiveVisuals.get(key)?.countdown.hide();
     removeTile(key, elapsed);             // the blast falls itself
+    losePlayerIfOn(key);                  // armed and still stood on: cube drops with it
 
-    // A red sphere flies to each of the four neighbours, removing the green tiles
-    // and lighting any neighbouring fuse / line as it arrives.
+    // A red sphere flies to each of the four neighbours, destroying whatever tile
+    // it finds and lighting any neighbouring fuse / line as it arrives.
     const [col, row] = key.split(',').map(Number);
     const origin = sphereOrigin(col, row);
     const neighbours: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -265,7 +296,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       effects.spawnProjectile({
         origin,
         color: PALETTE.effect.blastSphere,
-        targets: [{ pos: sphereOrigin(c, r), onReach: () => reachTile(k) }],
+        targets: [{ pos: sphereOrigin(c, r), onReach: () => blastHit(k) }],
         startTime: elapsed,
       });
     }
@@ -377,8 +408,13 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     isWon,
     remaining,
 
+    setOnPlayerLost(fn: () => void) {
+      onPlayerLost = fn;
+    },
+
     update(elapsed: number, activeKey: string | null) {
       frameElapsed = elapsed;
+      playerKey = activeKey;
 
       bobs.forEach((b, key) => {
         if (tileStates.get(key) === 'gone') return;
