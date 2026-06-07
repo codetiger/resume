@@ -4,11 +4,15 @@ import type { Direction } from '../core';
 const ROLL_DURATION = 0.18;             // seconds for one 90° roll
 const ROLLS_PER_MOVE = 2;               // two rolls land the cube on the next tile
 
-// Falling off the edge: after a single roll into the void the cube drops under
-// gravity, tumbling about the roll axis, until it clears the camera.
+// Falling off the edge: the roll into the void carries the cube most of the way
+// over (FALL_TIP_ANGLE — 3/4 of the roll, so it is well clear of the source
+// platform); past there it lets go and drops under gravity, tumbling about the
+// roll axis and drifting in the roll direction so it clears the edge cleanly.
 const FALL_GRAVITY = 30;                // world units / s² downward acceleration
-const FALL_SPIN = 7;                    // rad / s tumble while falling
+const FALL_SPIN = 9;                    // rad / s tumble while falling
 const FALL_FLOOR = -8;                  // world Y at which the cube is gone from view
+const FALL_TIP_ANGLE = (3 / 4) * (Math.PI / 2); // let go after 3/4 of the roll (67.5°), once it's over the next tile
+const FALL_DRIFT = 2.4;                 // horizontal drift (× cubeSize / s) carrying it clear of the edge
 
 // Shift teleport: the block spins and scales down into a swirl at the origin,
 // snaps to the destination, then spins back up out of a swirl there.
@@ -74,7 +78,9 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
   let falling = false;
   let fallStart = 0;
   let fell = false;
-  const fallBase = new THREE.Vector3();
+  const fallBase = new THREE.Vector3();   // cube centre at the moment it lets go
+  const fallQuat = new THREE.Quaternion(); // orientation at that moment (continued by the tumble)
+  const fallDir = new THREE.Vector3();     // unit horizontal drift direction
   let fallAxis: THREE.Vector3 = ROLL.right.axis;
 
   // Teleport state. `pendingTeleport` queues the request (resolved in update like
@@ -153,30 +159,40 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
         group.position.copy(tmpVec).add(tmpOffset);
         group.quaternion.copy(restQuat).premultiply(tmpQuat);
 
-        if (t >= 1) {
+        if (pendingFall && alpha >= FALL_TIP_ANGLE) {
+          // Rolled past the balance point over an edge with no platform: the cube
+          // has lost support, so let go here and fall — instead of completing the
+          // full roll onto empty space, which leaves it hovering at tile height.
+          falling = true;
+          fallStart = elapsed;
+          fallBase.copy(group.position);
+          fallQuat.copy(group.quaternion);
+          fallDir.copy(params.delta).normalize();
+          fallAxis = params.axis;
+          active = null;
+          pendingFall = null;
+        } else if (t >= 1) {
           // Bake roll into resting state.
           restPos.add(params.delta);
           tmpQuat.setFromAxisAngle(params.axis, Math.PI / 2);
           restQuat.premultiply(tmpQuat);
           applyRest();
           active = null;
-
-          // The roll tipped the cube over an edge with no platform — start falling.
-          if (pendingFall) {
-            falling = true;
-            fallStart = elapsed;
-            fallBase.copy(restPos);
-            fallAxis = ROLL[pendingFall].axis;
-            pendingFall = null;
-          }
         }
       } else if (falling) {
         const age = elapsed - fallStart;
         const y = fallBase.y - 0.5 * FALL_GRAVITY * age * age;
-        group.position.set(fallBase.x, y, fallBase.z);
-        // Keep tumbling about the roll axis as it drops.
+        // Drift in the roll direction as it drops so the cube clears the platform
+        // edge rather than sliding straight down against it.
+        const drift = FALL_DRIFT * S * age;
+        group.position.set(
+          fallBase.x + fallDir.x * drift,
+          y,
+          fallBase.z + fallDir.z * drift,
+        );
+        // Keep tumbling about the roll axis, continuing the orientation it let go at.
         tmpQuat.setFromAxisAngle(fallAxis, age * FALL_SPIN);
-        group.quaternion.copy(restQuat).premultiply(tmpQuat);
+        group.quaternion.copy(fallQuat).premultiply(tmpQuat);
 
         if (y < FALL_FLOOR) {
           falling = false;
