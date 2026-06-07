@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harishankar Narayanan — Resume</title>
+    <meta name="description" content="An interactive, gamified résumé. Move the cube to reveal the story." />
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: #050a12; color: #e6f1ff; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+      #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+
+      #hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+      #hud .top {
+        position: absolute; top: 1.2rem; left: 1.4rem; right: 1.4rem;
+        display: flex; justify-content: space-between; align-items: flex-start;
+        font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+        color: rgba(140, 220, 255, 0.7);
+      }
+      #hud .top .name { font-weight: 700; color: rgba(220, 240, 255, 0.95); letter-spacing: 0.18em; }
+      #hud .hint {
+        position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
+        font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+        color: rgba(140, 220, 255, 0.55);
+        animation: pulse 2.4s ease-in-out infinite;
+      }
+      @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.95; } }
+
+      /* Tile counter */
+      #hud-counter {
+        position: fixed; bottom: 1.4rem; right: 1.6rem; z-index: 10;
+        font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+        color: rgba(140, 220, 255, 0.55);
+      }
+      #hud-counter span { color: rgba(200, 240, 255, 0.9); font-weight: 700; }
+
+      /* Win overlay */
+      #win-overlay {
+        position: fixed; inset: 0; z-index: 30;
+        display: none; flex-direction: column; align-items: center; justify-content: center;
+        background: rgba(5, 10, 18, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #win-overlay h2 {
+        font-size: clamp(1.6rem, 5vw, 3rem);
+        font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+        color: #7ef7c8;
+        text-shadow: 0 0 32px rgba(100,255,180,0.6);
+        margin-bottom: 0.5rem;
+      }
+      #win-overlay p {
+        font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase;
+        color: rgba(140, 220, 255, 0.6); margin-bottom: 2rem;
+      }
+      #win-restart {
+        padding: 0.65rem 2rem; border: 1px solid rgba(100,255,180,0.4);
+        background: transparent; color: #7ef7c8;
+        font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+        cursor: pointer; border-radius: 4px;
+        transition: background 0.2s, color 0.2s;
+      }
+      #win-restart:hover { background: rgba(100,255,180,0.12); }
+
+      /* Game-over overlay */
+      #game-over-overlay {
+        position: fixed; inset: 0; z-index: 30;
+        display: none; flex-direction: column; align-items: center; justify-content: center;
+        background: rgba(5, 10, 18, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #game-over-overlay h2 {
+        font-size: clamp(1.6rem, 5vw, 3rem);
+        font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+        color: #ff6b6b;
+        text-shadow: 0 0 32px rgba(255,107,107,0.55);
+        margin-bottom: 0.5rem;
+      }
+      #game-over-overlay p {
+        font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase;
+        color: rgba(140, 220, 255, 0.6); margin-bottom: 2rem;
+      }
+      #gameover-restart {
+        padding: 0.65rem 2rem; border: 1px solid rgba(255,107,107,0.45);
+        background: transparent; color: #ff6b6b;
+        font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+        cursor: pointer; border-radius: 4px;
+        transition: background 0.2s, color 0.2s;
+      }
+      #gameover-restart:hover { background: rgba(255,107,107,0.12); }
+
+      /* No-WebGL / Skip & read fallback panel — hidden by default. */
+      #fallback {
+        position: fixed; inset: 0; z-index: 20; overflow: auto; background: #f8fafc; color: #0f172a;
+        display: none;
+      }
+      #fallback.show { display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage"></canvas>
+
+    <div id="hud" aria-hidden="true">
+      <div class="top">
+        <div class="name">Harishankar&nbsp;Narayanan</div>
+        <div>Senior Director · Product Engineering</div>
+      </div>
+      <div class="hint">Scroll, or press → to begin</div>
+    </div>
+
+    <noscript>
+      <div style="position:fixed;inset:0;padding:2rem;background:#fff;color:#000;overflow:auto;z-index:99">
+        <p>This page is interactive and requires JavaScript. The static résumé is available at
+          <a href="./resume.html">resume.html</a>.</p>
+      </div>
+    </noscript>
+
+    <div id="hud-counter" aria-live="polite">
+      Tiles remaining: <span id="hud-remaining">—</span>
+    </div>
+
+    <div id="win-overlay" role="dialog" aria-modal="true" aria-label="Level complete">
+      <h2>Level&nbsp;Clear</h2>
+      <p>All tiles cleared — you made it back to base.</p>
+      <button id="win-restart">Play again</button>
+    </div>
+
+    <div id="game-over-overlay" role="dialog" aria-modal="true" aria-label="Game over">
+      <h2>Game&nbsp;Over</h2>
+      <p>You fell off the edge.</p>
+      <button id="gameover-restart">Try again</button>
+    </div>
+
+    <div id="fallback" aria-hidden="true"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
