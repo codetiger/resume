@@ -504,6 +504,23 @@
             #game-over-overlay button:hover {
                 background: rgba(255, 107, 107, 0.12);
             }
+            /* Pause — a neutral cyan breather, distinct from win (mint) / over (red). */
+            #pause-overlay h2 {
+                color: #8fd4ff;
+                text-shadow: 0 0 32px rgba(140, 220, 255, 0.5);
+            }
+            #pause-overlay button {
+                border-color: rgba(140, 220, 255, 0.4);
+                color: rgba(180, 225, 255, 0.95);
+            }
+            #pause-overlay button:hover {
+                background: rgba(140, 220, 255, 0.12);
+            }
+            #pause-overlay .pause-hint {
+                margin-top: 1.6rem;
+                margin-bottom: 0;
+                opacity: 0.65;
+            }
 
             /* ── screen visibility ───────────────────────────────────────────────── */
             body.screen-home #hud,
@@ -673,6 +690,23 @@
                 <button id="gameover-retry">Retry<kbd>R</kbd></button>
                 <button id="gameover-home">Home<kbd>H</kbd></button>
             </div>
+        </div>
+
+        <!-- Pause -->
+        <div
+            id="pause-overlay"
+            class="overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Paused"
+        >
+            <h2>Paused</h2>
+            <p id="pause-sub">Pick up where you left off.</p>
+            <div class="btn-row">
+                <button id="pause-retry">Retry<kbd>R</kbd></button>
+                <button id="pause-home">Home<kbd>H</kbd></button>
+            </div>
+            <p class="pause-hint">Esc to resume</p>
         </div>
 
         <script type="module" src="/src/main.ts"></script>

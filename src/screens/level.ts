@@ -43,7 +43,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     // a new move queued in the gap between the roll finishing and the next tick.
     arrivalPending: false,
     won: false, gameOver: false,
-    paused: false, // info card open
+    paused: false,     // info card open
+    pauseMenu: false,  // Esc pause menu open
   };
 
   // A blast that reaches the cube's tile destroys the ground under it: the cube
@@ -83,6 +84,10 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const gameOverOverlay = $('game-over-overlay');
   const gameOverRetry = $('gameover-retry');
   const gameOverHome = $('gameover-home');
+
+  const pauseOverlay = $('pause-overlay');
+  const pauseRetry = $('pause-retry');
+  const pauseHome = $('pause-home');
 
   if (levelNameEl) levelNameEl.textContent = `${pad3(def.number)} · ${def.name}`;
   const updateRemaining = () => { if (remainingEl) remainingEl.textContent = String(level.remaining()); };
@@ -133,6 +138,20 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     showOverlay(gameOverOverlay);
   }
 
+  // Esc pause menu. Only opens during active play (not over another overlay); the
+  // pending-landing logic is frozen while it's up (see settleIfLanded) so nothing
+  // resolves behind the blur, and Esc / backdrop click resume exactly where you were.
+  function openPause(): void {
+    if (state.won || state.gameOver || state.paused || state.pauseMenu) return;
+    state.pauseMenu = true;
+    showOverlay(pauseOverlay);
+  }
+
+  function resume(): void {
+    state.pauseMenu = false;
+    hideOverlay(pauseOverlay);
+  }
+
   // Each overlay button binds a click and one or more keys to the SAME action, so
   // mouse and keyboard always stay in parity and no button can be left half-wired.
   // onKey() dispatches a press against the active overlay's button set (below).
@@ -150,7 +169,11 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     { el: gameOverRetry, action: opts.onRetry, keys: ['Enter', 'KeyR'] },
     { el: gameOverHome, action: opts.onHome, keys: ['KeyH'] },
   ];
-  const allButtons = [...infoButtons, ...winButtons, ...gameOverButtons];
+  const pauseButtons: OverlayButton[] = [
+    { el: pauseRetry, action: opts.onRetry, keys: ['KeyR'] },
+    { el: pauseHome, action: opts.onHome, keys: ['KeyH'] },
+  ];
+  const allButtons = [...infoButtons, ...winButtons, ...gameOverButtons, ...pauseButtons];
 
   // onclick replaces any prior handler, so screens never stack listeners.
   for (const b of allButtons) if (b.el) b.el.onclick = b.action;
@@ -158,6 +181,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // fallback if the button is ever awkward to hit. Win/game-over keep no backdrop
   // action — their two choices have no single obvious default.
   if (infoOverlay) infoOverlay.onclick = (e) => { if (e.target === infoOverlay) dismissInfo(); };
+  // Clicking the dimmed backdrop outside the pause card resumes play.
+  if (pauseOverlay) pauseOverlay.onclick = (e) => { if (e.target === pauseOverlay) resume(); };
 
   // Run the first visible button whose key set contains the press.
   const dispatchKey = (buttons: OverlayButton[], code: string): void => {
@@ -218,7 +243,7 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // Flush a pending landing the instant the cube comes to rest. Safe to call any
   // time; it is the single gate through which every landing is processed.
   function settleIfLanded(elapsed: number): void {
-    if (state.won || state.gameOver) return;
+    if (state.won || state.gameOver || state.pauseMenu) return;
     if (state.arrivalPending && !player.isMoving()) processLanding(elapsed);
   }
 
@@ -249,8 +274,14 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     onKey(code: string) {
       // An open overlay captures keys (confirm/navigation); movement is ignored.
       if (state.paused) { dispatchKey(infoButtons, code); return; }
+      if (state.pauseMenu) {
+        if (code === 'Escape') resume();   // Esc toggles the pause menu back off
+        else dispatchKey(pauseButtons, code);
+        return;
+      }
       if (state.won) { dispatchKey(winButtons, code); return; }
       if (state.gameOver) { dispatchKey(gameOverButtons, code); return; }
+      if (code === 'Escape') { openPause(); return; }
       const dir = KEY_MAP[code];
       if (dir) tryMove(dir);
     },
@@ -267,8 +298,10 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       hideOverlay(infoOverlay);
       hideOverlay(winOverlay);
       hideOverlay(gameOverOverlay);
+      hideOverlay(pauseOverlay);
       for (const b of allButtons) if (b.el) b.el.onclick = null;
       if (infoOverlay) infoOverlay.onclick = null;
+      if (pauseOverlay) pauseOverlay.onclick = null;
 
       level.effects.dispose();
       // Dispose the per-tile and decoration materials this level created. Geometry
