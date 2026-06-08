@@ -8,6 +8,7 @@
         "heading": "$.basics.name",
         "period": "21+ yrs exp",
         "subheading": "Leader · Architect · Builder · Programmer · Mentor",
+        "tags": ["Leadership", "Architecture", "Distributed Systems", "Payments"],
         "tag": "resume",
         "bullets": [
           "A tech leader with firm principles (and a firm belief that arrays start at 0).",
@@ -28,6 +29,7 @@
         "subheading": "Software Developer",
         "summary": "$.work[?(@.company=='Qube Cinemas')].summary",
         "url": "$.work[?(@.company=='Qube Cinemas')].website",
+        "tags": ["Digital Cinema", "Content Security", "C++"],
         "tag": "resume",
         "bullets": []
       }
@@ -42,6 +44,7 @@
         "subheading": "Founder & Technology Head",
         "summary": "$.work[?(@.company=='Smackall Games')].summary",
         "url": "$.work[?(@.company=='Smackall Games')].website",
+        "tags": ["C++", "OpenGL ES", "3D Engine", "iOS", "Entrepreneurship"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='Smackall Games')].highlights"]
       }
@@ -56,6 +59,7 @@
         "subheading": "Technical Architect & Consultant",
         "summary": "$.work[?(@.company=='Amtex Inc')].summary",
         "url": "$.work[?(@.company=='Amtex Inc')].website",
+        "tags": ["Mobile", "eCommerce", "Architecture", "Cloud"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='Amtex Inc')].highlights"]
       }
@@ -70,6 +74,7 @@
         "subheading": "Architect — AnyDevice Capability Centre",
         "summary": "$.work[?(@.company=='Altimetrik Inc')].summary",
         "url": "$.work[?(@.company=='Altimetrik Inc')].website",
+        "tags": ["Cloud IDE", "mBaaS", "Mobile", "Web"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='Altimetrik Inc')].highlights"]
       }
@@ -84,6 +89,7 @@
         "subheading": "Engineering Manager",
         "summary": "$.work[?(@.company=='CaratLane')].summary",
         "url": "$.work[?(@.company=='CaratLane')].website",
+        "tags": ["eCommerce", "Microservices", "Machine Learning", "Personalization"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='CaratLane')].highlights"]
       }
@@ -98,6 +104,7 @@
         "subheading": "Senior Director — Product Development",
         "summary": "$.work[?(@.company=='Volante Technologies')].summary",
         "url": "$.work[?(@.company=='Volante Technologies')].website",
+        "tags": ["Payments", "Event-driven", "Microservices", "Cloud-native", "Java"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='Volante Technologies')].highlights"]
       }
@@ -112,6 +119,7 @@
         "subheading": "Senior Director — Product Engineering",
         "summary": "$.work[?(@.company=='Global Payments Inc')].summary",
         "url": "$.work[?(@.company=='Global Payments Inc')].website",
+        "tags": ["Enterprise Payments", "Scale", "Leadership", "Merchant Onboarding"],
         "tag": "resume",
         "bullets": ["$.work[?(@.company=='Global Payments Inc')].highlights"]
       }
@@ -123,6 +131,7 @@
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
+        "tags": ["Reverse Engineering", "Rust", "Firmware", "IoT"],
         "bullets": [],
         "awards": [
           {
@@ -139,6 +148,7 @@
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
+        "tags": ["AI", "Autonomous Agents", "Algorithms"],
         "bullets": [],
         "awards": [
           {
@@ -157,6 +167,7 @@
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
+        "tags": ["GPS", "3D Reconstruction", "Mobile"],
         "bullets": [],
         "awards": [
           {
@@ -176,6 +187,7 @@
         "heading": "$.education[0].institution",
         "period": "2000 — 2004",
         "subheading": "Bachelor · Mechanical Engineering",
+        "tags": ["Mechanical Engineering"],
         "tag": "resume",
         "bullets": []
       }
@@ -186,6 +198,8 @@
       "layout": ["bnnnnn", "n....n", "n....n", "n....i", "nnnnnn"],
       "content": {
         "heading": "GitHub",
+        "subheading": "Where the code lives",
+        "summary": "Open-source experiments, the engine behind this game, and a trail of side-projects that never quite stopped.",
         "url": "$.basics.profiles[?(@.network=='Github')].url",
         "tag": "meta",
         "bullets": []
@@ -197,6 +211,8 @@
       "layout": ["bnnnnnn", "n.....n", "i.....n", "nnnnnnn"],
       "content": {
         "heading": "LinkedIn",
+        "subheading": "The professional trail",
+        "summary": "Two decades of roles, teams, and recommendations — the long-form version of this résumé.",
         "url": "$.basics.profiles[?(@.network=='LinkedIn')].url",
         "tag": "meta",
         "bullets": []
@@ -208,6 +224,8 @@
       "layout": ["bnnn", "n..n", "n..n", "n..i", "n..n", "nnnn"],
       "content": {
         "heading": "Blog",
+        "subheading": "Long-form thinking",
+        "summary": "Notes on engineering, architecture, and the occasional deep-dive into things I've broken and rebuilt.",
         "url": "$.basics.profiles[?(@.network=='Blog')].url",
         "tag": "meta",
         "bullets": []

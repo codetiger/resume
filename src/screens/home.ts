@@ -37,14 +37,16 @@ interface Tile {
   setSelected: (on: boolean) => void;
 }
 
-// A focused tile recolours to a cohesive "Cyan focus" palette — echoing the
-// player cube's neon cyan — so the selection is unmistakable without the harsh
-// glare of a full colour inversion. One target per material role.
+// A focused tile reads as "live" — the design system's cyan-vivid (#00ccff), the
+// same colour as the player cube and the progress rail's "now" segment. Earlier
+// it used a light cyan driven to emissive 0.95, which blew out to a bleached
+// white under ACES tone mapping; these values keep the glow rich and on-brand
+// (the lift + scale do the rest of the "selected" signalling). One per material role.
 type TileRole = 'body' | 'trim' | 'digits';
 const SELECTED: Record<TileRole, { color: number; emissive: number; intensity: number }> = {
-  body:   { color: 0x22d3ee, emissive: 0x22d3ee, intensity: 0.95 }, // neon cyan, glows hard
-  trim:   { color: 0x0b2b3a, emissive: 0x06b6d4, intensity: 0.4 },  // deep teal with a cyan rim glow
-  digits: { color: 0xffffff, emissive: 0xeafdff, intensity: 0.85 }, // bright white
+  body:   { color: 0x00ccff, emissive: 0x00ccff, intensity: 0.55 }, // cyan-vivid, glowing but not clipped
+  trim:   { color: 0x0f1d2e, emissive: 0x0891b2, intensity: 0.35 }, // raised-card dark with a cyan-shift rim
+  digits: { color: 0xe8f3ff, emissive: 0x8cdcff, intensity: 0.45 }, // ice-white (tx-0) with a soft cyan halo
 };
 interface Row {
   group: THREE.Group;
@@ -54,8 +56,23 @@ interface Row {
 // A flat name plate laid on the platform surface, just in front of (below, on
 // screen) the odometer number. The text is drawn to a canvas and mapped onto a
 // plane rotated flat so it reads from above — part of the world, not a floating
-// DOM label. Returns the mesh; its texture/material are disposed in dispose().
-const NAME_FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+// DOM label. It shares the UI's type + colour language: the name in Space Grotesk
+// ice-white (tx-0), the year in JetBrains Mono gold (the "time / date" accent).
+// Returns the mesh; its texture/material are disposed in dispose().
+const LABEL_DISPLAY = "'Space Grotesk', system-ui, -apple-system, sans-serif";
+const LABEL_MONO = "'JetBrains Mono', 'SF Mono', monospace";
+const LABEL_NAME = '#e8f3ff'; // tx-0
+const LABEL_YEAR = '#ffd166'; // gold — dates / time
+// Canvas paints with whatever font is ready at draw time, so we draw immediately
+// (system fallback) and force-load the brand faces; createNameLabel redraws once
+// they resolve. Shared so the dozens of labels trigger a single load.
+const LABEL_FONTS_READY: Promise<unknown> = document.fonts?.load
+  ? Promise.all([
+      document.fonts.load('600 60px "Space Grotesk"'),
+      document.fonts.load('500 44px "JetBrains Mono"'),
+    ]).catch(() => undefined)
+  : Promise.resolve();
+
 function createNameLabel(name: string, year: string): THREE.Mesh {
   const W = 512, H = 200;
   const canvas = document.createElement('canvas');
@@ -65,28 +82,35 @@ function createNameLabel(name: string, year: string): THREE.Mesh {
   ctx.textBaseline = 'middle';
 
   const maxW = W - 40;
-  const fit = (text: string, weight: number, start: number) => {
+  const fit = (text: string, weight: number, font: string, start: number) => {
     let px = start;
-    do { ctx.font = `${weight} ${px}px ${NAME_FONT}`; if (ctx.measureText(text).width <= maxW) break; px -= 2; } while (px > 18);
+    do { ctx.font = `${weight} ${px}px ${font}`; if (ctx.measureText(text).width <= maxW) break; px -= 2; } while (px > 18);
     return px;
   };
 
-  if (year) {
-    ctx.font = `600 ${fit(name, 600, 60)}px ${NAME_FONT}`;
-    ctx.fillStyle = '#eafbff';
-    ctx.fillText(name, W / 2, 76);
-    ctx.font = `500 ${fit(year, 500, 46)}px ${NAME_FONT}`;
-    ctx.fillStyle = '#74cfe6';
-    ctx.fillText(year, W / 2, 140);
-  } else {
-    ctx.font = `600 ${fit(name, 600, 66)}px ${NAME_FONT}`;
-    ctx.fillStyle = '#eafbff';
-    ctx.fillText(name, W / 2, H / 2);
-  }
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    if (year) {
+      ctx.font = `600 ${fit(name, 600, LABEL_DISPLAY, 60)}px ${LABEL_DISPLAY}`;
+      ctx.fillStyle = LABEL_NAME;
+      ctx.fillText(name, W / 2, 76);
+      ctx.font = `500 ${fit(year, 500, LABEL_MONO, 44)}px ${LABEL_MONO}`;
+      ctx.fillStyle = LABEL_YEAR;
+      ctx.fillText(year, W / 2, 140);
+    } else {
+      ctx.font = `600 ${fit(name, 600, LABEL_DISPLAY, 66)}px ${LABEL_DISPLAY}`;
+      ctx.fillStyle = LABEL_NAME;
+      ctx.fillText(name, W / 2, H / 2);
+    }
+  };
+  draw();
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.anisotropy = 4;
   tex.colorSpace = THREE.SRGBColorSpace;
+  // Repaint with the real brand fonts the moment they're available.
+  LABEL_FONTS_READY.then(() => { draw(); tex.needsUpdate = true; });
+
   const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.36), mat);
   mesh.rotation.x = -Math.PI / 2;       // lie flat on the platform, readable from above

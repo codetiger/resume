@@ -8,6 +8,12 @@
             name="description"
             content="An interactive, gamified résumé. Roll the cube through 20 years of building things."
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
         <style>
             *,
             *::before,
@@ -16,18 +22,39 @@
                 padding: 0;
                 box-sizing: border-box;
             }
+            /* Unified dark identity — shared with the static résumé + design spec.
+               Most overlay colours below are already these exact palette values;
+               the tokens give the popup chrome and fonts one source of truth. */
+            :root {
+                --bg-0: #05090f;
+                --bg-1: #0a1320;
+                --bg-2: #0f1d2e;
+                --card: rgba(10, 18, 30, 0.92);
+                --line: rgba(140, 220, 255, 0.16);
+                --cyan: #8cdcff;
+                --cyan-vivid: #00ccff;
+                --gold: #ffd166;
+                --mint: #7ef7c8;
+                --red: #ff6b6b;
+                --tx-0: #e8f3ff;
+                --tx-1: #bcd0e6;
+                --tx-2: #7e94ad;
+                --tx-3: #52677e;
+                --f-display: "Space Grotesk", system-ui, sans-serif;
+                --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+                --f-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+                --r-sm: 6px;
+                --r-md: 10px;
+                --r-lg: 14px;
+            }
             html,
             body {
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
-                background: #050a12;
-                color: #e6f1ff;
-                font-family:
-                    system-ui,
-                    -apple-system,
-                    "Segoe UI",
-                    sans-serif;
+                background: var(--bg-0);
+                color: var(--tx-0);
+                font-family: var(--f-body);
             }
             #stage {
                 position: fixed;
@@ -76,9 +103,10 @@
                 top: 1.2rem;
                 left: 50%;
                 transform: translateX(-50%);
+                font-family: var(--f-mono);
                 font-size: 0.8rem;
-                font-weight: 700;
-                letter-spacing: 0.2em;
+                font-weight: 500;
+                letter-spacing: 0.16em;
                 text-transform: uppercase;
                 color: rgba(255, 224, 150, 0.95);
                 text-shadow: 0 0 20px rgba(255, 209, 102, 0.45);
@@ -109,6 +137,7 @@
                 bottom: 1.4rem;
                 right: 1.6rem;
                 z-index: 10;
+                font-family: var(--f-mono);
                 font-size: 0.72rem;
                 letter-spacing: 0.14em;
                 text-transform: uppercase;
@@ -178,9 +207,10 @@
             }
             #home-hud .home-name {
                 margin-top: 1.2rem;
+                font-family: var(--f-display);
                 font-size: clamp(1.4rem, 4.5vw, 2.6rem);
-                font-weight: 800;
-                letter-spacing: 0.18em;
+                font-weight: 700;
+                letter-spacing: 0.1em;
                 text-transform: uppercase;
                 color: rgba(225, 242, 255, 0.97);
                 text-shadow: 0 0 36px rgba(140, 220, 255, 0.35);
@@ -292,8 +322,9 @@
                 height: 1.5em;
                 line-height: 1.5em;
                 white-space: nowrap;
-                font-weight: 800;
-                color: #ffd166;
+                font-family: var(--f-display);
+                font-weight: 700;
+                color: var(--gold);
             }
             @keyframes roll {
                 0%,
@@ -374,9 +405,10 @@
                 pointer-events: auto;
             }
             .overlay h2 {
+                font-family: var(--f-display);
                 font-size: clamp(1.5rem, 5vw, 2.8rem);
-                font-weight: 800;
-                letter-spacing: 0.12em;
+                font-weight: 700;
+                letter-spacing: 0.06em;
                 text-transform: uppercase;
                 margin-bottom: 0.5rem;
                 text-align: center;
@@ -423,7 +455,7 @@
                 margin-left: 0.6em;
                 padding: 0.05em 0.45em;
                 min-width: 1.1em;
-                font-family: "SF Mono", "Fira Code", monospace;
+                font-family: var(--f-mono);
                 font-size: 0.72em;
                 line-height: 1.3;
                 text-align: center;
@@ -433,150 +465,293 @@
                 opacity: 0.7;
             }
 
-            /* Info card — the game-styled résumé reveal. */
+            /* Info card — the game-styled résumé reveal, built as the design
+               system's "level popup". Accent is themed per chapter kind via
+               --accent / --accent-rgb (job = cyan, award = gold, meta = mint). */
             .info-card {
+                --accent: var(--cyan);
+                --accent-rgb: 140, 220, 255;
                 position: relative;
                 max-width: 34rem;
                 width: 100%;
                 margin: auto;
                 max-height: 88vh;
                 overflow-y: auto;
-                background: rgba(8, 16, 28, 0.92);
-                border: 1px solid rgba(140, 220, 255, 0.35);
-                border-radius: 10px;
-                padding: 2rem 2rem 1.6rem;
-                box-shadow: 0 0 60px rgba(20, 60, 90, 0.5);
+                background: var(--card);
+                border: 1px solid rgba(var(--accent-rgb), 0.3);
+                border-radius: var(--r-lg);
+                padding: 1.9rem 1.9rem 1.5rem;
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                box-shadow:
+                    0 24px 60px -24px rgba(0, 0, 0, 0.8),
+                    0 0 50px -12px rgba(var(--accent-rgb), 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
                 scrollbar-width: thin;
-                scrollbar-color: rgba(140, 220, 255, 0.4) transparent;
+                scrollbar-color: rgba(var(--accent-rgb), 0.4) transparent;
+            }
+            .info-card.job {
+                --accent: #8cdcff;
+                --accent-rgb: 140, 220, 255;
+            }
+            .info-card.award {
+                --accent: #ffd166;
+                --accent-rgb: 255, 209, 102;
+            }
+            .info-card.meta {
+                --accent: #7ef7c8;
+                --accent-rgb: 126, 247, 200;
             }
             /* Visible-but-subtle scrollbar for a long info card on small screens. */
             .info-card::-webkit-scrollbar {
                 width: 8px;
             }
             .info-card::-webkit-scrollbar-thumb {
-                background: rgba(140, 220, 255, 0.35);
+                background: rgba(var(--accent-rgb), 0.35);
                 border-radius: 4px;
             }
+            /* Watermark chapter numeral. */
             .info-card .info-num {
                 position: absolute;
-                top: 0.4rem;
+                top: 0.1rem;
                 right: 0.8rem;
-                font-size: 4.5rem;
-                font-weight: 800;
+                font-family: var(--f-display);
+                font-size: 5rem;
+                font-weight: 700;
                 line-height: 1;
-                color: rgba(140, 220, 255, 0.08);
-                letter-spacing: 0.05em;
+                color: rgba(var(--accent-rgb), 0.09);
+                letter-spacing: 0.02em;
                 pointer-events: none;
+                user-select: none;
+            }
+            /* Chapter label + progress rail. */
+            .info-card .info-chapter {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1.1rem;
+            }
+            .info-card .chapter-label {
+                font-family: var(--f-mono);
+                font-size: 0.6875rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: rgba(var(--accent-rgb), 0.85);
+                white-space: nowrap;
+            }
+            .info-card .info-rail {
+                display: flex;
+                gap: 3px;
+                flex: 1;
+                min-width: 0;
+            }
+            .info-card .info-rail i {
+                height: 4px;
+                flex: 1;
+                border-radius: 2px;
+                background: rgba(var(--accent-rgb), 0.16);
+            }
+            .info-card .info-rail i.done {
+                background: rgba(var(--accent-rgb), 0.55);
+            }
+            .info-card .info-rail i.now {
+                background: var(--cyan-vivid);
+                box-shadow: 0 0 10px var(--cyan-vivid);
             }
             .info-card h2 {
                 position: relative;
-                font-size: clamp(1.2rem, 3.5vw, 1.7rem);
-                letter-spacing: 0.06em;
+                font-family: var(--f-display);
+                font-weight: 600;
+                font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+                letter-spacing: -0.01em;
+                line-height: 1.1;
                 text-transform: none;
-                color: rgba(225, 242, 255, 0.97);
-                text-shadow: 0 0 24px rgba(140, 220, 255, 0.35);
-                margin-bottom: 0.3rem;
+                color: var(--tx-0);
+                text-shadow: 0 0 26px rgba(var(--accent-rgb), 0.32);
+                margin-bottom: 0;
             }
-            .info-card .info-period {
-                font-family: "SF Mono", "Fira Code", monospace;
-                font-size: 0.72rem;
-                letter-spacing: 0.1em;
-                color: #ffd166;
-                margin-bottom: 0.2rem;
-            }
+            /* Role / one-line context under the heading. */
             .info-card .info-sub {
-                font-size: 0.72rem;
+                font-family: var(--f-body);
+                font-weight: 600;
+                font-size: 0.75rem;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
-                color: rgba(140, 220, 255, 0.7);
-                margin-bottom: 1rem;
+                color: rgba(var(--accent-rgb), 0.92);
+                margin-top: 0.45rem;
+            }
+            .info-card .info-period {
+                font-family: var(--f-mono);
+                font-weight: 500;
+                font-size: 0.8125rem;
+                letter-spacing: 0.04em;
+                color: var(--gold);
+                margin-top: 0.3rem;
             }
             .info-card .info-summary {
-                font-size: 0.9rem;
-                line-height: 1.55;
-                color: rgba(222, 238, 252, 0.95);
-                margin-bottom: 1.1rem;
+                font-family: var(--f-body);
+                font-size: 0.9375rem;
+                line-height: 1.6;
+                color: var(--tx-1);
+                margin-top: 1rem;
             }
             .info-card ul {
                 list-style: none;
-                margin-bottom: 1.4rem;
+                margin-top: 0.9rem;
+                display: grid;
+                gap: 0.45rem;
             }
             .info-card ul li {
                 position: relative;
-                padding-left: 1.1rem;
-                margin-bottom: 0.6rem;
-                font-size: 0.86rem;
+                padding-left: 1.15rem;
+                font-size: 0.875rem;
                 line-height: 1.5;
-                color: rgba(210, 230, 248, 0.92);
+                color: var(--tx-1);
             }
             .info-card ul li::before {
                 content: "▸";
                 position: absolute;
                 left: 0;
-                color: rgba(140, 220, 255, 0.6);
+                color: rgba(var(--accent-rgb), 0.7);
             }
+            /* Tech / domain tags. */
+            .info-card .info-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                margin-top: 1.1rem;
+            }
+            .info-card .info-tags span {
+                font-family: var(--f-mono);
+                font-size: 0.6875rem;
+                letter-spacing: 0.02em;
+                color: rgba(var(--accent-rgb), 0.95);
+                background: rgba(var(--accent-rgb), 0.08);
+                border: 1px solid rgba(var(--accent-rgb), 0.22);
+                border-radius: var(--r-sm);
+                padding: 0.2rem 0.5rem;
+            }
+            /* Award block. */
             .info-card .info-awards {
-                margin-bottom: 1.4rem;
+                margin-top: 1.1rem;
             }
             .info-card .award {
-                margin-bottom: 1rem;
+                margin-top: 1rem;
             }
-            .info-card .award:last-child {
-                margin-bottom: 0;
+            .info-card .award:first-child {
+                margin-top: 0;
             }
             .info-card .award-title {
-                font-size: 0.92rem;
+                font-family: var(--f-display);
+                font-size: 1.05rem;
                 font-weight: 600;
-                line-height: 1.4;
-                color: rgba(225, 242, 255, 0.97);
-                margin-bottom: 0.15rem;
+                line-height: 1.3;
+                color: var(--tx-0);
             }
             .info-card .award-meta {
-                font-family: "SF Mono", "Fira Code", monospace;
-                font-size: 0.68rem;
-                letter-spacing: 0.06em;
-                color: #ffd166;
-                margin-bottom: 0.25rem;
+                font-family: var(--f-mono);
+                font-size: 0.6875rem;
+                letter-spacing: 0.05em;
+                color: var(--gold);
+                margin: 0.2rem 0 0.4rem;
             }
             .info-card .award-desc {
-                font-size: 0.84rem;
-                line-height: 1.5;
-                color: rgba(210, 230, 248, 0.92);
+                font-size: 0.875rem;
+                line-height: 1.55;
+                color: var(--tx-1);
             }
+            /* Contact list — key / value rows. */
             .info-card .info-contact {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
+                display: grid;
                 gap: 0.55rem;
-                margin-bottom: 1.4rem;
+                margin-top: 1.1rem;
             }
-            .info-card .contact-link {
-                font-family: "SF Mono", "Fira Code", monospace;
-                font-size: 0.82rem;
-                letter-spacing: 0.03em;
-                color: #ffd166;
-                text-decoration: none;
-                border-bottom: 1px solid rgba(255, 209, 102, 0.4);
-                padding-bottom: 1px;
-                transition: color 0.15s ease, border-color 0.15s ease;
-            }
-            .info-card .contact-link:hover {
-                color: #ffe199;
-                border-bottom-color: rgba(255, 209, 102, 0.85);
-            }
+            .info-card .contact-link,
             .info-card .contact-loc {
-                font-size: 0.82rem;
-                letter-spacing: 0.04em;
-                color: rgba(210, 230, 248, 0.85);
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-family: var(--f-mono);
+                font-size: 0.8125rem;
+                color: var(--tx-1);
+                text-decoration: none;
+            }
+            .info-card .contact-link .k,
+            .info-card .contact-loc .k {
+                width: 4.5rem;
+                flex: none;
+                color: rgba(var(--accent-rgb), 0.9);
+            }
+            .info-card .contact-loc .k {
+                color: var(--tx-2);
+            }
+            .info-card .contact-link .v {
+                color: var(--gold);
+                transition: color 0.15s ease;
+            }
+            .info-card .contact-link:hover .v {
+                color: #ffe199;
+            }
+            /* Big single-link CTA (meta / social chapters). */
+            .info-card .info-cta {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-top: 1.1rem;
+                padding: 1.1rem 1.2rem;
+                background: rgba(var(--accent-rgb), 0.06);
+                border: 1px solid rgba(var(--accent-rgb), 0.28);
+                border-radius: var(--r-md);
+                text-decoration: none;
+                transition: background 0.15s ease, border-color 0.15s ease;
+            }
+            .info-card .info-cta:hover {
+                background: rgba(var(--accent-rgb), 0.1);
+                border-color: rgba(var(--accent-rgb), 0.5);
+            }
+            .info-card .info-cta .u {
+                font-family: var(--f-mono);
+                font-size: 0.95rem;
+                color: var(--accent);
+            }
+            .info-card .info-cta .arr {
+                font-size: 1.25rem;
+                color: var(--accent);
+            }
+            /* Phone-unlock hint (final contact chapter). */
+            .info-card .info-lock {
+                display: flex;
+                gap: 0.6rem;
+                align-items: flex-start;
+                margin-top: 1.1rem;
+                padding: 0.75rem 0.9rem;
+                background: rgba(255, 209, 102, 0.06);
+                border: 1px dashed rgba(255, 209, 102, 0.34);
+                border-radius: var(--r-md);
+                font-size: 0.8125rem;
+                line-height: 1.5;
+                color: var(--tx-1);
+            }
+            .info-card .info-lock .ico {
+                flex: none;
+                color: var(--gold);
+            }
+            /* Foot — small contextual link on the left, primary CTA on the right. */
+            .info-card .info-foot {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-top: 1.4rem;
+                padding-top: 1.1rem;
+                border-top: 1px solid rgba(var(--accent-rgb), 0.14);
             }
             .info-card .info-link {
-                display: inline-block;
-                font-family: "SF Mono", "Fira Code", monospace;
-                font-size: 0.72rem;
-                letter-spacing: 0.05em;
-                color: #ffd166;
+                font-family: var(--f-mono);
+                font-size: 0.8125rem;
+                letter-spacing: 0.02em;
+                color: var(--gold);
                 text-decoration: none;
-                margin-bottom: 1.4rem;
                 border-bottom: 1px solid rgba(255, 209, 102, 0.4);
                 padding-bottom: 1px;
                 transition: color 0.15s ease, border-color 0.15s ease;
@@ -585,41 +760,45 @@
                 color: #ffe199;
                 border-bottom-color: rgba(255, 209, 102, 0.85);
             }
-            .info-card button {
-                border-color: rgba(140, 220, 255, 0.4);
-                color: rgba(180, 225, 255, 0.95);
-            }
-            .info-card button:hover {
-                background: rgba(140, 220, 255, 0.12);
-            }
-            /* Meta levels — behind-the-scenes — read in mint instead of cyan. */
-            .info-card.meta {
-                border-color: rgba(126, 247, 200, 0.4);
-            }
-            .info-card.meta h2 {
-                color: #d6fff0;
-                text-shadow: 0 0 24px rgba(126, 247, 200, 0.4);
-            }
-            .info-card.meta .info-sub {
-                color: rgba(126, 247, 200, 0.75);
-            }
-            .info-card.meta ul li::before {
-                color: rgba(126, 247, 200, 0.7);
-            }
             .info-card.meta .info-link {
-                color: #7ef7c8;
+                color: var(--mint);
                 border-bottom-color: rgba(126, 247, 200, 0.4);
             }
             .info-card.meta .info-link:hover {
                 color: #a6ffe0;
                 border-bottom-color: rgba(126, 247, 200, 0.85);
             }
-            .info-card.meta button {
-                border-color: rgba(126, 247, 200, 0.4);
-                color: #7ef7c8;
+            /* Primary CTA — filled with the card's accent (used in the popups). */
+            #info-continue,
+            #explore-close {
+                margin-left: auto;
+                font-weight: 600;
+                border: 1px solid rgba(var(--accent-rgb), 0.55);
+                color: #04121d;
+                background: linear-gradient(
+                    180deg,
+                    rgba(var(--accent-rgb), 0.95),
+                    rgba(var(--accent-rgb), 0.7)
+                );
+                box-shadow: 0 0 24px -6px rgba(var(--accent-rgb), 0.6);
             }
-            .info-card.meta button:hover {
-                background: rgba(126, 247, 200, 0.12);
+            #info-continue:hover,
+            #explore-close:hover {
+                background: linear-gradient(
+                    180deg,
+                    rgba(var(--accent-rgb), 1),
+                    rgba(var(--accent-rgb), 0.8)
+                );
+            }
+            /* The "How to play" card keeps a simple button row; space + right-align
+               it so its primary CTA matches the level popups' foot. */
+            .info-card .btn-row {
+                margin-top: 1.4rem;
+                justify-content: flex-end;
+            }
+            #explore-card .info-link {
+                display: inline-block;
+                margin-top: 1.1rem;
             }
 
             #win-overlay h2 {
@@ -631,7 +810,7 @@
             #win-unlock {
                 margin-top: -0.8rem;
                 margin-bottom: 1.8rem;
-                font-family: "SF Mono", "Fira Code", monospace;
+                font-family: var(--f-mono);
                 font-size: 0.95rem;
                 letter-spacing: 0.06em;
                 text-transform: none;
@@ -833,8 +1012,11 @@
                     position: fixed;
                     inset: 0;
                     padding: 2rem;
-                    background: #fff;
-                    color: #000;
+                    background: #05090f;
+                    color: #bcd0e6;
+                    font-family:
+                        'Inter', system-ui, -apple-system, sans-serif;
+                    line-height: 1.6;
                     overflow: auto;
                     z-index: 99;
                 "
@@ -842,7 +1024,9 @@
                 <p>
                     This page is interactive and requires JavaScript. The static
                     résumé is available at
-                    <a href="resume.html">resume.html</a>.
+                    <a href="resume.html" style="color: #8cdcff"
+                        >resume.html</a
+                    >.
                 </p>
             </div>
         </noscript>
@@ -855,22 +1039,34 @@
             aria-modal="true"
             aria-label="Level info"
         >
-            <div id="info-card" class="info-card">
+            <div id="info-card" class="info-card job">
                 <div class="info-num" id="info-num">000</div>
+                <div class="info-chapter" id="info-chapter">
+                    <span class="chapter-label" id="info-chapter-label"></span>
+                    <span class="info-rail" id="info-rail"></span>
+                </div>
                 <h2 id="info-heading"></h2>
-                <div class="info-period" id="info-period"></div>
                 <div class="info-sub" id="info-sub"></div>
+                <div class="info-period" id="info-period"></div>
                 <p class="info-summary" id="info-summary"></p>
                 <ul id="info-bullets"></ul>
-                <div class="info-contact" id="info-contact"></div>
                 <div class="info-awards" id="info-awards"></div>
+                <div class="info-contact" id="info-contact"></div>
+                <div class="info-tags" id="info-tags"></div>
                 <a
-                    class="info-link"
-                    id="info-link"
+                    class="info-cta"
+                    id="info-cta"
                     target="_blank"
                     rel="noopener noreferrer"
                 ></a>
-                <div class="btn-row">
+                <div class="info-lock" id="info-lock"></div>
+                <div class="info-foot">
+                    <a
+                        class="info-link"
+                        id="info-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ></a>
                     <button id="info-continue">Continue ▸<kbd>↵</kbd></button>
                 </div>
             </div>

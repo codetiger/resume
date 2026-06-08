@@ -56,11 +56,11 @@ function showLoadError(): void {
   el.style.cssText =
     'position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;' +
     'align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;' +
-    'background:#050a12;color:#e6f1ff;font-family:system-ui,sans-serif;';
+    'background:#05090f;color:#e8f3ff;font-family:system-ui,sans-serif;';
   el.innerHTML =
     '<p style="max-width:28rem;line-height:1.6">The interactive résumé couldn\'t load. ' +
     'You can read the full résumé here instead.</p>' +
-    '<a href="resume.html" style="color:#8fd4ff">Open the static résumé ▸</a>';
+    '<a href="resume.html" style="color:#8cdcff">Open the static résumé ▸</a>';
   document.body.appendChild(el);
 }
 

@@ -50,6 +50,8 @@ export interface LevelContent {
   bullets: string[];
   /** Structured award entries (the Awards level), rendered below the bullets. */
   awards?: LevelAward[];
+  /** Short tech / domain chips shown under the body (design-system tags). */
+  tags?: string[];
   /** 'resume' = career content (cyan); 'meta' = behind-the-scenes (mint). */
   tag: 'resume' | 'meta';
 }
@@ -83,6 +85,7 @@ interface RawLevel {
     links?: { label: string; url: string }[];
     bullets: string[];
     awards?: LevelAward[];
+    tags?: string[];
     tag: string;
   };
 }

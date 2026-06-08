@@ -40,6 +40,9 @@ export interface LevelScreenOptions {
 }
 
 const pad3 = (n: number) => String(n).padStart(3, '0');
+const pad2 = (n: number) => String(n).padStart(2, '0');
+/** Strip protocol / www / trailing slash to a bare host for link labels. */
+const hostOf = (u: string) => u.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
 
 export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const { assets, player, def, index, total } = opts;
@@ -82,6 +85,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const infoOverlay = $('info-overlay');
   const infoCard = $('info-card');
   const infoNum = $('info-num');
+  const infoChapterLabel = $('info-chapter-label');
+  const infoRail = $('info-rail');
   const infoHeading = $('info-heading');
   const infoPeriod = $('info-period');
   const infoSub = $('info-sub');
@@ -89,6 +94,9 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const infoBullets = $('info-bullets');
   const infoContact = $('info-contact');
   const infoAwards = $('info-awards');
+  const infoTags = $('info-tags');
+  const infoCta = $('info-cta');
+  const infoLock = $('info-lock');
   const infoLink = $('info-link');
   const infoContinue = $('info-continue');
 
@@ -122,11 +130,26 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
 
   function showInfo(): void {
     const c = def.content;
-    if (infoCard) infoCard.classList.toggle('meta', c.tag === 'meta');
+    // Per-chapter accent: an awards level reads gold, a behind-the-scenes (meta)
+    // level reads mint, everything else (jobs, intro, education, contact) reads
+    // cyan — matching the design system's job / award / meta popup variants.
+    const variant = c.awards && c.awards.length ? 'award' : c.tag === 'meta' ? 'meta' : 'job';
+    if (infoCard) infoCard.className = `info-card ${variant}`;
     if (infoNum) infoNum.textContent = pad3(def.number);
+    // Chapter label + progress rail: one segment per level, filled up to here.
+    if (infoChapterLabel) infoChapterLabel.textContent = `Chapter ${pad2(index + 1)} / ${pad2(total)}`;
+    if (infoRail) {
+      infoRail.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const seg = document.createElement('i');
+        if (i < index) seg.className = 'done';
+        else if (i === index) seg.className = 'now';
+        infoRail.appendChild(seg);
+      }
+    }
     if (infoHeading) infoHeading.textContent = c.heading;
-    if (infoPeriod) { infoPeriod.textContent = c.period ?? ''; infoPeriod.style.display = c.period ? '' : 'none'; }
     if (infoSub) { infoSub.textContent = c.subheading ?? ''; infoSub.style.display = c.subheading ? '' : 'none'; }
+    if (infoPeriod) { infoPeriod.textContent = c.period ?? ''; infoPeriod.style.display = c.period ? '' : 'none'; }
     if (infoSummary) { infoSummary.textContent = c.summary ?? ''; infoSummary.style.display = c.summary ? '' : 'none'; }
     if (infoBullets) {
       infoBullets.innerHTML = '';
@@ -140,11 +163,21 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     if (infoContact) {
       infoContact.innerHTML = '';
       const rows: HTMLElement[] = [];
+      // Each row is a key/value pair: a muted accent key and a gold value.
+      const kv = (parent: HTMLElement, key: string, value: string, valueClass?: string) => {
+        const k = document.createElement('span');
+        k.className = 'k';
+        k.textContent = key;
+        const v = document.createElement('span');
+        if (valueClass) v.className = valueClass;
+        v.textContent = value;
+        parent.append(k, v);
+      };
       if (c.email) {
         const a = document.createElement('a');
         a.className = 'contact-link';
         a.href = `mailto:${c.email}`;
-        a.textContent = c.email;
+        kv(a, 'email', c.email, 'v');
         rows.push(a);
       }
       for (const link of c.links ?? []) {
@@ -153,13 +186,13 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
         a.href = link.url;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        a.textContent = `${link.label} ↗`;
+        kv(a, link.label.toLowerCase(), hostOf(link.url), 'v');
         rows.push(a);
       }
       if (c.location) {
         const s = document.createElement('span');
         s.className = 'contact-loc';
-        s.textContent = c.location;
+        kv(s, 'based in', c.location);
         rows.push(s);
       }
       infoContact.style.display = rows.length ? '' : 'none';
@@ -194,15 +227,60 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
         infoAwards.appendChild(item);
       }
     }
+    if (infoTags) {
+      infoTags.innerHTML = '';
+      const tags = c.tags ?? [];
+      infoTags.style.display = tags.length ? '' : 'none';
+      for (const t of tags) {
+        const s = document.createElement('span');
+        s.textContent = t;
+        infoTags.appendChild(s);
+      }
+    }
+    const isMeta = c.tag === 'meta';
+    // Meta (social) chapters get a big single-link CTA; everything else keeps the
+    // small contextual link in the foot. The two are mutually exclusive.
+    if (infoCta instanceof HTMLAnchorElement) {
+      if (isMeta && c.url) {
+        infoCta.href = c.url;
+        infoCta.innerHTML = '';
+        const u = document.createElement('span');
+        u.className = 'u';
+        u.textContent = hostOf(c.url);
+        const arr = document.createElement('span');
+        arr.className = 'arr';
+        arr.textContent = '↗';
+        infoCta.append(u, arr);
+        infoCta.style.display = '';
+      } else {
+        infoCta.removeAttribute('href');
+        infoCta.style.display = 'none';
+      }
+    }
     if (infoLink instanceof HTMLAnchorElement) {
-      if (c.url) {
-        const host = c.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+      if (!isMeta && c.url) {
         infoLink.href = c.url;
-        infoLink.textContent = `${c.linkLabel ?? host} ↗`;
+        infoLink.textContent = `${c.linkLabel ?? hostOf(c.url)} ↗`;
         infoLink.style.display = '';
       } else {
         infoLink.removeAttribute('href');
         infoLink.style.display = 'none';
+      }
+    }
+    // The final Contact chapter teases the locked phone number, unlocked by
+    // finishing the game (revealed on the win overlay).
+    if (infoLock) {
+      const showLock = !!c.email;
+      infoLock.style.display = showLock ? '' : 'none';
+      infoLock.innerHTML = '';
+      if (showLock) {
+        const ico = document.createElement('span');
+        ico.className = 'ico';
+        ico.textContent = '⬡';
+        const txt = document.createElement('span');
+        txt.textContent =
+          'Clear this final level and roll back to the start tile to unlock my phone number.';
+        infoLock.append(ico, txt);
       }
     }
     state.paused = true;

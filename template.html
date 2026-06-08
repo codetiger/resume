@@ -4,95 +4,137 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    />
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* Unified dark identity — derived from the game's 3D PALETTE so the static
+           fallback and the interactive game read as one world. */
         :root {
-            --bg: #f8fafc;
-            --sf: #fff;
-            --tx: #0f172a;
-            --tx2: #475569;
-            --tx3: #94a3b8;
-            --ac: #4f46e5;
-            --ac2: #eef2ff;
-            --bd: #e2e8f0;
-            --f: system-ui, -apple-system, "Segoe UI", sans-serif;
-            --m: "SF Mono", "Fira Code", monospace;
-            --mw: 860px;
+            --bg-0: #05090f;
+            --bg-1: #0a1320;
+            --bg-2: #0f1d2e;
+            --line: rgba(140, 220, 255, 0.16);
+            --cyan: #8cdcff;
+            --cyan-vivid: #00ccff;
+            --gold: #ffd166;
+            --mint: #7ef7c8;
+            --tx-0: #e8f3ff;
+            --tx-1: #bcd0e6;
+            --tx-2: #7e94ad;
+            --tx-3: #52677e;
+            --f-display: "Space Grotesk", system-ui, sans-serif;
+            --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+            --f-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+            --mw: 880px;
             --sg: 2.5rem;
         }
 
         html { font-size: 16px; }
         body {
-            font-family: var(--f);
-            background: var(--bg);
-            color: var(--tx);
+            font-family: var(--f-body);
+            background: var(--bg-0);
+            color: var(--tx-1);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            /* Cinematic dark stage: two soft accent glows + a faint board grid,
+               matching the game overlay's background. */
+            background-image:
+                radial-gradient(900px 600px at 78% -8%, rgba(140, 220, 255, 0.1), transparent 60%),
+                radial-gradient(800px 520px at 8% 12%, rgba(255, 209, 102, 0.05), transparent 55%),
+                linear-gradient(rgba(140, 220, 255, 0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(140, 220, 255, 0.022) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+            background-attachment: fixed;
         }
-        a { color: var(--ac); text-decoration: none; }
+        a { color: var(--cyan); text-decoration: none; }
 
-        .pg { max-width: var(--mw); margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+        .pg {
+            max-width: var(--mw);
+            margin: 0 auto;
+            padding: clamp(2rem, 5vw, 3.5rem) clamp(1.1rem, 4vw, 2rem) 4rem;
+        }
 
         .hd {
             display: flex;
             gap: 1.75rem;
             align-items: center;
             padding-bottom: 2rem;
-            border-bottom: 1px solid var(--bd);
+            border-bottom: 1px solid var(--line);
         }
         .av {
             width: 144px;
             height: 144px;
             border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex: none;
+            background: var(--bg-2);
+            border: 2px solid rgba(140, 220, 255, 0.55);
+            box-shadow:
+                0 0 38px -6px rgba(140, 220, 255, 0.5),
+                inset 0 0 0 1px rgba(5, 10, 18, 0.6);
             touch-action: none;
         }
         .hd h1 {
-            font-size: 1.75rem;
+            font-family: var(--f-display);
+            font-size: clamp(1.5rem, 4vw, 1.95rem);
             font-weight: 700;
-            line-height: 1.2;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: var(--tx-0);
+            text-shadow: 0 0 36px rgba(140, 220, 255, 0.25);
         }
         .hd .rl {
-            color: var(--ac);
+            color: var(--cyan);
             font-size: 1rem;
-            font-weight: 500;
-            margin-top: 0.2rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
         }
         .ct {
             display: flex;
             flex-wrap: wrap;
             gap: 0.3rem 1.2rem;
-            margin-top: 0.6rem;
-            font-size: 0.85rem;
-            color: var(--tx2);
+            margin-top: 0.7rem;
+            font-family: var(--f-mono);
+            font-size: 0.78rem;
+            color: var(--tx-2);
         }
-        .ct .d { color: var(--bd); }
+        .ct a { color: var(--gold); }
+        .ct .d { color: var(--tx-3); }
         .pl {
             display: flex;
             flex-wrap: wrap;
             gap: 0.4rem;
-            margin-top: 0.5rem;
+            margin-top: 0.6rem;
         }
         .pl a {
             padding: 0.2rem 0.6rem;
-            font-size: 0.78rem;
+            font-family: var(--f-mono);
+            font-size: 0.72rem;
             font-weight: 500;
-            color: var(--ac);
+            color: var(--mint);
+            border: 1px solid rgba(126, 247, 200, 0.28);
+            border-radius: 6px;
             text-decoration: none;
         }
 
         .sc { margin-top: var(--sg); }
         .st {
+            font-family: var(--f-mono);
             font-size: 0.7rem;
-            font-weight: 700;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--tx3);
+            letter-spacing: 0.16em;
+            color: var(--cyan);
             margin-bottom: 1rem;
         }
 
-        .sm { font-size: 1rem; color: var(--tx2); line-height: 1.75; }
+        .sm { font-size: 1rem; color: var(--tx-1); line-height: 1.7; }
 
         .en { margin-bottom: 1.75rem; }
         .en:last-child, .aw:last-child, .pj:last-child { margin-bottom: 0; }
@@ -103,30 +145,43 @@
             align-items: baseline;
             gap: 0.5rem;
         }
-        .er { font-size: 1rem; font-weight: 600; }
+        .er {
+            font-family: var(--f-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--tx-0);
+        }
         .ed, .edy {
-            font-size: 0.78rem;
-            font-family: var(--m);
-            color: var(--tx3);
+            font-size: 0.75rem;
+            font-family: var(--f-mono);
+            color: var(--tx-2);
         }
         .ed { white-space: nowrap; }
         .eo {
             font-size: 0.9rem;
-            color: var(--ac);
-            font-weight: 500;
+            color: var(--cyan);
+            font-weight: 600;
             margin-top: 0.1rem;
         }
         .es, .as {
-            font-size: 0.85rem;
-            color: var(--tx2);
-            margin-top: 0.3rem;
+            font-size: 0.875rem;
+            color: var(--tx-1);
+            margin-top: 0.4rem;
             line-height: 1.6;
         }
-        .eh { margin-top: 0.5rem; padding-left: 1.2rem; color: var(--tx2); }
+        .eh { margin-top: 0.55rem; list-style: none; display: grid; gap: 0.4rem; }
         .eh li {
-            font-size: 0.85rem;
-            margin-bottom: 0.3rem;
-            line-height: 1.6;
+            position: relative;
+            padding-left: 1.1rem;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            color: var(--tx-1);
+        }
+        .eh li::before {
+            content: "\25B8";
+            position: absolute;
+            left: 0;
+            color: rgba(140, 220, 255, 0.6);
         }
 
         .sg {
@@ -135,37 +190,52 @@
             gap: 1rem;
         }
         .sk {
-            background: var(--sf);
-            border: 1px solid var(--bd);
+            background: var(--bg-2);
+            border: 1px solid var(--line);
             border-radius: 10px;
-            padding: 1rem 1.2rem;
+            padding: 1rem 1.1rem;
         }
-        .sn { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .stg { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .sn {
+            font-family: var(--f-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--tx-0);
+            margin-bottom: 0.6rem;
+        }
+        .stg { display: flex; flex-wrap: wrap; gap: 0.35rem; }
         .stg span {
-            padding: 0.15rem 0.55rem;
-            font-size: 0.78rem;
-            background: var(--ac2);
-            border-radius: 4px;
-            color: var(--ac);
+            padding: 0.18rem 0.5rem;
+            font-family: var(--f-mono);
+            font-size: 0.6875rem;
+            background: rgba(140, 220, 255, 0.08);
+            border: 1px solid rgba(140, 220, 255, 0.2);
+            border-radius: 6px;
+            color: var(--cyan);
         }
 
         .aw { margin-bottom: 1.2rem; }
-        .edd, .at, .pn { font-size: 0.9rem; font-weight: 600; }
-        .am { font-size: 0.78rem; color: var(--tx3); margin-top: 0.1rem; }
-        .edi { font-size: 0.85rem; color: var(--tx2); margin-top: 0.1rem; }
+        .edd, .at, .pn {
+            font-family: var(--f-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--tx-0);
+        }
+        .am { font-family: var(--f-mono); font-size: 0.7rem; color: var(--gold); margin-top: 0.15rem; }
+        .edi { font-size: 0.875rem; color: var(--tx-1); margin-top: 0.15rem; }
 
         .pj { margin-bottom: 1.4rem; }
 
         .ft {
             margin-top: 3rem;
             padding-top: 1.2rem;
-            border-top: 1px solid var(--bd);
+            border-top: 1px solid var(--line);
             text-align: center;
+            font-family: var(--f-mono);
             font-size: 0.72rem;
-            color: var(--tx3);
+            color: var(--tx-3);
             letter-spacing: 0.02em;
         }
+        .ft a { color: var(--gold); }
         @keyframes roll { from { transform: rotate(0); } to { transform: rotate(360deg); } }
         .roll { animation: roll 1.5s ease-in-out; }
 
@@ -177,7 +247,6 @@
                 gap: 1rem;
             }
             .av { width: 110px; height: 110px; }
-            .hd h1 { font-size: 1.5rem; }
             .ct { justify-content: center; }
             .pl { justify-content: center; }
             .sg { grid-template-columns: 1fr; }
