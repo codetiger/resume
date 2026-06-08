@@ -6,7 +6,7 @@
         <title>Harishankar Narayanan — Resume</title>
         <meta
             name="description"
-            content="An interactive, gamified résumé. Roll the cube through 20 years of building things."
+            content="An interactive, gamified résumé. Roll the cube through 21 years of building things."
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +41,8 @@
                 --tx-2: #7e94ad;
                 --tx-3: #52677e;
                 --f-display: "Space Grotesk", system-ui, sans-serif;
-                --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+                --f-body:
+                    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
                 --f-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
                 --r-sm: 6px;
                 --r-md: 10px;
@@ -180,10 +181,18 @@
                 #dpad button:active {
                     background: rgba(140, 220, 255, 0.22);
                 }
-                #dpad-up { grid-area: 1 / 2; }
-                #dpad-left { grid-area: 2 / 1; }
-                #dpad-right { grid-area: 2 / 3; }
-                #dpad-down { grid-area: 3 / 2; }
+                #dpad-up {
+                    grid-area: 1 / 2;
+                }
+                #dpad-left {
+                    grid-area: 2 / 1;
+                }
+                #dpad-right {
+                    grid-area: 2 / 3;
+                }
+                #dpad-down {
+                    grid-area: 3 / 2;
+                }
             }
 
             /* ── home / level-select ─────────────────────────────────────────────── */
@@ -244,7 +253,9 @@
                 color: rgba(190, 230, 255, 0.9);
                 cursor: pointer;
                 -webkit-tap-highlight-color: transparent;
-                transition: background 0.15s ease, border-color 0.15s ease,
+                transition:
+                    background 0.15s ease,
+                    border-color 0.15s ease,
                     color 0.15s ease;
             }
             #home-hud .home-icon:hover {
@@ -404,7 +415,10 @@
                 overflow-y: auto;
                 pointer-events: auto;
             }
-            .overlay h2 {
+            /* Direct-child only: these flat-dialog defaults (centered, uppercase)
+               must not leak into the nested .info-card / #explore-card content,
+               which owns its own left-aligned editorial styling. */
+            .overlay > h2 {
                 font-family: var(--f-display);
                 font-size: clamp(1.5rem, 5vw, 2.8rem);
                 font-weight: 700;
@@ -413,7 +427,7 @@
                 margin-bottom: 0.5rem;
                 text-align: center;
             }
-            .overlay p {
+            .overlay > p {
                 font-size: 0.82rem;
                 letter-spacing: 0.16em;
                 text-transform: uppercase;
@@ -704,7 +718,9 @@
                 border: 1px solid rgba(var(--accent-rgb), 0.28);
                 border-radius: var(--r-md);
                 text-decoration: none;
-                transition: background 0.15s ease, border-color 0.15s ease;
+                transition:
+                    background 0.15s ease,
+                    border-color 0.15s ease;
             }
             .info-card .info-cta:hover {
                 background: rgba(var(--accent-rgb), 0.1);
@@ -754,7 +770,9 @@
                 text-decoration: none;
                 border-bottom: 1px solid rgba(255, 209, 102, 0.4);
                 padding-bottom: 1px;
-                transition: color 0.15s ease, border-color 0.15s ease;
+                transition:
+                    color 0.15s ease,
+                    border-color 0.15s ease;
             }
             .info-card .info-link:hover {
                 color: #ffe199;
@@ -943,9 +961,15 @@
         <!-- Touch d-pad (coarse-pointer + in-level only; see CSS) -->
         <div id="dpad">
             <button id="dpad-up" type="button" aria-label="Move up">↑</button>
-            <button id="dpad-left" type="button" aria-label="Move left">←</button>
-            <button id="dpad-right" type="button" aria-label="Move right">→</button>
-            <button id="dpad-down" type="button" aria-label="Move down">↓</button>
+            <button id="dpad-left" type="button" aria-label="Move left">
+                ←
+            </button>
+            <button id="dpad-right" type="button" aria-label="Move right">
+                →
+            </button>
+            <button id="dpad-down" type="button" aria-label="Move down">
+                ↓
+            </button>
         </div>
 
         <!-- Home / level-select -->
@@ -953,14 +977,16 @@
             <div class="home-inner">
                 <p class="home-tagline">
                     <span class="tw">This is</span>
-                    <span class="roller"><span class="roller-track">
+                    <span class="roller"
+                        ><span class="roller-track">
                             <span>a Game</span>
                             <span>My Résumé</span>
                             <span>An Intro</span>
                             <span>About Me</span>
                             <span>a Profile</span>
                             <span>a Game</span>
-                        </span></span>
+                        </span></span
+                    >
                 </p>
                 <!-- src is set from JS (main.ts) so it respects the Vite base path -->
                 <img id="home-avatar" alt="Harishankar Narayanan" />
@@ -1015,7 +1041,10 @@
                     background: #05090f;
                     color: #bcd0e6;
                     font-family:
-                        'Inter', system-ui, -apple-system, sans-serif;
+                        &quot;Inter&quot;,
+                        system-ui,
+                        -apple-system,
+                        sans-serif;
                     line-height: 1.6;
                     overflow: auto;
                     z-index: 99;
@@ -1024,8 +1053,7 @@
                 <p>
                     This page is interactive and requires JavaScript. The static
                     résumé is available at
-                    <a href="resume.html" style="color: #8cdcff"
-                        >resume.html</a
+                    <a href="resume.html" style="color: #8cdcff">resume.html</a
                     >.
                 </p>
             </div>
@@ -1084,14 +1112,14 @@
                 <h2>Welcome, explorer</h2>
                 <div class="info-sub">This résumé is a game</div>
                 <p class="info-summary">
-                    Each level is a chapter of a 20-year career — companies,
-                    awards, education, and where to find me online. Roll the cube
-                    around the board to uncover each story.
+                    Each level is a chapter of a 21-year career — companies,
+                    awards, education, and where to find me online. Roll the
+                    cube around the board to uncover each story.
                 </p>
                 <ul>
                     <li>
-                        Pick a platform on the home screen — click it, or use the
-                        arrow keys and Enter.
+                        Pick a platform on the home screen — click it, or use
+                        the arrow keys and Enter.
                     </li>
                     <li>
                         Move the cube with the arrow keys or WASD — on a phone,
@@ -1110,7 +1138,10 @@
                         Fall off the edge and it's game over — press R to retry,
                         Esc to pause.
                     </li>
-                    <li>Finish the whole game to unlock a little something extra.</li>
+                    <li>
+                        Finish the whole game to unlock a little something
+                        extra.
+                    </li>
                 </ul>
                 <a
                     class="info-link"

@@ -8,6 +8,7 @@ then deflate-compressed and base64-encoded for inline use.
 Used by build.py via: from triangulate import export_hex_mosaic
 """
 
+import io
 import math
 import struct
 import zlib
@@ -33,22 +34,26 @@ def _pack_bits(values, bits):
     return bytes(result)
 
 
-def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
+def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, coarse_factor=2):
     """Export hex mosaic data for a single image as deflate-compressed base64.
 
     Generates a pointy-top hexagonal grid inside an inscribed circle.
-    Client derives coarse grid (1-level tessellation) for default display.
+    Client draws the coarse grid (the hidden state) and reveals the real photo
+    underneath on hover. The coarse hexagon size is hex_radius * coarse_factor;
+    both radii travel in the header so the client never hardcodes the factor.
 
     Palette holds 2^index_bits colors (indices 0..nc-1).
 
     Binary layout (little-endian):
-        [uint8 fine_radius×10]      hex radius (fixed-point ×10)
+        [uint8 fine_radius×10]      fine hex radius (fixed-point ×10)
+        [uint8 coarse_radius×10]    coarse/hidden hex radius (fixed-point ×10)
         [uint8 index_bits]          bits per cell index
         [uint16 n_cells]            number of cells
         [uint8 r,g,b] * nc          palette (nc = 2^index_bits)
         [packed bits]               ceil(n_cells * index_bits / 8) bytes
     """
     palette_size = 1 << index_bits
+    coarse_radius = hex_radius * coarse_factor
     cr = canvas_size / 2.0  # circle radius
 
     # Generate pointy-top hex grid at fine resolution
@@ -64,7 +69,7 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
                 cells.append((cx, cy))
 
     n_cells = len(cells)
-    print(f"Hex grid: r={hex_radius}px, {n_cells} cells")
+    print(f"Hex grid: fine r={hex_radius}px, coarse r={coarse_radius}px, {n_cells} cells")
 
     # Step 1: Load image and sample at cell centers (full color depth)
     img = Image.open(image_path).convert("RGB")
@@ -96,7 +101,9 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
         labels[j] = np.argmin(dists)
 
     # Pack binary: header + palette + bit-packed indices
-    buf = struct.pack('<BBH', round(hex_radius * 10), index_bits, n_cells)
+    buf = struct.pack(
+        '<BBBH', round(hex_radius * 10), round(coarse_radius * 10), index_bits, n_cells
+    )
     buf += palette.tobytes()
     buf += _pack_bits(labels, index_bits)
 
@@ -106,4 +113,20 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5):
 
     print(f"Palette: {nc} colors")
     print(f"Binary: {raw_size:,} bytes → deflate: {len(compressed):,} → base64: {len(encoded):,}")
+    return encoded
+
+
+def export_photo(image_path, size=432, quality=88):
+    """Embed the real avatar photo as a square base64 JPEG.
+
+    This is the layer revealed pixel-by-pixel when the hex mosaic lifts on hover,
+    so it is sized for crispness (default 3x the 144px avatar), not for byte count.
+    Stretched to a square the same way the mosaic samples it, so the two align.
+    """
+    img = Image.open(image_path).convert("RGB").resize((size, size), Image.LANCZOS)
+    out = io.BytesIO()
+    img.save(out, format="JPEG", quality=quality, optimize=True)
+    data = out.getvalue()
+    encoded = base64.b64encode(data).decode('ascii')
+    print(f"Photo: {size}x{size} JPEG {len(data):,} bytes → base64: {len(encoded):,}")
     return encoded

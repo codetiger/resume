@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build public/resume.html from resume.json + template.html using Jinja2.
+"""Build the static résumé from assets/resume.json + template.html using Jinja2.
 
-Output lands in public/ (Vite's publicDir) as resume.html — NOT index.html — so the
+Output lands in assets/ (Vite's publicDir) as resume.html — NOT index.html — so the
 Vite build copies it to dist/resume.html and it sits side by side with the game
-(dist/index.html) instead of clobbering it."""
+(dist/index.html) instead of clobbering it. Run before `vite build`."""
 
 import base64
 import json
@@ -15,12 +15,18 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 ROOT = Path(__file__).resolve().parent
-RESUME_PATH = ROOT / "resume.json"
+ASSETS = ROOT / "assets"  # single source of truth for static assets (= Vite publicDir)
+RESUME_PATH = ASSETS / "resume.json"
 TEMPLATE_NAME = "template.html"
-OUTPUT_PATH = ROOT / "public" / "resume.html"
+OUTPUT_PATH = ASSETS / "resume.html"
 AVATAR_SIZE = 144
-HEX_RADIUS = 2       # fine grid radius (data resolution)
-INDEX_BITS = 5       # bits per cell; palette = 2^INDEX_BITS colors
+HEX_RADIUS = 1  # fine grid radius (colour-sampling resolution)
+COARSE_FACTOR = 4  # hidden-state hexagons = HEX_RADIUS × this (so radius-4 hexes)
+INDEX_BITS = 8  # bits per cell; palette = 2^INDEX_BITS colors
+# Real photo embedded for the pixel-accurate hover reveal. File size is deliberately
+# not optimised here — showing the true picture matters more than staying tiny.
+PHOTO_SIZE = 432  # 3× the 144px avatar, so the revealed photo is crisp on retina
+PHOTO_QUALITY = 88
 
 
 def format_date(value):
@@ -48,9 +54,9 @@ def strip_url(url):
     """Strip protocol prefix from URL. Renderer prepends https:// on the client."""
     if not url:
         return url
-    for prefix in ('https://www.', 'http://www.', 'https://', 'http://'):
+    for prefix in ("https://www.", "http://www.", "https://", "http://"):
         if url.startswith(prefix):
-            return url[len(prefix):]
+            return url[len(prefix) :]
     return url
 
 
@@ -80,7 +86,9 @@ def prebake_data(resume):
         ct_parts.append(f'<span><a href="mailto:{email}">{email}</a></span>')
     # Phone is deliberately NOT rendered here — it's unlocked by playing the game.
     # (The raw number is also obfuscated in resume.json so it can't be scraped.)
-    ct_parts.append('<span class="d">&middot;</span><span><a href="./">Play the game for my number &#8594;</a></span>')
+    ct_parts.append(
+        '<span class="d">&middot;</span><span><a href="./">Play the game for my number &#8594;</a></span>'
+    )
     lines.append("".join(ct_parts))
 
     # Pre-bake profile links HTML
@@ -94,7 +102,9 @@ def prebake_data(resume):
     work = resume.get("work", [])
     for i, job in enumerate(work):
         date_range = f"{format_date(job.get('startDate', ''))} \u2014 {format_date(job.get('endDate', ''))}"
-        lines.append(f"J\t{job['position']}\t{date_range}\t{job['company']}\t{job.get('summary', '')}")
+        lines.append(
+            f"J\t{job['position']}\t{date_range}\t{job['company']}\t{job.get('summary', '')}"
+        )
         for h in job.get("highlights", []):
             lines.append(h)
         if i < len(work) - 1:
@@ -139,17 +149,25 @@ def prebake_data(resume):
     raw = "\n".join(lines).encode("utf-8")
     compressed = zlib.compress(raw, 9)
     b64 = base64.b64encode(compressed).decode("ascii")
-    print(f"Resume data: {len(raw):,} → zlib: {len(compressed):,} → base64: {len(b64):,} bytes")
+    print(
+        f"Resume data: {len(raw):,} → zlib: {len(compressed):,} → base64: {len(b64):,} bytes"
+    )
     return b64
 
 
-def build_avatar_mesh(image_path):
-    """Generate compressed hex mosaic data from single avatar image."""
+def build_avatar_assets(image_path):
+    """Generate the avatar's two layers: the hex mosaic (the hidden state) and the
+    full-resolution photo (revealed pixel-by-pixel on hover)."""
     if not image_path or not image_path.exists():
-        print("No avatar image found, skipping mesh generation")
-        return None
-    from triangulate import export_hex_mosaic
-    return export_hex_mosaic(str(image_path), HEX_RADIUS, AVATAR_SIZE, INDEX_BITS)
+        print("No avatar image found, skipping avatar generation")
+        return None, None
+    from triangulate import export_hex_mosaic, export_photo
+
+    mesh = export_hex_mosaic(
+        str(image_path), HEX_RADIUS, AVATAR_SIZE, INDEX_BITS, COARSE_FACTOR
+    )
+    photo = export_photo(str(image_path), PHOTO_SIZE, PHOTO_QUALITY)
+    return mesh, photo
 
 
 def inline_css_vars(css):
@@ -158,37 +176,37 @@ def inline_css_vars(css):
     Keeps variables where inlining would increase size (value longer than
     var() reference AND used more than once).
     """
-    root_m = re.search(r':root\{([^}]+)\}', css)
+    root_m = re.search(r":root\{([^}]+)\}", css)
     if not root_m:
         return css
     var_values = {}
-    for m in re.finditer(r'(--[\w-]+):([^;]+)', root_m.group(1)):
+    for m in re.finditer(r"(--[\w-]+):([^;]+)", root_m.group(1)):
         var_values[m.group(1)] = m.group(2).strip()
-    rest = css[root_m.end():]
+    rest = css[root_m.end() :]
     keep = {}
     for var, val in var_values.items():
-        ref = f'var({var})'
+        ref = f"var({var})"
         uses = rest.count(ref)
         if len(val) > len(ref) and uses > 1:
             keep[var] = val
         else:
             css = css.replace(ref, val)
     if keep:
-        new_root = ':root{' + ';'.join(f'{v}:{keep[v]}' for v in keep) + '}'
-        css = css[:root_m.start()] + new_root + css[root_m.end():]
+        new_root = ":root{" + ";".join(f"{v}:{keep[v]}" for v in keep) + "}"
+        css = css[: root_m.start()] + new_root + css[root_m.end() :]
     else:
-        css = css[:root_m.start()] + css[root_m.end():]
+        css = css[: root_m.start()] + css[root_m.end() :]
     return css
 
 
 def minify_css(css):
     """Strip comments, collapse whitespace, remove redundant chars from CSS."""
-    css = re.sub(r'/\*.*?\*/', '', css, flags=re.DOTALL)  # block comments
-    css = re.sub(r'\s+', ' ', css)                         # collapse whitespace
-    css = re.sub(r'\s*([{}:;,>~+])\s*', r'\1', css)       # spaces around punctuation
-    css = re.sub(r';}', '}', css)                          # trailing semicolons
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)  # block comments
+    css = re.sub(r"\s+", " ", css)  # collapse whitespace
+    css = re.sub(r"\s*([{}:;,>~+])\s*", r"\1", css)  # spaces around punctuation
+    css = re.sub(r";}", "}", css)  # trailing semicolons
     css = inline_css_vars(css)
-    css = re.sub(r'(?<![0-9])0(\.\d+)', r'\1', css)  # 0.5rem → .5rem
+    css = re.sub(r"(?<![0-9])0(\.\d+)", r"\1", css)  # 0.5rem → .5rem
     return css.strip()
 
 
@@ -196,46 +214,55 @@ def minify_js(js):
     """Strip comments, collapse whitespace in JS. Preserves string literals."""
     # Extract string literals to protect them from mangling
     strings = []
+
     def _save_string(m):
         strings.append(m.group(0))
-        return f'\x00STR{len(strings) - 1}\x00'
-    js = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'', _save_string, js)
+        return f"\x00STR{len(strings) - 1}\x00"
 
-    js = re.sub(r'//.*?$', '', js, flags=re.MULTILINE)    # line comments
-    js = re.sub(r'/\*.*?\*/', '', js, flags=re.DOTALL)    # block comments
-    js = re.sub(r'\s+', ' ', js)                           # collapse whitespace
-    js = re.sub(r'\s*([{}();,=<>+\-*/?:|&!])\s*', r'\1', js)
+    js = re.sub(
+        r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'', _save_string, js
+    )
+
+    js = re.sub(r"//.*?$", "", js, flags=re.MULTILINE)  # line comments
+    js = re.sub(r"/\*.*?\*/", "", js, flags=re.DOTALL)  # block comments
+    js = re.sub(r"\s+", " ", js)  # collapse whitespace
+    js = re.sub(r"\s*([{}();,=<>+\-*/?:|&!])\s*", r"\1", js)
 
     # Restore string literals
     def _restore_string(m):
         return strings[int(m.group(1))]
-    js = re.sub(r'\x00STR(\d+)\x00', _restore_string, js)
+
+    js = re.sub(r"\x00STR(\d+)\x00", _restore_string, js)
     return js.strip()
 
 
 def minify_html(html):
     """Minify the final HTML by processing CSS, JS, and HTML separately."""
+
     # Minify inline <style> blocks
     def _min_style(m):
-        return '<style>' + minify_css(m.group(1)) + '</style>'
-    html = re.sub(r'<style>(.*?)</style>', _min_style, html, flags=re.DOTALL)
+        return "<style>" + minify_css(m.group(1)) + "</style>"
+
+    html = re.sub(r"<style>(.*?)</style>", _min_style, html, flags=re.DOTALL)
 
     # Minify inline <script> blocks (but preserve string literals like base64)
     def _min_script(m):
-        return '<script>' + minify_js(m.group(1)) + '</script>'
-    html = re.sub(r'<script>(.*?)</script>', _min_script, html, flags=re.DOTALL)
+        return "<script>" + minify_js(m.group(1)) + "</script>"
+
+    html = re.sub(r"<script>(.*?)</script>", _min_script, html, flags=re.DOTALL)
 
     # HTML: collapse inter-tag whitespace, runs of spaces
-    html = re.sub(r'>\s+<', '><', html)
-    html = re.sub(r'\s{2,}', ' ', html)
+    html = re.sub(r">\s+<", "><", html)
+    html = re.sub(r"\s{2,}", " ", html)
     return html.strip()
 
 
 def build():
     resume = json.loads(RESUME_PATH.read_text(encoding="utf-8"))
     picture = resume.get("basics", {}).get("picture", "")
-    avatar_path = ROOT / picture if picture else None
-    avatar_mesh_b64 = build_avatar_mesh(avatar_path)
+    # picture is relative to the assets dir (where resume.json lives).
+    avatar_path = ASSETS / picture if picture else None
+    avatar_mesh_b64, avatar_photo_b64 = build_avatar_assets(avatar_path)
 
     env = Environment(
         loader=FileSystemLoader(ROOT),
@@ -251,12 +278,14 @@ def build():
     template = env.get_template(TEMPLATE_NAME)
     html = template.render(
         avatar_mesh_b64=avatar_mesh_b64,
+        avatar_photo_b64=avatar_photo_b64,
+        avatar_render_px=PHOTO_SIZE,
         resume_data_b64=resume_data_b64,
     )
 
-    raw_size = len(html.encode('utf-8'))
+    raw_size = len(html.encode("utf-8"))
     html = minify_html(html)
-    min_size = len(html.encode('utf-8'))
+    min_size = len(html.encode("utf-8"))
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")

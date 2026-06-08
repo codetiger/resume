@@ -10,11 +10,15 @@ Demo — [Game](https://codetiger.github.io/resume/) · [Static résumé](https:
 | Stack | Entry | Purpose |
 |-------|-------|---------|
 | **Game** (primary) | `index.html` + `src/` | Three.js + TypeScript puzzle résumé, built with Vite. |
-| **Static fallback** | `public/resume.html` (generated) | Generated from `resume.json` by the Python builder; what recruiters land on without WebGL/JS. |
+| **Static fallback** | `assets/resume.html` (generated) | Generated from `assets/resume.json` by the Python builder; what recruiters land on without WebGL/JS. |
 
-`resume.json` is the single source of truth: the game's `src/game/levels.json`
+`assets/resume.json` is the single source of truth: the game's `src/game/levels.json`
 references it with JSONPath (`$…`) strings, resolved at build time by the
 `resume-refs` Vite plugin in `vite.config.ts`.
+
+All static assets live in `assets/` — the models (`assets/models/`), the avatar
+(`assets/harishankar.jpeg`), and `resume.json`. It is Vite's `publicDir`, so it is served
+in dev and copied into `dist/` on build (no manual copy step in the workflow).
 
 ## Game (Three.js)
 
@@ -40,9 +44,9 @@ Source layout under `src/`:
 
 ```bash
 pip3 install -r requirements.txt
-python3 build.py          # resume.json + template.html → public/resume.html
+python3 build.py          # assets/resume.json + template.html → assets/resume.html
 ```
 
-- **Content:** edit `resume.json` ([JSON Resume](https://jsonresume.org/schema/) schema).
+- **Content:** edit `assets/resume.json` ([JSON Resume](https://jsonresume.org/schema/) schema).
 - **Design/layout:** edit `template.html` (Jinja2 template, CSS inlined).
-- `public/resume.html` is generated — do not edit by hand; regenerate with `python3 build.py`.
+- `assets/resume.html` is generated — do not edit by hand; regenerate with `python3 build.py`.

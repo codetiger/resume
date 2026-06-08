@@ -27,15 +27,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Static résumé first — build.py writes public/resume.html, which the Vite
-      # build then copies into dist/.
+      # Static résumé first — build.py writes assets/resume.html, which the Vite
+      # build then copies into dist/ along with the rest of assets/.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: python3 build.py
 
-      # Game build → dist/ (also copies public/* including resume.html).
+      # Game build → dist/ (Vite also copies assets/* — models, avatar,
+      # resume.json, resume.html — into dist/).
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

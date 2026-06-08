@@ -74,10 +74,7 @@
             border-radius: 50%;
             flex: none;
             background: var(--bg-2);
-            border: 2px solid rgba(140, 220, 255, 0.55);
-            box-shadow:
-                0 0 38px -6px rgba(140, 220, 255, 0.5),
-                inset 0 0 0 1px rgba(5, 10, 18, 0.6);
+            box-shadow: 0 0 38px -6px rgba(140, 220, 255, 0.5);
             touch-action: none;
         }
         .hd h1 {
@@ -256,7 +253,7 @@
 <body>
     <div class="pg">
         {% if avatar_mesh_b64 %}
-        <canvas id="avatar" class="av" width="144" height="144"></canvas>
+        <canvas id="avatar" class="av" width="{{ avatar_render_px }}" height="{{ avatar_render_px }}"></canvas>
         {% endif %}
     </div>
     <script>
@@ -375,7 +372,7 @@
             if (av) {
                 var buf = new Uint8Array(await dz("{{ avatar_mesh_b64 }}"));
                 var dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-                var hr = buf[0] / 10, ib = buf[1], ncells = dv.getUint16(2, true), o = 4;
+                var hr = buf[0] / 10, hrc = buf[1] / 10, ib = buf[2], ncells = dv.getUint16(3, true), o = 5;
                 var nc = 1 << ib, mask = nc - 1;
                 {# Opt 6: single flat palette array instead of separate pR/pG/pB #}
                 var pal = [];
@@ -384,7 +381,6 @@
                 for (var i = 0; i < ncells; i++) { while (bn < ib) { bb = (bb << 8) | buf[o++]; bn += 8; } bn -= ib; idx.push((bb >> bn) & mask); }
 
                 var S = 144, cr = 72;
-                var hrc = hr * 2;
 
                 {# Opt 4: shared sqrt(3)/2 constant for hex geometry #}
                 var H = Math.sqrt(3) / 2;
@@ -401,11 +397,7 @@
 
                 {# Opt 4: hardcoded hex vertex offsets using known cos/sin at 60deg increments #}
                 function hvx(r) { return [[H * r, H * r, 0, -H * r, -H * r, 0], [-.5 * r, .5 * r, r, .5 * r, -.5 * r, -r]]; }
-                var fv = hvx(hr + 0.3), cv = hvx(hrc);
-
-                {# Opt 6: precompute rgb strings for fine cells (like ci[] for coarse) #}
-                function rgb(k) { var j = k * 3; return "rgb(" + pal[j] + "," + pal[j + 1] + "," + pal[j + 2] + ")"; }
-                var fi = idx.map(rgb);
+                var cv = hvx(hrc);
 
                 {# Average fine cell colors for each coarse cell #}
                 var ci = [], th = hrc * hrc;
@@ -422,7 +414,25 @@
 
                 var cT = new Float32Array(cc.length), cH = new Float32Array(cc.length);
                 var can = av, ctx = can.getContext("2d");
+                {# Bitmap is rendered at SC× the logical 144 grid so the revealed
+                   photo is crisp; all geometry below stays in 144-space. #}
+                var SC = can.width / S;
                 var mx = -999, my = -999, hov = false, af = null;
+
+                {# Real photo — the pixel-accurate layer revealed as the hexes lift. #}
+                var photo = new Image();
+                photo.onload = draw;
+                photo.src = "data:image/jpeg;base64,{{ avatar_photo_b64 }}";
+
+                {# Palette ring (shift→disappear→arrow→explosive→player) painted ON
+                   TOP of the photo's rim, tying the résumé to the 3D world. Falls
+                   back to a flat cyan stroke where conic gradients are unsupported. #}
+                var rs = "rgba(140, 220, 255, 0.75)";
+                if (ctx.createConicGradient) {
+                    var rg = ctx.createConicGradient(200 * Math.PI / 180, cr, cr);
+                    ["#0891b2", "#16a34a", "#facc15", "#dc2626", "#00ccff", "#0891b2"].forEach((c, i) => rg.addColorStop(i / 5, c));
+                    rs = rg;
+                }
 
                 function pos(ev) { var r = can.getBoundingClientRect(); mx = (ev.clientX - r.left) * S / r.width; my = (ev.clientY - r.top) * S / r.height; }
                 can.onpointerenter = () => { hov = true; };
@@ -454,13 +464,21 @@
                 }
 
                 function draw() {
-                    ctx.clearRect(0, 0, S, S);
                     ctx.save();
+                    ctx.scale(SC, SC);
+                    ctx.clearRect(0, 0, S, S);
                     ctx.beginPath();
                     ctx.arc(cr, cr, cr, 0, Math.PI * 2);
                     ctx.clip();
-                    dh(fc, fv, fi);
+                    {# real photo underneath; the hex mosaic hides it until you hover #}
+                    if (photo.complete && photo.naturalWidth) ctx.drawImage(photo, 0, 0, S, S);
                     dh(cc, cv, ci, cT);
+                    {# ring sits on the photo's rim; clip keeps its outer edge crisp #}
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = rs;
+                    ctx.beginPath();
+                    ctx.arc(cr, cr, cr - 2.5, 0, Math.PI * 2);
+                    ctx.stroke();
                     ctx.restore();
                 }
 

@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { JSONPath } from 'jsonpath-plus';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
-const RESUME_PATH = resolve(ROOT, 'resume.json');
+const RESUME_PATH = resolve(ROOT, 'assets/resume.json');
 const LEVELS_PATH = resolve(ROOT, 'src/game/levels.json');
 
 // Resolve any string value that is a JSONPath reference ("$…") against
@@ -91,6 +91,10 @@ export default defineConfig(({ command }) => ({
   root: '.',
   // Dev serves at root; the production build targets the GitHub Pages project path.
   base: command === 'serve' ? '/' : '/resume/',
+  // Single source of truth for static assets (models, avatar, resume.json, and the
+  // generated resume.html). Vite serves these in dev and copies them into dist/ on
+  // build, so the deploy needs no separate copy step.
+  publicDir: 'assets',
   plugins: [resumeRefs()],
   build: {
     outDir: 'dist',
