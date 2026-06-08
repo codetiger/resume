@@ -1,0 +1,1800 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Résumé · Game — UI Design System</title>
+    <meta
+      name="description"
+      content="Unified dark visual identity for the interactive résumé/game — palette, type, level popups, and rendering reference."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================
+         DESIGN TOKENS — one unified dark identity, derived from the
+         game's 3D PALETTE so UI and world share one language.
+         ============================================================ */
+      :root {
+        /* surfaces */
+        --bg-0: #05090f; /* page (echoes scene bg #07140e) */
+        --bg-1: #0a1320; /* panels */
+        --bg-2: #0f1d2e; /* raised cards */
+        --card: rgba(10, 18, 30, 0.92); /* popup glass */
+        --line: rgba(140, 220, 255, 0.16);
+        --line-strong: rgba(140, 220, 255, 0.34);
+
+        /* accents (rgb pairs let components tint via rgba) */
+        --cyan: #8cdcff;
+        --cyan-rgb: 140, 220, 255;
+        --cyan-vivid: #00ccff;
+        --gold: #ffd166;
+        --gold-rgb: 255, 209, 102;
+        --mint: #7ef7c8;
+        --mint-rgb: 126, 247, 200;
+        --red: #ff6b6b;
+        --red-rgb: 255, 107, 107;
+
+        /* text */
+        --tx-0: #e8f3ff;
+        --tx-1: #bcd0e6;
+        --tx-2: #7e94ad;
+        --tx-3: #52677e;
+
+        /* type */
+        --f-display: "Space Grotesk", system-ui, sans-serif;
+        --f-body: "Inter", system-ui, -apple-system, sans-serif;
+        --f-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+
+        /* spacing scale (4px base) */
+        --s1: 0.25rem;
+        --s2: 0.5rem;
+        --s3: 0.75rem;
+        --s4: 1rem;
+        --s6: 1.5rem;
+        --s8: 2rem;
+        --s12: 3rem;
+        --s16: 4rem;
+
+        --r-sm: 6px;
+        --r-md: 10px;
+        --r-lg: 14px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--f-body);
+        color: var(--tx-1);
+        background: var(--bg-0);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        /* cinematic dark stage: two soft accent glows + faint grid */
+        background-image: radial-gradient(
+            900px 600px at 78% -8%,
+            rgba(var(--cyan-rgb), 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            800px 520px at 8% 12%,
+            rgba(var(--gold-rgb), 0.05),
+            transparent 55%
+          ),
+          linear-gradient(
+            rgba(var(--cyan-rgb), 0.022) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            90deg,
+            rgba(var(--cyan-rgb), 0.022) 1px,
+            transparent 1px
+          );
+        background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+        background-attachment: fixed;
+      }
+
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: clamp(2rem, 5vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 5rem;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      /* ============================================================
+         REUSABLE TYPE PRIMITIVES
+         ============================================================ */
+      .eyebrow {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      .display {
+        font-family: var(--f-display);
+        font-weight: 700;
+        color: var(--tx-0);
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+
+      /* ============================================================
+         HERO
+         ============================================================ */
+      .hero {
+        position: relative;
+        padding-bottom: var(--s12);
+        border-bottom: 1px solid var(--line);
+        margin-bottom: var(--s16);
+      }
+      .hero .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: var(--s6);
+      }
+      .hero .kicker .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--cyan-vivid);
+        box-shadow: 0 0 12px var(--cyan-vivid);
+      }
+      .hero h1 {
+        font-family: var(--f-display);
+        font-weight: 700;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+        color: var(--tx-0);
+        text-shadow: 0 0 40px rgba(var(--cyan-rgb), 0.25);
+      }
+      .hero h1 .accent {
+        color: var(--cyan);
+      }
+      .hero .lede {
+        margin-top: var(--s4);
+        max-width: 46ch;
+        font-size: 1.0625rem;
+        color: var(--tx-1);
+      }
+      .hero .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+        margin-top: var(--s6);
+        font-family: var(--f-mono);
+        font-size: 0.8125rem;
+        color: var(--tx-2);
+      }
+      .hero .meta-row b {
+        color: var(--gold);
+        font-weight: 500;
+      }
+
+      /* ============================================================
+         SECTION SCAFFOLDING
+         ============================================================ */
+      section.block {
+        margin-bottom: var(--s16);
+      }
+      .sec-head {
+        display: flex;
+        align-items: baseline;
+        gap: 0.85rem;
+        margin-bottom: var(--s8);
+        padding-bottom: var(--s3);
+        border-bottom: 1px solid var(--line);
+      }
+      .sec-head .num {
+        font-family: var(--f-mono);
+        font-size: 0.75rem;
+        color: var(--cyan);
+        letter-spacing: 0.1em;
+      }
+      .sec-head h2 {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: clamp(1.25rem, 3vw, 1.6rem);
+        letter-spacing: -0.01em;
+        color: var(--tx-0);
+      }
+      .sec-head .note {
+        margin-left: auto;
+        font-size: 0.8125rem;
+        color: var(--tx-2);
+        max-width: 30ch;
+        text-align: right;
+      }
+      @media (max-width: 640px) {
+        .sec-head .note {
+          display: none;
+        }
+      }
+
+      /* ============================================================
+         1 · COLOR PALETTE
+         ============================================================ */
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: var(--s4);
+      }
+      .swatch {
+        background: var(--bg-1);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        overflow: hidden;
+      }
+      .swatch .chip {
+        height: 72px;
+        position: relative;
+      }
+      .swatch .chip.glow::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.12);
+      }
+      .swatch .body {
+        padding: 0.6rem 0.75rem 0.7rem;
+      }
+      .swatch .name {
+        font-family: var(--f-mono);
+        font-size: 0.75rem;
+        color: var(--tx-0);
+      }
+      .swatch .hex {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        color: var(--tx-2);
+        margin-top: 0.1rem;
+      }
+      .swatch .use {
+        font-size: 0.6875rem;
+        color: var(--tx-3);
+        margin-top: 0.25rem;
+      }
+
+      .sub-label {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx-2);
+        margin: var(--s8) 0 var(--s4);
+      }
+
+      /* tile-render reference strip */
+      .tiles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s3);
+      }
+      .tile {
+        flex: 1 1 110px;
+        border-radius: var(--r-md);
+        padding: 0.85rem 0.75rem;
+        border: 1px solid var(--line);
+        background: var(--bg-1);
+      }
+      .tile .sq {
+        width: 100%;
+        height: 40px;
+        border-radius: var(--r-sm);
+        margin-bottom: 0.55rem;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35),
+          0 0 22px var(--gw, transparent);
+      }
+      .tile .t-name {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        color: var(--tx-1);
+      }
+      .tile .t-hex {
+        font-family: var(--f-mono);
+        font-size: 0.625rem;
+        color: var(--tx-3);
+      }
+
+      /* glow / semantic legend */
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--s3);
+        margin-top: var(--s6);
+      }
+      .legend .row {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.7rem 0.9rem;
+        background: var(--bg-1);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+      }
+      .legend .led {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex: none;
+      }
+      .legend .txt b {
+        font-weight: 600;
+        color: var(--tx-0);
+        font-size: 0.85rem;
+      }
+      .legend .txt span {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--tx-2);
+      }
+
+      /* ============================================================
+         2 · TYPOGRAPHY
+         ============================================================ */
+      .type-row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--s6);
+        padding: var(--s4) 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .type-row:last-child {
+        border-bottom: none;
+      }
+      .type-row .spec {
+        flex: none;
+        width: 190px;
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        color: var(--tx-2);
+        line-height: 1.5;
+      }
+      .type-row .spec b {
+        display: block;
+        color: var(--cyan);
+        font-weight: 500;
+      }
+      .type-row .sample {
+        color: var(--tx-0);
+        min-width: 0;
+      }
+      .ts-hero {
+        font-family: var(--f-display);
+        font-weight: 700;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+      .ts-h2 {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 2rem;
+        letter-spacing: -0.01em;
+      }
+      .ts-title {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      .ts-lead {
+        font-family: var(--f-body);
+        font-size: 1rem;
+        color: var(--tx-1);
+      }
+      .ts-bullet {
+        font-family: var(--f-body);
+        font-size: 0.9375rem;
+        color: var(--tx-1);
+      }
+      .ts-eyebrow {
+        font-family: var(--f-body);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--cyan);
+      }
+      .ts-mono {
+        font-family: var(--f-mono);
+        font-weight: 500;
+        font-size: 0.8125rem;
+        letter-spacing: 0.04em;
+        color: var(--gold);
+      }
+      @media (max-width: 640px) {
+        .type-row {
+          flex-direction: column;
+          gap: var(--s2);
+        }
+        .type-row .spec {
+          width: auto;
+        }
+      }
+
+      /* ============================================================
+         3 · LEVEL POPUPS  (the most important surface)
+         ============================================================ */
+      .stage {
+        position: relative;
+        border-radius: var(--r-lg);
+        padding: clamp(1.25rem, 4vw, 2.75rem);
+        background: radial-gradient(
+            120% 120% at 80% 0%,
+            rgba(var(--cyan-rgb), 0.08),
+            transparent 55%
+          ),
+          var(--bg-0);
+        border: 1px solid var(--line);
+        overflow: hidden;
+      }
+      .stage::before {
+        /* faint board grid behind the popups, evoking the game */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(var(--cyan-rgb), 0.04) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(var(--cyan-rgb), 0.04) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: radial-gradient(120% 90% at 50% 30%, #000, transparent 75%);
+        pointer-events: none;
+      }
+      .popup-grid {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: clamp(1.1rem, 3vw, 1.8rem);
+      }
+
+      /* the card — accent is themed per variant via --accent / --accent-rgb */
+      .popup {
+        --accent: var(--cyan);
+        --accent-rgb: 140, 220, 255;
+        position: relative;
+        background: var(--card);
+        border: 1px solid rgba(var(--accent-rgb), 0.28);
+        border-radius: var(--r-lg);
+        padding: 1.5rem 1.6rem 1.4rem;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8),
+          0 0 50px -12px rgba(var(--accent-rgb), 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .popup.job {
+        --accent: #8cdcff;
+        --accent-rgb: 140, 220, 255;
+      }
+      .popup.award {
+        --accent: #ffd166;
+        --accent-rgb: 255, 209, 102;
+      }
+      .popup.meta {
+        --accent: #7ef7c8;
+        --accent-rgb: 126, 247, 200;
+      }
+
+      /* watermark numeral */
+      .popup .num {
+        position: absolute;
+        top: 0.1rem;
+        right: 0.7rem;
+        font-family: var(--f-display);
+        font-weight: 700;
+        font-size: 5rem;
+        line-height: 1;
+        color: rgba(var(--accent-rgb), 0.08);
+        letter-spacing: 0.02em;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      /* chapter + progress rail */
+      .chapter {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.1rem;
+      }
+      .chapter .label {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(var(--accent-rgb), 0.85);
+        white-space: nowrap;
+      }
+      .rail {
+        display: flex;
+        gap: 3px;
+        flex: 1;
+        min-width: 0;
+      }
+      .rail i {
+        height: 4px;
+        flex: 1;
+        border-radius: 2px;
+        background: rgba(var(--accent-rgb), 0.14);
+      }
+      .rail i.done {
+        background: rgba(var(--accent-rgb), 0.55);
+      }
+      .rail i.now {
+        background: var(--cyan-vivid);
+        box-shadow: 0 0 10px var(--cyan-vivid);
+      }
+
+      .popup h3 {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+        letter-spacing: -0.01em;
+        line-height: 1.1;
+        color: var(--tx-0);
+        text-shadow: 0 0 26px rgba(var(--accent-rgb), 0.32);
+      }
+      .popup .role {
+        margin-top: 0.45rem;
+        font-family: var(--f-body);
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(var(--accent-rgb), 0.92);
+      }
+      .popup .period {
+        margin-top: 0.3rem;
+        font-family: var(--f-mono);
+        font-weight: 500;
+        font-size: 0.8125rem;
+        letter-spacing: 0.04em;
+        color: var(--gold);
+      }
+      .popup .summary {
+        margin-top: 1rem;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--tx-1);
+      }
+      .popup ul {
+        list-style: none;
+        margin-top: 0.9rem;
+        display: grid;
+        gap: 0.45rem;
+      }
+      .popup ul li {
+        position: relative;
+        padding-left: 1.15rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--tx-1);
+      }
+      .popup ul li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: rgba(var(--accent-rgb), 0.7);
+      }
+
+      /* tech / domain tags */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 1.1rem;
+      }
+      .tag {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.02em;
+        color: rgba(var(--accent-rgb), 0.95);
+        background: rgba(var(--accent-rgb), 0.08);
+        border: 1px solid rgba(var(--accent-rgb), 0.22);
+        border-radius: var(--r-sm);
+        padding: 0.2rem 0.5rem;
+      }
+
+      .popup .foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 1.4rem;
+        padding-top: 1.1rem;
+        border-top: 1px solid rgba(var(--accent-rgb), 0.14);
+      }
+      .link {
+        font-family: var(--f-mono);
+        font-size: 0.8125rem;
+        text-decoration: none;
+        border-bottom: 1px solid;
+        padding-bottom: 1px;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .link.gold {
+        color: var(--gold);
+        border-color: rgba(var(--gold-rgb), 0.4);
+      }
+      .link.gold:hover {
+        color: #ffe199;
+      }
+      .link.mint {
+        color: var(--mint);
+        border-color: rgba(var(--mint-rgb), 0.4);
+      }
+
+      /* buttons */
+      .btn {
+        font-family: var(--f-body);
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: var(--r-sm);
+        padding: 0.55rem 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background 0.18s, color 0.18s, border-color 0.18s;
+        white-space: nowrap;
+      }
+      .btn--ghost {
+        background: transparent;
+        border: 1px solid rgba(var(--accent-rgb), 0.4);
+        color: rgba(var(--accent-rgb), 0.95);
+      }
+      .btn--ghost:hover {
+        background: rgba(var(--accent-rgb), 0.12);
+      }
+      .btn--primary {
+        border: 1px solid rgba(var(--accent-rgb), 0.55);
+        color: #04121d;
+        background: linear-gradient(
+          180deg,
+          rgba(var(--accent-rgb), 0.95),
+          rgba(var(--accent-rgb), 0.7)
+        );
+        box-shadow: 0 0 24px -6px rgba(var(--accent-rgb), 0.6);
+      }
+      .btn--primary:hover {
+        background: linear-gradient(
+          180deg,
+          rgba(var(--accent-rgb), 1),
+          rgba(var(--accent-rgb), 0.8)
+        );
+      }
+      .btn kbd {
+        font-family: var(--f-mono);
+        font-size: 0.625rem;
+        font-weight: 500;
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 3px;
+        padding: 0.05rem 0.3rem;
+        letter-spacing: 0;
+      }
+      .btn--primary kbd {
+        background: rgba(0, 0, 0, 0.22);
+        border-color: rgba(0, 0, 0, 0.25);
+        color: #04121d;
+      }
+
+      /* award block + contact rows reuse popup chrome */
+      .award {
+        margin-top: 1rem;
+      }
+      .award .a-title {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--tx-0);
+      }
+      .award .a-meta {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.05em;
+        color: var(--gold);
+        margin: 0.2rem 0 0.4rem;
+      }
+      .award .a-desc {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: var(--tx-1);
+      }
+
+      .contact-list {
+        margin-top: 1.1rem;
+        display: grid;
+        gap: 0.55rem;
+      }
+      .contact-list a,
+      .contact-list .loc {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--f-mono);
+        font-size: 0.8125rem;
+        color: var(--tx-1);
+        text-decoration: none;
+      }
+      .contact-list a .k {
+        color: rgba(var(--accent-rgb), 0.9);
+        width: 4.5rem;
+        flex: none;
+      }
+      .contact-list a .v {
+        color: var(--gold);
+      }
+      .lock {
+        margin-top: 1.1rem;
+        display: flex;
+        gap: 0.6rem;
+        align-items: flex-start;
+        padding: 0.75rem 0.9rem;
+        background: rgba(var(--gold-rgb), 0.06);
+        border: 1px dashed rgba(var(--gold-rgb), 0.34);
+        border-radius: var(--r-md);
+        font-size: 0.8125rem;
+        color: var(--tx-1);
+      }
+      .lock .ico {
+        color: var(--gold);
+      }
+
+      /* big single-link CTA for meta/social popups */
+      .meta-cta {
+        margin-top: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.2rem;
+        background: rgba(var(--mint-rgb), 0.06);
+        border: 1px solid rgba(var(--mint-rgb), 0.28);
+        border-radius: var(--r-md);
+        text-decoration: none;
+      }
+      .meta-cta .u {
+        font-family: var(--f-mono);
+        font-size: 0.95rem;
+        color: var(--mint);
+      }
+      .meta-cta .arr {
+        font-size: 1.25rem;
+        color: var(--mint);
+      }
+
+      /* ============================================================
+         4 · STATIC RÉSUMÉ SECTION (unified dark)
+         ============================================================ */
+      .resume {
+        background: var(--bg-1);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+      }
+      .r-head {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        padding-bottom: 1.6rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .r-avatar {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        flex: none;
+        background: conic-gradient(
+          from 200deg,
+          #0891b2,
+          #16a34a,
+          #facc15,
+          #dc2626,
+          #00ccff,
+          #0891b2
+        );
+        padding: 3px;
+        box-shadow: 0 0 30px -6px rgba(var(--cyan-rgb), 0.5);
+      }
+      .r-avatar span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: var(--bg-2);
+        font-family: var(--f-display);
+        font-weight: 700;
+        font-size: 1.9rem;
+        color: var(--tx-0);
+      }
+      .r-head h3 {
+        font-family: var(--f-display);
+        font-weight: 700;
+        font-size: clamp(1.4rem, 4vw, 1.9rem);
+        letter-spacing: -0.02em;
+        color: var(--tx-0);
+      }
+      .r-head .r-role {
+        margin-top: 0.2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--cyan);
+      }
+      .r-head .r-contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem 1.2rem;
+        margin-top: 0.7rem;
+        font-family: var(--f-mono);
+        font-size: 0.78rem;
+        color: var(--tx-2);
+      }
+      .r-head .r-contact a {
+        color: var(--gold);
+        text-decoration: none;
+      }
+
+      .r-sec {
+        margin-top: 2rem;
+      }
+      .r-sec > .st {
+        font-family: var(--f-mono);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--cyan);
+        margin-bottom: 1rem;
+      }
+      .entry {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.1rem 1rem;
+        align-items: baseline;
+      }
+      .entry .e-role {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--tx-0);
+      }
+      .entry .e-when {
+        font-family: var(--f-mono);
+        font-size: 0.75rem;
+        color: var(--tx-2);
+        white-space: nowrap;
+      }
+      .entry .e-org {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--cyan);
+      }
+      .entry .e-sum {
+        grid-column: 1 / -1;
+        margin-top: 0.55rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--tx-1);
+      }
+      .entry ul {
+        grid-column: 1 / -1;
+        list-style: none;
+        margin-top: 0.6rem;
+        display: grid;
+        gap: 0.4rem;
+      }
+      .entry ul li {
+        position: relative;
+        padding-left: 1.1rem;
+        font-size: 0.875rem;
+        color: var(--tx-1);
+      }
+      .entry ul li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: rgba(var(--cyan-rgb), 0.6);
+      }
+      .skill-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--s4);
+      }
+      .skill {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        padding: 1rem 1.1rem;
+      }
+      .skill h4 {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--tx-0);
+        margin-bottom: 0.6rem;
+      }
+      .skill .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .skill .pills span {
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        color: var(--cyan);
+        background: rgba(var(--cyan-rgb), 0.08);
+        border: 1px solid rgba(var(--cyan-rgb), 0.2);
+        border-radius: var(--r-sm);
+        padding: 0.18rem 0.5rem;
+      }
+
+      /* ============================================================
+         5 · RENDERING & REFERENCE
+         ============================================================ */
+      .render-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: var(--s6);
+      }
+      @media (max-width: 760px) {
+        .render-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .render-notes {
+        background: var(--bg-1);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        padding: 1.5rem 1.6rem;
+      }
+      .render-notes h4 {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--tx-0);
+        margin-bottom: 0.9rem;
+      }
+      .render-notes dl {
+        display: grid;
+        gap: 0.7rem;
+      }
+      .render-notes dt {
+        font-family: var(--f-mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.04em;
+        color: var(--cyan);
+      }
+      .render-notes dd {
+        font-size: 0.875rem;
+        color: var(--tx-1);
+        line-height: 1.5;
+      }
+      /* a faux "scene" preview to set the rendering bar */
+      .scene-prev {
+        position: relative;
+        border-radius: var(--r-lg);
+        border: 1px solid var(--line);
+        overflow: hidden;
+        height: 340px;
+        background: radial-gradient(
+            90% 70% at 50% 120%,
+            rgba(var(--cyan-rgb), 0.18),
+            transparent 60%
+          ),
+          linear-gradient(180deg, #081019, #07140e);
+      }
+      .scene-prev canvas {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: pan-y;
+      }
+      .scene-prev .cap {
+        position: absolute;
+        bottom: 0.7rem;
+        left: 0.9rem;
+        font-family: var(--f-mono);
+        font-size: 0.6875rem;
+        color: var(--tx-2);
+      }
+
+      /* ============================================================
+         FOOTER
+         ============================================================ */
+      footer {
+        margin-top: var(--s16);
+        padding-top: var(--s6);
+        border-top: 1px solid var(--line);
+        font-family: var(--f-mono);
+        font-size: 0.72rem;
+        color: var(--tx-3);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+        justify-content: space-between;
+      }
+      footer .legend-inline {
+        display: flex;
+        gap: 1rem;
+      }
+      footer b {
+        color: var(--tx-2);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- ============================ HERO ============================ -->
+      <header class="hero">
+        <span class="kicker eyebrow"><i class="dot"></i> UI Design System · v1</span>
+        <h1>
+          One world, <span class="accent">one identity.</span>
+        </h1>
+        <p class="lede">
+          A unified dark visual language for the interactive résumé — the
+          rolling-cube game and the static résumé now share a single palette,
+          type system, and component set. Built for the two people who read it:
+          the engineer who wants to play, and the recruiter who wants to scan.
+        </p>
+        <div class="meta-row">
+          <span>Surfaces: <b>game overlay</b> + <b>static résumé</b></span>
+          <span>Type: <b>Space&nbsp;Grotesk · Inter · JetBrains&nbsp;Mono</b></span>
+          <span>Mode: <b>dark, emissive, cinematic</b></span>
+        </div>
+      </header>
+
+      <!-- ===================== 1 · COLOR PALETTE ===================== -->
+      <section class="block" id="palette">
+        <div class="sec-head">
+          <span class="num">01</span>
+          <h2>Color palette</h2>
+          <p class="note">Derived from the game's 3D PALETTE so UI and world read as one.</p>
+        </div>
+
+        <p class="sub-label">Surfaces &amp; text</p>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="chip" style="background: #05090f"></div>
+            <div class="body">
+              <div class="name">--bg-0</div>
+              <div class="hex">#05090F</div>
+              <div class="use">Page background</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: #0a1320"></div>
+            <div class="body">
+              <div class="name">--bg-1</div>
+              <div class="hex">#0A1320</div>
+              <div class="use">Panels</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: #0f1d2e"></div>
+            <div class="body">
+              <div class="name">--bg-2</div>
+              <div class="hex">#0F1D2E</div>
+              <div class="use">Raised cards</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip glow" style="background: #e8f3ff"></div>
+            <div class="body">
+              <div class="name">--tx-0</div>
+              <div class="hex">#E8F3FF</div>
+              <div class="use">Headings</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: #bcd0e6"></div>
+            <div class="body">
+              <div class="name">--tx-1</div>
+              <div class="hex">#BCD0E6</div>
+              <div class="use">Body text</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background: #7e94ad"></div>
+            <div class="body">
+              <div class="name">--tx-2</div>
+              <div class="hex">#7E94AD</div>
+              <div class="use">Muted / meta</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="sub-label">Accents — the glow language</p>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="chip glow" style="background: #8cdcff"></div>
+            <div class="body">
+              <div class="name">--cyan</div>
+              <div class="hex">#8CDCFF</div>
+              <div class="use">Info · interaction</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip glow" style="background: #00ccff"></div>
+            <div class="body">
+              <div class="name">--cyan-vivid</div>
+              <div class="hex">#00CCFF</div>
+              <div class="use">Player · live action</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip glow" style="background: #ffd166"></div>
+            <div class="body">
+              <div class="name">--gold</div>
+              <div class="hex">#FFD166</div>
+              <div class="use">Time · achievement</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip glow" style="background: #7ef7c8"></div>
+            <div class="body">
+              <div class="name">--mint</div>
+              <div class="hex">#7EF7C8</div>
+              <div class="use">External · social</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="chip glow" style="background: #ff6b6b"></div>
+            <div class="body">
+              <div class="name">--red</div>
+              <div class="hex">#FF6B6B</div>
+              <div class="use">Danger · game over</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="sub-label">3D tile-render reference (game world)</p>
+        <div class="tiles">
+          <div class="tile">
+            <div class="sq" style="background: #f1f5f9; --gw: rgba(241,245,249,0.3)"></div>
+            <div class="t-name">base</div>
+            <div class="t-hex">#F1F5F9</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #16a34a; --gw: rgba(22,163,74,0.5)"></div>
+            <div class="t-name">disappear</div>
+            <div class="t-hex">#16A34A</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #ea580c; --gw: rgba(234,88,12,0.5)"></div>
+            <div class="t-name">line-wipe</div>
+            <div class="t-hex">#EA580C</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #facc15; --gw: rgba(250,204,21,0.5)"></div>
+            <div class="t-name">arrow</div>
+            <div class="t-hex">#FACC15</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #0891b2; --gw: rgba(8,145,178,0.5)"></div>
+            <div class="t-name">shift</div>
+            <div class="t-hex">#0891B2</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #dc2626; --gw: rgba(220,38,38,0.5)"></div>
+            <div class="t-name">explosive</div>
+            <div class="t-hex">#DC2626</div>
+          </div>
+          <div class="tile">
+            <div class="sq" style="background: #ffd166; --gw: rgba(255,209,102,0.6)"></div>
+            <div class="t-name">info / goal</div>
+            <div class="t-hex">#FFD166</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="row">
+            <span class="led" style="background: #8cdcff; box-shadow: 0 0 12px #8cdcff"></span>
+            <span class="txt"><b>Cyan</b><span>Information &amp; interaction</span></span>
+          </div>
+          <div class="row">
+            <span class="led" style="background: #ffd166; box-shadow: 0 0 12px #ffd166"></span>
+            <span class="txt"><b>Gold</b><span>Time, dates &amp; achievement</span></span>
+          </div>
+          <div class="row">
+            <span class="led" style="background: #7ef7c8; box-shadow: 0 0 12px #7ef7c8"></span>
+            <span class="txt"><b>Mint</b><span>External links &amp; social</span></span>
+          </div>
+          <div class="row">
+            <span class="led" style="background: #ff6b6b; box-shadow: 0 0 12px #ff6b6b"></span>
+            <span class="txt"><b>Red</b><span>Danger &amp; failure states</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 2 · TYPOGRAPHY ===================== -->
+      <section class="block" id="type">
+        <div class="sec-head">
+          <span class="num">02</span>
+          <h2>Typography</h2>
+          <p class="note">Grotesk display · Inter body · mono for data.</p>
+        </div>
+
+        <div class="type-row">
+          <div class="spec"><b>Hero / Name</b>Space Grotesk 700<br />clamp(2–3rem) · -0.02em</div>
+          <div class="sample ts-hero">Harishankar Narayanan</div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Popup heading</b>Space Grotesk 600<br />2rem · -0.01em</div>
+          <div class="sample ts-h2">Volante Technologies</div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Section title</b>Space Grotesk 600<br />1.25rem</div>
+          <div class="sample ts-title">Engineering Leadership</div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Lead / summary</b>Inter 400<br />1rem · 1.6</div>
+          <div class="sample ts-lead">
+            Led the VolPay payment engine team; improved throughput 6× and moved a
+            monolith to cloud-native SaaS.
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Bullet</b>Inter 400<br />0.9375rem · 1.55</div>
+          <div class="sample ts-bullet">▸ Architected the migration to event-driven microservices.</div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Eyebrow / role</b>Inter 600 · UPPER<br />0.75rem · 0.12em</div>
+          <div class="sample ts-eyebrow">Senior Director — Product Development</div>
+        </div>
+        <div class="type-row">
+          <div class="spec"><b>Meta / date / tag</b>JetBrains Mono 500<br />0.8125rem · 0.04em</div>
+          <div class="sample ts-mono">2019 — 2023 · 4 yrs</div>
+        </div>
+      </section>
+
+      <!-- ===================== 3 · LEVEL POPUPS ===================== -->
+      <section class="block" id="popups">
+        <div class="sec-head">
+          <span class="num">03</span>
+          <h2>Level popups</h2>
+          <p class="note">The most important surface — career chapters revealed in-game.</p>
+        </div>
+
+        <div class="stage">
+          <div class="popup-grid">
+            <!-- JOB / ROLE -->
+            <article class="popup job">
+              <div class="num">02</div>
+              <div class="chapter">
+                <span class="label">Chapter 02 / 16</span>
+                <div class="rail">
+                  <i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i
+                  ><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+              <h3>Smackall Games</h3>
+              <p class="role">Founder &amp; Technology Head</p>
+              <p class="period">2006 — 2016 · 10 yrs</p>
+              <p class="summary">
+                Bootstrapped a games studio from two people to twenty; shipped
+                120+ apps with three iTunes global chart-toppers.
+              </p>
+              <ul>
+                <li>Built Iyan 3D, a mobile 3D-animation engine — 2M+ downloads.</li>
+                <li>Owned everything: rendering, tooling, hiring, and go-to-market.</li>
+              </ul>
+              <div class="tags">
+                <span class="tag">C++</span>
+                <span class="tag">OpenGL ES</span>
+                <span class="tag">3D Engine</span>
+                <span class="tag">iOS</span>
+                <span class="tag">Entrepreneurship</span>
+              </div>
+              <div class="foot">
+                <a class="link gold" href="#">smackall.com ↗</a>
+                <button class="btn btn--primary">Continue ▸ <kbd>↵</kbd></button>
+              </div>
+            </article>
+
+            <!-- AWARD -->
+            <article class="popup award">
+              <div class="num">08</div>
+              <div class="chapter">
+                <span class="label">Chapter 08 / 16</span>
+                <div class="rail">
+                  <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i
+                  ><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+              <h3>Awards &amp; Recognition</h3>
+              <p class="role">Security Research</p>
+              <div class="award">
+                <div class="a-title">IoT Security Research</div>
+                <div class="a-meta">Covered by Futurism &amp; ZDNet</div>
+                <p class="a-desc">
+                  Reverse-engineered a robot-vacuum's firmware, disclosed the
+                  vulnerabilities responsibly, and shipped a safer Rust replacement.
+                </p>
+              </div>
+              <div class="tags">
+                <span class="tag">Reverse Engineering</span>
+                <span class="tag">Rust</span>
+                <span class="tag">Firmware</span>
+                <span class="tag">IoT</span>
+              </div>
+              <div class="foot">
+                <a class="link gold" href="#">Read the coverage ↗</a>
+                <button class="btn btn--primary">Continue ▸ <kbd>↵</kbd></button>
+              </div>
+            </article>
+
+            <!-- META / SOCIAL -->
+            <article class="popup meta">
+              <div class="num">12</div>
+              <div class="chapter">
+                <span class="label">Chapter 12 / 16</span>
+                <div class="rail">
+                  <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i
+                  ><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+              <h3>GitHub</h3>
+              <p class="role">Where the code lives</p>
+              <p class="summary">
+                Open-source experiments, the engine behind this game, and a trail
+                of side-projects that never quite stopped.
+              </p>
+              <a class="meta-cta" href="#">
+                <span class="u">github.com/codetiger</span>
+                <span class="arr">↗</span>
+              </a>
+              <div class="foot">
+                <span></span>
+                <button class="btn btn--primary">Continue ▸ <kbd>↵</kbd></button>
+              </div>
+            </article>
+
+            <!-- CONTACT (final) -->
+            <article class="popup job">
+              <div class="num">16</div>
+              <div class="chapter">
+                <span class="label">Chapter 16 / 16</span>
+                <div class="rail">
+                  <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i
+                  ><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i>
+                </div>
+              </div>
+              <h3>Get in touch</h3>
+              <p class="role">Find me here</p>
+              <p class="summary">
+                Reach me at any of these — and clear this final level to unlock my
+                phone number.
+              </p>
+              <div class="contact-list">
+                <a href="#"><span class="k">email</span><span class="v">nharishankar@gmail.com</span></a>
+                <a href="#"><span class="k">github</span><span class="v">/codetiger</span></a>
+                <a href="#"><span class="k">linkedin</span><span class="v">/in/code42tiger</span></a>
+                <span class="loc"><span class="k" style="color: var(--tx-2)">based in</span>Chennai, India</span>
+              </div>
+              <div class="lock">
+                <span class="ico">⬡</span>
+                <span>Phone unlocks when you roll back to the start tile and finish the game.</span>
+              </div>
+              <div class="foot">
+                <span></span>
+                <button class="btn btn--primary">Finish ▸ <kbd>↵</kbd></button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 4 · STATIC RÉSUMÉ ===================== -->
+      <section class="block" id="resume">
+        <div class="sec-head">
+          <span class="num">04</span>
+          <h2>Static résumé</h2>
+          <p class="note">The no-JS fallback, now in the same dark identity.</p>
+        </div>
+
+        <div class="resume">
+          <div class="r-head">
+            <div class="r-avatar"><span>HN</span></div>
+            <div>
+              <h3>Harishankar Narayanan</h3>
+              <div class="r-role">Senior Director — Product Engineering</div>
+              <div class="r-contact">
+                <a href="#">nharishankar@gmail.com</a>
+                <span>Chennai, India</span>
+                <a href="#">github.com/codetiger</a>
+                <a href="#">linkedin.com/in/code42tiger</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="r-sec">
+            <div class="st">Experience</div>
+            <div class="entry">
+              <span class="e-role">Senior Director — Product Development</span>
+              <span class="e-when">2019 — 2023</span>
+              <span class="e-org">Volante Technologies</span>
+              <p class="e-sum">
+                Led the VolPay payment engine organisation through a cloud
+                transformation, taking a long-standing on-prem monolith to a
+                cloud-native SaaS platform.
+              </p>
+              <ul>
+                <li>Improved processing throughput 6× — from 30 to 200+ TPS.</li>
+                <li>Re-architected the core to an event-driven, microservice design.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="r-sec">
+            <div class="st">Skills</div>
+            <div class="skill-grid">
+              <div class="skill">
+                <h4>Engineering Leadership</h4>
+                <div class="pills">
+                  <span>Team scaling</span><span>Eng strategy</span><span>Delivery</span
+                  ><span>Entrepreneurship</span>
+                </div>
+              </div>
+              <div class="skill">
+                <h4>Domain Expertise</h4>
+                <div class="pills">
+                  <span>Payments</span><span>Banking</span><span>eCommerce</span
+                  ><span>3D &amp; codecs</span>
+                </div>
+              </div>
+              <div class="skill">
+                <h4>Architecture &amp; Platform</h4>
+                <div class="pills">
+                  <span>High-throughput</span><span>Event-driven</span
+                  ><span>Microservices</span><span>Cloud-native</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 5 · RENDERING & REFERENCE ===================== -->
+      <section class="block" id="render">
+        <div class="sec-head">
+          <span class="num">05</span>
+          <h2>Rendering &amp; reference</h2>
+          <p class="note">The quality bar the UI is tuned to sit inside.</p>
+        </div>
+
+        <div class="render-grid">
+          <div class="render-notes">
+            <h4>Quality targets</h4>
+            <dl>
+              <dt>Atmosphere</dt>
+              <dd>Near-black stage (#07140E) with cool fill light — the glowing board is the only hero.</dd>
+              <dt>Tone mapping</dt>
+              <dd>ACES Filmic at 1.1 exposure for cinematic, non-clipping highlights.</dd>
+              <dt>Materials</dt>
+              <dd>PBR tiles: emissive neon body + brushed-metal trim; soft PCF shadows for depth.</dd>
+              <dt>UI overlay</dt>
+              <dd>Glass cards (blur 14px) with accent-tinted bloom, so popups feel lit by the same world.</dd>
+              <dt>Motion</dt>
+              <dd>0.5s easing cycles; reduced-motion respected; emissive pulse signals interactivity.</dd>
+            </dl>
+          </div>
+
+          <div class="scene-prev">
+            <canvas id="r3d"></canvas>
+            <span class="cap">live three.js — neon player cube on a platform tile</span>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>Design spec — interactive résumé · <b>unified dark identity</b></span>
+        <span class="legend-inline">
+          <span><b>cyan</b> info</span>
+          <span><b>gold</b> time</span>
+          <span><b>mint</b> social</span>
+          <span><b>red</b> danger</span>
+        </span>
+      </footer>
+    </div>
+
+    <!-- Live three.js render for the rendering-reference section.
+         Built from primitives so it works via file:// and when served;
+         materials/lighting mirror src/engine/scene.ts + src/game/tile.ts. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+
+      (async function initRender() {
+        const canvas = document.getElementById("r3d");
+        if (!canvas) return;
+        const host = canvas.parentElement;
+        const cap = host.querySelector(".cap");
+
+        let renderer;
+        try {
+          renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        } catch (e) {
+          if (cap) cap.textContent = "WebGL unavailable in this browser";
+          return;
+        }
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x07140e);
+
+        const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+        camera.position.set(3.2, 3.0, 4.0);
+        camera.lookAt(0, 0.5, 0);
+
+        // Lighting — mirrors src/engine/scene.ts (ambient + key + cool fill).
+        scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+        const key = new THREE.DirectionalLight(0xffffff, 1.6);
+        key.position.set(6, 10, 8);
+        key.castShadow = true;
+        key.shadow.mapSize.set(1024, 1024);
+        key.shadow.camera.near = 1;
+        key.shadow.camera.far = 40;
+        key.shadow.camera.left = -4;
+        key.shadow.camera.right = 4;
+        key.shadow.camera.top = 4;
+        key.shadow.camera.bottom = -4;
+        key.shadow.bias = -0.001;
+        scene.add(key);
+        const fill = new THREE.DirectionalLight(0xaad4ff, 0.35);
+        fill.position.set(-5, 4, -6);
+        scene.add(fill);
+
+        // Subtle image-based lighting (optional; degrade gracefully if the
+        // addon can't be fetched). Same RoomEnvironment the game uses.
+        try {
+          const { RoomEnvironment } = await import(
+            "three/addons/environments/RoomEnvironment.js"
+          );
+          const pmrem = new THREE.PMREMGenerator(renderer);
+          scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+          if ("environmentIntensity" in scene) scene.environmentIntensity = 0.2;
+        } catch (e) {
+          /* lights-only fallback */
+        }
+
+        // A platform tile with a player cube on top.
+        const piece = new THREE.Group();
+        scene.add(piece);
+
+        let playerNode = null; // node we bob in the animation loop
+        let playerBaseY = 0.5;
+
+        const clearPiece = () => {
+          while (piece.children.length) piece.remove(piece.children[0]);
+        };
+
+        // Faithful primitive stand-in — shown immediately, and the permanent
+        // fallback when the .obj files can't be fetched (e.g. opened via file://,
+        // where the browser blocks cross-origin model loads).
+        function buildPrimitives() {
+          clearPiece();
+          const frame = new THREE.Mesh(
+            new THREE.BoxGeometry(1.8, 0.5, 1.8),
+            new THREE.MeshStandardMaterial({ color: 0x1a3352, roughness: 0.35, metalness: 0.4 })
+          );
+          frame.position.y = -0.25;
+          frame.castShadow = true;
+          frame.receiveShadow = true;
+          piece.add(frame);
+
+          const top = new THREE.Mesh(
+            new THREE.BoxGeometry(1.56, 0.12, 1.56),
+            new THREE.MeshStandardMaterial({
+              color: 0xffd166, roughness: 0.45, metalness: 0.05,
+              emissive: 0xffd166, emissiveIntensity: 0.5,
+            })
+          );
+          top.position.y = 0.03;
+          top.receiveShadow = true;
+          piece.add(top);
+
+          const cube = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8, 0.8, 0.8),
+            new THREE.MeshStandardMaterial({
+              color: 0x00ccff, roughness: 0.35, metalness: 0.3,
+              emissive: 0x00ccff, emissiveIntensity: 0.35,
+            })
+          );
+          cube.castShadow = true;
+          cube.position.y = 0.5;
+          cube.add(
+            new THREE.LineSegments(
+              new THREE.EdgesGeometry(cube.geometry),
+              new THREE.LineBasicMaterial({ color: 0x9af0ff, transparent: true, opacity: 0.4 })
+            )
+          );
+          piece.add(cube);
+
+          playerNode = cube;
+          playerBaseY = 0.5;
+        }
+        buildPrimitives();
+
+        // Centre + uniformly scale a loaded OBJ on the local origin
+        // (mirrors loadNormalizedModel in src/engine/models.ts).
+        function normalize(root, fit) {
+          root.updateMatrixWorld(true);
+          const box = new THREE.Box3().setFromObject(root);
+          const size = new THREE.Vector3();
+          const center = new THREE.Vector3();
+          box.getSize(size);
+          box.getCenter(center);
+          const scale = fit(size);
+          root.scale.setScalar(scale);
+          root.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+          return { size, scale };
+        }
+
+        async function loadOBJ(MTLLoader, OBJLoader, base, mtlFile, objFile) {
+          const mtl = new MTLLoader();
+          mtl.setPath(base);
+          const materials = await mtl.loadAsync(mtlFile);
+          materials.preload();
+          const obj = new OBJLoader();
+          obj.setMaterials(materials);
+          return obj.loadAsync(base + objFile);
+        }
+
+        // Swap in the real public/models/*.obj game assets when the page is served.
+        async function loadRealModels() {
+          const [{ OBJLoader }, { MTLLoader }] = await Promise.all([
+            import("three/addons/loaders/OBJLoader.js"),
+            import("three/addons/loaders/MTLLoader.js"),
+          ]);
+          // Works whether served by Vite (/models/) or a static server at the
+          // repo root (public/models/).
+          const bases = ["models/", "public/models/", "/models/", "/public/models/"];
+          let platform = null;
+          let base = null;
+          for (const b of bases) {
+            try {
+              platform = await loadOBJ(MTLLoader, OBJLoader, b, "platforms.mtl", "platform.obj");
+              base = b;
+              break;
+            } catch (e) {
+              /* try the next candidate dir */
+            }
+          }
+          if (!platform) throw new Error("models dir not reachable");
+          const player = await loadOBJ(MTLLoader, OBJLoader, base, "player.mtl", "player.obj");
+
+          // Recolour the platform as the gold "info / goal" tile (src/game/tile.ts:
+          // material 'Material2' is the emissive body, the rest is dark trim).
+          const bodyColor = 0xffd166;
+          const bodyMat = new THREE.MeshStandardMaterial({
+            color: bodyColor, roughness: 0.45, metalness: 0.05,
+            emissive: bodyColor, emissiveIntensity: 0.6,
+          });
+          const trimMat = new THREE.MeshStandardMaterial({
+            color: 0x1a3352, roughness: 0.35, metalness: 0.4,
+          });
+          const pickTile = (m) => (m.name === "Material2" ? bodyMat : trimMat);
+          platform.traverse((c) => {
+            if (!c.isMesh) return;
+            c.castShadow = true;
+            c.receiveShadow = true;
+            c.material = Array.isArray(c.material) ? c.material.map(pickTile) : pickTile(c.material);
+          });
+
+          // Upgrade the player to neon cyan ('White' face → cyan; src/engine/models.ts).
+          const neon = new THREE.Color(0x00ccff);
+          player.traverse((c) => {
+            if (!c.isMesh) return;
+            const mats = Array.isArray(c.material) ? c.material : [c.material];
+            const up = mats.map((m) =>
+              m.name === "White"
+                ? new THREE.MeshStandardMaterial({ name: "White", color: neon, roughness: 0.35, metalness: 0.3, emissive: neon, emissiveIntensity: 0.2 })
+                : new THREE.MeshStandardMaterial({ name: m.name, color: m.color || new THREE.Color(0x334455), roughness: 0.35, metalness: 0.4 })
+            );
+            c.material = Array.isArray(c.material) ? up : up[0];
+            c.castShadow = true;
+            c.receiveShadow = true;
+          });
+
+          const tileSize = 1.8;
+          const cubeSize = 1.0;
+          const { size: pSize, scale: pScale } = normalize(platform, (s) => tileSize / Math.max(s.x, s.z));
+          const tileHeight = pSize.y * pScale;
+          normalize(player, (s) => cubeSize / Math.max(s.x, s.y, s.z));
+
+          const platPivot = new THREE.Group();
+          platPivot.add(platform);
+          const playerPivot = new THREE.Group();
+          playerPivot.add(player);
+          playerPivot.position.y = tileHeight / 2 + cubeSize / 2;
+
+          clearPiece();
+          piece.add(platPivot, playerPivot);
+          playerNode = playerPivot;
+          playerBaseY = playerPivot.position.y;
+          if (cap) cap.textContent = "live three.js — player.obj on platform.obj (real game assets)";
+        }
+
+        loadRealModels().catch(() => {
+          if (cap)
+            cap.textContent =
+              "live three.js — primitive preview (serve the page to load the .obj models)";
+        });
+
+        const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function resize() {
+          const w = host.clientWidth;
+          const h = host.clientHeight;
+          if (!w || !h) return;
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.render(scene, camera);
+        }
+        new ResizeObserver(resize).observe(host);
+        resize();
+
+        const clock = new THREE.Clock();
+        function tick() {
+          const t = clock.getElapsedTime();
+          piece.rotation.y = t * 0.4;
+          if (playerNode) playerNode.position.y = playerBaseY + Math.sin(t * 2.2) * 0.04;
+          renderer.render(scene, camera);
+          requestAnimationFrame(tick);
+        }
+        if (!reduce) requestAnimationFrame(tick);
+      })();
+    </script>
+  </body>
+</html>
