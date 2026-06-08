@@ -11,6 +11,7 @@ import {
   createShiftDecoration,
   createExplosiveDecoration,
   createCountdownDecoration,
+  createInfoDecoration,
   type Decoration,
   type Countdown,
 } from './decoration';
@@ -43,7 +44,8 @@ export type LevelLayout = (CellDef | null)[][];
 export type TileAction =
   | { type: 'none' }
   | { type: 'slide'; dir: Direction; toCol: number; toRow: number }
-  | { type: 'teleport'; toCol: number; toRow: number };
+  | { type: 'teleport'; toCol: number; toRow: number }
+  | { type: 'info' };   // cube settled on the highlighted goal tile — reveal content
 
 type TileState = 'active' | 'gone';
 
@@ -95,6 +97,9 @@ function makeDecorationForKind(cell: CellDef): Decoration | null {
     case 'disappear-normal': return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
     case 'disappear-line':   return createDisappearLineDecoration(cell.sweepDir ?? 'row', PALETTE.decoration['disappear-line']);
     case 'shift':            return createShiftDecoration(PALETTE.decoration.shift);
+    // Info tiles look like a plain green tile (same radar pulse); the 3D "i"
+    // beacon is added separately on top in the build loop.
+    case 'info':             return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
     default:                 return null;
   }
 }
@@ -150,7 +155,10 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     for (let col = 0; col < layout[row].length; col++) {
       const cell = layout[row][col];
       if (!cell) continue;
-      const tile = createTile({ kind: cell.kind, template });
+      // Info tiles are disguised as ordinary green tiles; the only hint that one
+      // holds hidden content is the 3D "i" beacon added on top below.
+      const visualKind: TileKind = cell.kind === 'info' ? 'disappear-normal' : cell.kind;
+      const tile = createTile({ kind: visualKind, template });
       const pos = cellToWorld(col, row);
       tile.position.copy(pos);
       group.add(tile);
@@ -181,6 +189,13 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
           tile.add(dec.group);
           decorationUpdaters.push(dec.update);
         }
+        // The hidden-content marker: a standing 3D "i" with a swirl orbiting it,
+        // sitting on top of the otherwise-normal green platform.
+        if (cell.kind === 'info') {
+          const beacon = createInfoDecoration(PALETTE.decoration.info);
+          tile.add(beacon.group);
+          decorationUpdaters.push(beacon.update);
+        }
       }
     }
   }
@@ -189,7 +204,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
   function removeTile(key: string, elapsed: number, delay = 0): void {
     const def = cellDefs.get(key);
-    if (!def || def.kind === 'base') return;
+    if (!def || def.kind === 'base' || def.kind === 'info') return;
     if (tileStates.get(key) !== 'active') return;
     tileStates.set(key, 'gone');
     const tile = tiles.get(key)!;
@@ -270,7 +285,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   // collapsing. The base is indestructible. If the cube is on the tile, it drops.
   function blastHit(key: string): void {
     const def = cellDefs.get(key);
-    if (!def || def.kind === 'base') return;
+    if (!def || def.kind === 'base' || def.kind === 'info') return;
     if (def.kind === 'explosive') { igniteBlast(key, frameElapsed); return; }
     if (def.kind === 'disappear-line') activateLine(key, frameElapsed);
     removeTile(key, frameElapsed);
@@ -368,6 +383,10 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
         // target is solid ground (a move) or empty space (a fall off the edge).
         return { type: 'slide', dir: toDef.dir, toCol: col + dc, toRow: row + dr };
       }
+
+      case 'info':
+        // Landing on the goal tile reveals its content; it is never consumed.
+        return { type: 'info' };
 
       case 'shift': {
         if (toDef.shiftId === undefined) break;
@@ -476,6 +495,7 @@ export function parseLayout(rows: string[]): LevelLayout {
       if (ch === 'x') return { kind: 'explosive' };
       if (ch === 'a') return { kind: 'arrow', dir: 'right' };
       if (ch === 't') return { kind: 'shift', shiftId: 1 };
+      if (ch === 'i') return { kind: 'info' };
       throw new Error(`Unknown layout char: "${ch}"`);
     }),
   );

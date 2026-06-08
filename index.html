@@ -1,104 +1,647 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Harishankar Narayanan — Resume</title>
-    <meta name="description" content="An interactive, gamified résumé. Move the cube to reveal the story." />
-    <style>
-      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 100%; height: 100%; overflow: hidden; background: #050a12; color: #e6f1ff; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
-      #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Harishankar Narayanan — Resume</title>
+        <meta
+            name="description"
+            content="An interactive, gamified résumé. Roll the cube through 20 years of building things."
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background: #050a12;
+                color: #e6f1ff;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    sans-serif;
+            }
+            #stage {
+                position: fixed;
+                inset: 0;
+                width: 100vw;
+                height: 100vh;
+                display: block;
+            }
 
-      #hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
-      #hud .top {
-        position: absolute; top: 1.2rem; left: 1.4rem; right: 1.4rem;
-        display: flex; justify-content: space-between; align-items: flex-start;
-        font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
-        color: rgba(140, 220, 255, 0.7);
-      }
-      #hud .top .name { font-weight: 700; color: rgba(220, 240, 255, 0.95); letter-spacing: 0.18em; }
-      #hud .hint {
-        position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
-        font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-        color: rgba(140, 220, 255, 0.55);
-        animation: pulse 2.4s ease-in-out infinite;
-      }
-      @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.95; } }
+            /* ── shared label vocabulary ─────────────────────────────────────────── */
+            .caps {
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+            }
 
-      /* Tile counter */
-      #hud-counter {
-        position: fixed; bottom: 1.4rem; right: 1.6rem; z-index: 10;
-        font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-        color: rgba(140, 220, 255, 0.55);
-      }
-      #hud-counter span { color: rgba(200, 240, 255, 0.9); font-weight: 700; }
+            /* ── in-level HUD ────────────────────────────────────────────────────── */
+            #hud {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 10;
+            }
+            #hud .top {
+                position: absolute;
+                top: 1.2rem;
+                left: 1.4rem;
+                right: 1.4rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                font-size: 0.78rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.7);
+            }
+            #hud .top .name {
+                font-weight: 700;
+                color: rgba(220, 240, 255, 0.95);
+                letter-spacing: 0.18em;
+            }
+            #hud-levelname {
+                position: absolute;
+                top: 1.2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8rem;
+                font-weight: 700;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(255, 224, 150, 0.95);
+                text-shadow: 0 0 20px rgba(255, 209, 102, 0.45);
+            }
+            #hud .hint {
+                position: absolute;
+                bottom: 1.4rem;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.72rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.55);
+                animation: pulse 2.4s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 0.4;
+                }
+                50% {
+                    opacity: 0.95;
+                }
+            }
 
-      /* Win / Game-over overlays — shared shell, per-state colour accents. */
-      .overlay {
-        position: fixed; inset: 0; z-index: 30;
-        display: none; flex-direction: column; align-items: center; justify-content: center;
-        background: rgba(5, 10, 18, 0.88);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-      .overlay h2 {
-        font-size: clamp(1.6rem, 5vw, 3rem);
-        font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-        margin-bottom: 0.5rem;
-      }
-      .overlay p {
-        font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase;
-        color: rgba(140, 220, 255, 0.6); margin-bottom: 2rem;
-      }
-      .overlay button {
-        padding: 0.65rem 2rem; background: transparent; border: 1px solid;
-        font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
-        cursor: pointer; border-radius: 4px;
-        transition: background 0.2s, color 0.2s;
-      }
-      #win-overlay h2 { color: #7ef7c8; text-shadow: 0 0 32px rgba(100,255,180,0.6); }
-      #win-overlay button { border-color: rgba(100,255,180,0.4); color: #7ef7c8; }
-      #win-overlay button:hover { background: rgba(100,255,180,0.12); }
-      #game-over-overlay h2 { color: #ff6b6b; text-shadow: 0 0 32px rgba(255,107,107,0.55); }
-      #game-over-overlay button { border-color: rgba(255,107,107,0.45); color: #ff6b6b; }
-      #game-over-overlay button:hover { background: rgba(255,107,107,0.12); }
-    </style>
-  </head>
-  <body>
-    <canvas id="stage"></canvas>
+            #hud-counter {
+                position: fixed;
+                bottom: 1.4rem;
+                right: 1.6rem;
+                z-index: 10;
+                font-size: 0.72rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.55);
+            }
+            #hud-counter span {
+                color: rgba(200, 240, 255, 0.9);
+                font-weight: 700;
+            }
 
-    <div id="hud" aria-hidden="true">
-      <div class="top">
-        <div class="name">Harishankar&nbsp;Narayanan</div>
-        <div>Senior Director · Product Engineering</div>
-      </div>
-      <div class="hint">Arrow keys or WASD to move</div>
-    </div>
+            /* ── home / level-select ─────────────────────────────────────────────── */
+            #home-hud {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 10;
+                display: none;
+            }
+            #home-hud .home-inner {
+                position: absolute;
+                top: 7vh;
+                left: 0;
+                right: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0 1.5rem;
+            }
+            #home-hud .home-name {
+                margin-top: 1.2rem;
+                font-size: clamp(1.4rem, 4.5vw, 2.6rem);
+                font-weight: 800;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(225, 242, 255, 0.97);
+                text-shadow: 0 0 36px rgba(140, 220, 255, 0.35);
+            }
+            #home-hud .home-role {
+                margin-top: 0.5rem;
+                font-size: 0.78rem;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.7);
+            }
+            #home-hud .home-tagline {
+                margin-top: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.35em;
+                font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+                color: rgba(206, 230, 250, 0.92);
+            }
+            /* Rolling word: a vertical odometer that cycles through the labels. */
+            #home-hud .roller {
+                display: inline-block;
+                height: 1.5em;
+                overflow: hidden;
+            }
+            #home-hud .roller-track {
+                display: flex;
+                flex-direction: column;
+                animation: roll 11s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+            }
+            #home-hud .roller-track > span {
+                display: flex;
+                align-items: center;
+                height: 1.5em;
+                line-height: 1.5em;
+                white-space: nowrap;
+                font-weight: 800;
+                color: #ffd166;
+            }
+            @keyframes roll {
+                0%,
+                16% {
+                    transform: translateY(0);
+                }
+                20%,
+                36% {
+                    transform: translateY(-1.5em);
+                }
+                40%,
+                56% {
+                    transform: translateY(-3em);
+                }
+                60%,
+                76% {
+                    transform: translateY(-4.5em);
+                }
+                80%,
+                96% {
+                    transform: translateY(-6em);
+                }
+                100% {
+                    transform: translateY(-7.5em);
+                }
+            }
+            #home-hud #home-subtagline {
+                position: absolute;
+                top: 50vh; /* repositioned by JS to sit just above the level grid */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                text-align: center;
+                font-size: clamp(0.78rem, 2vw, 0.95rem);
+                letter-spacing: 0.04em;
+                color: rgba(196, 222, 245, 0.82);
+            }
+            #home-hud #home-avatar {
+                margin-top: 1.5rem;
+                width: clamp(92px, 14vw, 132px);
+                height: clamp(92px, 14vw, 132px);
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid rgba(140, 220, 255, 0.55);
+                box-shadow:
+                    0 0 44px rgba(140, 220, 255, 0.32),
+                    inset 0 0 0 4px rgba(5, 10, 18, 0.6);
+            }
+            #home-hud .home-hint {
+                position: absolute;
+                bottom: 1.4rem;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.7rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.5);
+                animation: pulse 2.4s ease-in-out infinite;
+            }
+            #home-hud .home-corner {
+                position: absolute;
+                bottom: 1.2rem;
+                font-size: 0.68rem;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.4);
+            }
+            #home-hud .home-corner.left {
+                left: 1.5rem;
+            }
+            #home-hud .home-corner.right {
+                right: 1.5rem;
+            }
 
-    <noscript>
-      <div style="position:fixed;inset:0;padding:2rem;background:#fff;color:#000;overflow:auto;z-index:99">
-        <p>This page is interactive and requires JavaScript. The static résumé is available at
-          <a href="./public/">public/index.html</a>.</p>
-      </div>
-    </noscript>
+            /* Projected level labels under each platform. */
+            #home-levels {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 11;
+            }
+            .level-label {
+                position: absolute;
+                top: 0;
+                left: 0;
+                pointer-events: auto;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                line-height: 1.25;
+                white-space: nowrap;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: rgba(170, 210, 240, 0.7);
+                transition:
+                    color 0.15s,
+                    text-shadow 0.15s;
+                user-select: none;
+            }
+            .level-label .ll-name {
+                font-size: 0.6rem;
+                font-weight: 700;
+            }
+            .level-label .ll-year {
+                font-size: 0.54rem;
+                color: rgba(140, 220, 255, 0.55);
+            }
+            .level-label:hover {
+                color: rgba(220, 240, 255, 0.95);
+            }
+            .level-label.focused {
+                color: #fff;
+                text-shadow: 0 0 18px rgba(140, 220, 255, 0.8);
+            }
+            .level-label.done .ll-name::after {
+                content: " ✓";
+                color: #ffd166;
+            }
 
-    <div id="hud-counter" aria-live="polite">
-      Tiles remaining: <span id="hud-remaining">—</span>
-    </div>
+            /* ── overlays (info / win / game-over) ───────────────────────────────── */
+            .overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 30;
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: rgba(5, 10, 18, 0.86);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                padding: 1.5rem;
+                overflow-y: auto;
+            }
+            .overlay h2 {
+                font-size: clamp(1.5rem, 5vw, 2.8rem);
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+            .overlay p {
+                font-size: 0.82rem;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.6);
+                margin-bottom: 1.8rem;
+                text-align: center;
+            }
+            .btn-row {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .overlay button {
+                padding: 0.65rem 2rem;
+                background: transparent;
+                border: 1px solid;
+                font-size: 0.76rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                cursor: pointer;
+                border-radius: 4px;
+                color: inherit;
+                transition:
+                    background 0.2s,
+                    color 0.2s;
+            }
 
-    <div id="win-overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Level complete">
-      <h2>Level&nbsp;Clear</h2>
-      <p>All tiles cleared — you made it back to base.</p>
-      <button id="win-restart">Play again</button>
-    </div>
+            /* Info card — the game-styled résumé reveal. */
+            #info-card {
+                position: relative;
+                max-width: 34rem;
+                width: 100%;
+                margin: auto;
+                max-height: 88vh;
+                overflow-y: auto;
+                background: rgba(8, 16, 28, 0.92);
+                border: 1px solid rgba(140, 220, 255, 0.35);
+                border-radius: 10px;
+                padding: 2rem 2rem 1.6rem;
+                box-shadow: 0 0 60px rgba(20, 60, 90, 0.5);
+            }
+            #info-card .info-num {
+                position: absolute;
+                top: 0.4rem;
+                right: 0.8rem;
+                font-size: 4.5rem;
+                font-weight: 800;
+                line-height: 1;
+                color: rgba(140, 220, 255, 0.08);
+                letter-spacing: 0.05em;
+                pointer-events: none;
+            }
+            #info-card h2 {
+                position: relative;
+                font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+                letter-spacing: 0.06em;
+                text-transform: none;
+                color: rgba(225, 242, 255, 0.97);
+                text-shadow: 0 0 24px rgba(140, 220, 255, 0.35);
+                margin-bottom: 0.3rem;
+            }
+            #info-card .info-period {
+                font-family: "SF Mono", "Fira Code", monospace;
+                font-size: 0.72rem;
+                letter-spacing: 0.1em;
+                color: #ffd166;
+                margin-bottom: 0.2rem;
+            }
+            #info-card .info-sub {
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(140, 220, 255, 0.7);
+                margin-bottom: 1rem;
+            }
+            #info-card ul {
+                list-style: none;
+                margin-bottom: 1.4rem;
+            }
+            #info-card ul li {
+                position: relative;
+                padding-left: 1.1rem;
+                margin-bottom: 0.6rem;
+                font-size: 0.86rem;
+                line-height: 1.5;
+                color: rgba(210, 230, 248, 0.92);
+            }
+            #info-card ul li::before {
+                content: "▸";
+                position: absolute;
+                left: 0;
+                color: rgba(140, 220, 255, 0.6);
+            }
+            #info-card button {
+                border-color: rgba(140, 220, 255, 0.4);
+                color: rgba(180, 225, 255, 0.95);
+            }
+            #info-card button:hover {
+                background: rgba(140, 220, 255, 0.12);
+            }
+            /* Meta levels — behind-the-scenes — read in mint instead of cyan. */
+            #info-card.meta {
+                border-color: rgba(126, 247, 200, 0.4);
+            }
+            #info-card.meta h2 {
+                color: #d6fff0;
+                text-shadow: 0 0 24px rgba(126, 247, 200, 0.4);
+            }
+            #info-card.meta .info-sub {
+                color: rgba(126, 247, 200, 0.75);
+            }
+            #info-card.meta ul li::before {
+                color: rgba(126, 247, 200, 0.7);
+            }
+            #info-card.meta button {
+                border-color: rgba(126, 247, 200, 0.4);
+                color: #7ef7c8;
+            }
+            #info-card.meta button:hover {
+                background: rgba(126, 247, 200, 0.12);
+            }
 
-    <div id="game-over-overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Game over">
-      <h2>Game&nbsp;Over</h2>
-      <p>You fell off the edge.</p>
-      <button id="gameover-restart">Try again</button>
-    </div>
+            #win-overlay h2 {
+                color: #7ef7c8;
+                text-shadow: 0 0 32px rgba(100, 255, 180, 0.6);
+            }
+            #win-overlay button {
+                border-color: rgba(100, 255, 180, 0.4);
+                color: #7ef7c8;
+            }
+            #win-overlay button:hover {
+                background: rgba(100, 255, 180, 0.12);
+            }
+            #game-over-overlay h2 {
+                color: #ff6b6b;
+                text-shadow: 0 0 32px rgba(255, 107, 107, 0.55);
+            }
+            #game-over-overlay button {
+                border-color: rgba(255, 107, 107, 0.45);
+                color: #ff6b6b;
+            }
+            #game-over-overlay button:hover {
+                background: rgba(255, 107, 107, 0.12);
+            }
 
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+            /* ── screen visibility ───────────────────────────────────────────────── */
+            body.screen-home #hud,
+            body.screen-home #hud-counter {
+                display: none;
+            }
+            body.screen-home #home-hud {
+                display: block;
+            }
+            body.screen-level #home-levels {
+                display: none;
+            }
+
+            /* Mobile: shrink the header so three full rows of platforms fit. */
+            @media (max-width: 640px) {
+                #home-hud .home-inner {
+                    top: 3vh;
+                }
+                #home-hud .home-name {
+                    margin-top: 0.7rem;
+                    font-size: 1.25rem;
+                    letter-spacing: 0.06em;
+                }
+                #home-hud .home-role {
+                    font-size: 0.64rem;
+                    letter-spacing: 0.12em;
+                }
+                #home-hud .home-tagline {
+                    margin-top: 0;
+                    font-size: 1.1rem;
+                }
+                #home-hud #home-avatar {
+                    margin-top: 0.9rem;
+                    width: 78px;
+                    height: 78px;
+                }
+                #home-hud .home-corner {
+                    display: none;
+                }
+                #home-hud .home-hint {
+                    font-size: 0.6rem;
+                    letter-spacing: 0.12em;
+                }
+                .level-label {
+                    font-size: 0.58rem;
+                }
+            }
+        </style>
+    </head>
+    <body class="screen-home">
+        <canvas id="stage"></canvas>
+
+        <!-- In-level HUD -->
+        <div id="hud" aria-hidden="true">
+            <div class="top">
+                <div class="name">Harishankar&nbsp;Narayanan</div>
+                <div>Senior Director · Product Engineering</div>
+            </div>
+            <div id="hud-levelname"></div>
+            <div class="hint">
+                Arrow keys or WASD to move · land on the gold tile
+            </div>
+        </div>
+        <div id="hud-counter" aria-live="polite">
+            Tiles remaining: <span id="hud-remaining">—</span>
+        </div>
+
+        <!-- Home / level-select -->
+        <div id="home-hud" aria-hidden="true">
+            <div class="home-inner">
+                <p class="home-tagline">
+                    <span class="tw">This is</span>
+                    <span class="roller"><span class="roller-track">
+                            <span>a Game</span>
+                            <span>My Résumé</span>
+                            <span>An Intro</span>
+                            <span>About Me</span>
+                            <span>a Profile</span>
+                            <span>a Game</span>
+                        </span></span>
+                </p>
+                <img
+                    id="home-avatar"
+                    src="/harishankar.jpeg"
+                    alt="Harishankar Narayanan"
+                />
+                <div class="home-name">Harishankar&nbsp;Narayanan</div>
+                <div class="home-role">
+                    Senior Director · Product Engineering
+                </div>
+            </div>
+            <p id="home-subtagline">
+                Roll the cube through 21 years of building things.
+            </p>
+            <div class="home-hint">
+                Click a platform · or use ← → ↑ ↓ and Enter
+            </div>
+            <div class="home-corner left">Chennai, India</div>
+            <div class="home-corner right">21+ years</div>
+        </div>
+        <div id="home-levels"></div>
+
+        <noscript>
+            <div
+                style="
+                    position: fixed;
+                    inset: 0;
+                    padding: 2rem;
+                    background: #fff;
+                    color: #000;
+                    overflow: auto;
+                    z-index: 99;
+                "
+            >
+                <p>
+                    This page is interactive and requires JavaScript. The static
+                    résumé is available at
+                    <a href="./public/">public/index.html</a>.
+                </p>
+            </div>
+        </noscript>
+
+        <!-- Info reveal -->
+        <div
+            id="info-overlay"
+            class="overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Level info"
+        >
+            <div id="info-card">
+                <div class="info-num" id="info-num">000</div>
+                <h2 id="info-heading"></h2>
+                <div class="info-period" id="info-period"></div>
+                <div class="info-sub" id="info-sub"></div>
+                <ul id="info-bullets"></ul>
+                <div class="btn-row">
+                    <button id="info-continue">Continue ▸</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Win -->
+        <div
+            id="win-overlay"
+            class="overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Level complete"
+        >
+            <h2>Level&nbsp;Clear</h2>
+            <p id="win-sub">All tiles cleared — you made it back to base.</p>
+            <div class="btn-row">
+                <button id="win-next">Next ▸</button>
+                <button id="win-home">Home</button>
+            </div>
+        </div>
+
+        <!-- Game over -->
+        <div
+            id="game-over-overlay"
+            class="overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Game over"
+        >
+            <h2>Game&nbsp;Over</h2>
+            <p id="gameover-sub">You fell off the edge.</p>
+            <div class="btn-row">
+                <button id="gameover-retry">Retry</button>
+                <button id="gameover-home">Home</button>
+            </div>
+        </div>
+
+        <script type="module" src="/src/main.ts"></script>
+    </body>
 </html>

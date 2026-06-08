@@ -7,7 +7,8 @@ export type TileKind =
   | 'disappear-line'
   | 'arrow'
   | 'shift'
-  | 'explosive';
+  | 'explosive'
+  | 'info';
 
 export interface TileOptions {
   kind: TileKind;
@@ -19,13 +20,14 @@ export function createTile({ kind, template }: TileOptions): THREE.Group {
   group.userData.kind = kind;
 
   const bodyColor = PALETTE.tileBody[kind];
-  // Neon-edged trim: emissive so it reads as a glowing border.
+  // Neon-edged trim: emissive so it reads as a glowing border. The info tile —
+  // the level's goal marker — glows harder so it reads as "the prize".
   const bodyMat = new THREE.MeshStandardMaterial({
     color: bodyColor,
     roughness: 0.45,
     metalness: 0.05,
     emissive: new THREE.Color(bodyColor),
-    emissiveIntensity: 0.35,
+    emissiveIntensity: kind === 'info' ? 0.6 : 0.35,
   });
   // Dark panel body: brushed-metal feel with low roughness.
   const trimMat = new THREE.MeshStandardMaterial({

@@ -317,8 +317,20 @@ export function createExplosiveDecoration(color: number): Decoration {
   );
 }
 
-// 8×8 bitmaps for the blast countdown digits, in the same cube-grid language.
-const COUNTDOWN_DIGITS: Record<number, Frame> = {
+// 8×8 bitmaps for every digit, in the same cube-grid language. The blast
+// countdown uses 1–3; the level-select odometer (createNumberDisplay) uses all
+// ten. A 2-cell stroke keeps each glyph legible at this resolution.
+const DIGITS: Record<number, Frame> = {
+  0: [
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+  ],
   3: [
     [0, 0, 1, 1, 1, 1, 0, 0],
     [0, 1, 1, 0, 0, 1, 1, 0],
@@ -348,6 +360,66 @@ const COUNTDOWN_DIGITS: Record<number, Frame> = {
     [0, 0, 0, 1, 1, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 0],
     [0, 1, 1, 1, 1, 1, 1, 0],
+  ],
+  4: [
+    [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 1, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+  ],
+  5: [
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+  ],
+  6: [
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+  ],
+  7: [
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+  ],
+  8: [
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+  ],
+  9: [
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
   ],
 };
 
@@ -384,7 +456,189 @@ export function createCountdownDecoration(color: number): Countdown {
 
   return {
     group,
-    show: (n: number) => render(COUNTDOWN_DIGITS[n] ?? null),
+    show: (n: number) => render(DIGITS[n] ?? null),
     hide: () => render(null),
+  };
+}
+
+// ─── info beacon ────────────────────────────────────────────────────────────────
+// A tile that holds hidden content looks like an ordinary green tile; its only
+// tell is this beacon, which stands a real 3D lowercase "i" upright on the
+// platform with a small swirl of cubes orbiting it. The swirl spins and the
+// glyph bobs gently so the marker reads in 3D and draws the eye to "land here".
+export function createInfoDecoration(color: number): Decoration {
+  const group = new THREE.Group();
+  const material = new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.3,
+    metalness: 0.15,
+    emissive: color,
+    emissiveIntensity: 0.8,
+  });
+
+  // The "i": a tall stem with a separate dot floating above it.
+  const STEM_W = 0.05;
+  const STEM_H = 0.16;
+  const stemBaseY = BASE_Y + STEM_H / 2;
+  const dotBaseY = BASE_Y + STEM_H + STEM_W * 1.5;
+
+  const stem = new THREE.Mesh(new THREE.BoxGeometry(STEM_W, STEM_H, STEM_W), material);
+  stem.castShadow = true;
+  group.add(stem);
+
+  const dot = new THREE.Mesh(new THREE.BoxGeometry(STEM_W, STEM_W, STEM_W), material);
+  dot.castShadow = true;
+  group.add(dot);
+
+  // The swirl: a handful of cubes set on a tilted ring around the stem, tapering
+  // comet-like. Spinning the ring on Y sweeps them around the "i".
+  const swirl = new THREE.Group();
+  swirl.rotation.z = 0.35;                       // tilt the orbit so it reads in 3D
+  swirl.position.y = BASE_Y + STEM_H * 0.55;
+  group.add(swirl);
+
+  const SWIRL_COUNT = 7;
+  const ORBIT_R = 0.12;
+  for (let i = 0; i < SWIRL_COUNT; i++) {
+    const t = i / SWIRL_COUNT;
+    const s = 0.026 * (1 - t) + 0.006;           // trailing cubes shrink
+    const cube = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), material);
+    const a = t * Math.PI * 2;
+    cube.position.set(Math.cos(a) * ORBIT_R, (t - 0.5) * 0.09, Math.sin(a) * ORBIT_R);
+    swirl.add(cube);
+  }
+
+  return {
+    group,
+    update(elapsed: number) {
+      swirl.rotation.y = elapsed * 2.2;
+      const bob = Math.sin(elapsed * 2.4) * 0.012;
+      stem.position.y = stemBaseY + bob;
+      dot.position.y = dotBaseY + bob;
+    },
+  };
+}
+
+// ─── level-select odometer ──────────────────────────────────────────────────────
+// A 3-digit number (000–999) rendered as raised cubes on a platform, used by the
+// home-page level grid. Each digit is its own 8×8 cell; changed digits roll
+// vertically like a mechanical counter. Designed to fit a single 1.0 tile.
+
+const NUM_STEP = 0.028;                       // cube spacing within a digit cell
+const NUM_CUBE = 0.022;                       // small cube size
+const NUM_DIGIT_PITCH = 0.255;                // X distance between digit centres
+const NUM_BOTTOM_Y = BASE_Y - 0.03;           // hidden under the surface
+const NUM_TOP_Y = BASE_Y + 0.02;              // raised
+const NUM_ROLL_DURATION = 0.5;                // seconds for one digit to roll over
+
+// One geometry shared by every odometer cube across every display — the level
+// grid can show a dozen displays at once, so per-cube allocation is avoided.
+const NUMBER_CUBE_GEO = new THREE.BoxGeometry(NUM_CUBE, NUM_CUBE, NUM_CUBE);
+
+export interface NumberDisplay {
+  group: THREE.Group;
+  /** Show n (0…10^maxDigits − 1) — no leading zeros, centred on the platform. */
+  set: (n: number) => void;
+  /** Drive the roll animation; call each frame with absolute elapsed seconds. */
+  update: (elapsed: number) => void;
+}
+
+interface DigitCell {
+  group: THREE.Group;
+  cubes: THREE.Mesh[][];
+  shown: number | null;  // null = inactive (leading-zero slot, hidden)
+  from: number;          // digit rolling out the top
+  to: number;            // digit rolling in / currently shown
+  rollStart: number | null;
+}
+
+export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay {
+  const group = new THREE.Group();
+  const material = new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.4,
+    metalness: 0.1,
+    emissive: color,
+    emissiveIntensity: 0.55,
+  });
+
+  const cells: DigitCell[] = Array.from({ length: maxDigits }, () => {
+    const cellGroup = new THREE.Group();
+    cellGroup.visible = false;
+    group.add(cellGroup);
+    const cubes = Array.from({ length: GRID }, (_, r) =>
+      Array.from({ length: GRID }, (_, c) => {
+        const mesh = new THREE.Mesh(NUMBER_CUBE_GEO, material);
+        // No shadows: many displays animate at once and they read fine lit.
+        mesh.position.set((c - (GRID - 1) / 2) * NUM_STEP, NUM_BOTTOM_Y, (r - (GRID - 1) / 2) * NUM_STEP);
+        mesh.visible = false;
+        cellGroup.add(mesh);
+        return mesh;
+      }),
+    );
+    return { group: cellGroup, cubes, shown: null, from: 0, to: 0, rollStart: null };
+  });
+
+  let lastElapsed = 0;
+
+  // Render a cell from its `from` glyph rolling up into its `to` glyph at progress
+  // p∈[0,1]. A 16-row virtual strip (from on top of to) slides up by p·GRID rows.
+  const renderCell = (cell: DigitCell, p: number): void => {
+    const from = DIGITS[cell.from] ?? DIGITS[0];
+    const to = DIGITS[cell.to] ?? DIGITS[0];
+    const shift = p * GRID;
+    for (let r = 0; r < GRID; r++) {
+      const src = Math.round(r + shift); // 0…GRID = from, GRID…2·GRID = to
+      const frame = src < GRID ? from : to;
+      const fr = src < GRID ? src : src - GRID;
+      for (let c = 0; c < GRID; c++) {
+        const on = !!frame[fr] && frame[fr][c] === 1;
+        const mesh = cell.cubes[r][c];
+        mesh.visible = on;
+        mesh.position.y = on ? NUM_TOP_Y : NUM_BOTTOM_Y;
+      }
+    }
+  };
+
+  const renderStatic = (cell: DigitCell): void => {
+    cell.from = cell.to;
+    renderCell(cell, 0);
+  };
+
+  return {
+    group,
+    set(n: number) {
+      const clamped = Math.max(0, Math.min(Math.round(n), 10 ** maxDigits - 1));
+      const str = String(clamped);               // significant digits, no padding
+      const len = str.length;
+      cells.forEach((cell, i) => {
+        if (i < len) {
+          // Centre the significant digits across the platform.
+          cell.group.position.x = (i - (len - 1) / 2) * NUM_DIGIT_PITCH;
+          cell.group.visible = true;
+          const d = Number(str[i]);
+          if (cell.shown === null) { cell.from = 0; cell.to = d; cell.rollStart = lastElapsed; }
+          else if (d !== cell.shown) { cell.from = cell.shown; cell.to = d; cell.rollStart = lastElapsed; }
+          cell.shown = d;
+        } else {
+          cell.group.visible = false;
+          cell.shown = null;
+          cell.rollStart = null;
+        }
+      });
+    },
+    update(elapsed: number) {
+      lastElapsed = elapsed;
+      for (const cell of cells) {
+        if (cell.rollStart === null) continue;
+        const p = (elapsed - cell.rollStart) / NUM_ROLL_DURATION;
+        if (p >= 1) {
+          cell.rollStart = null;
+          renderStatic(cell);
+        } else {
+          renderCell(cell, p);
+        }
+      }
+    },
   };
 }

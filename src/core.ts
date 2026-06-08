@@ -30,6 +30,7 @@ export const PALETTE = {
     'arrow':            0xfacc15, // yellow      — forced slide rail
     'shift':            0x0891b2, // cyan        — teleport portal
     'explosive':        0xdc2626, // red         — blast radius
+    'info':             0xffd166, // gold        — the goal marker (reveals résumé)
   } satisfies Record<TileKind, number>,
   /** Dark panel body — reads as PBR depth rather than flat black. */
   tileTrim: 0x1a3352,
@@ -43,6 +44,7 @@ export const PALETTE = {
     'shift':            0x22d3ee,
     'explosive':        0xf87171,
     'countdown':        0xfff1b8,
+    'info':             0xffe39a, // pale gold — the "i" beacon glyph
   },
 
   /** Travelling effect spheres / swirl. */
