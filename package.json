@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:site": "python3 build.py && npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -13,6 +14,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.171.0",
+    "jsonpath-plus": "^10.3.0",
     "typescript": "^5.6.3",
     "vite": "^6.0.1"
   }

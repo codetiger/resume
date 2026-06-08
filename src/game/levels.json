@@ -1,0 +1,236 @@
+{
+  "levels": [
+    {
+      "number": 0,
+      "name": "Who am I",
+      "layout": ["bi", "nn"],
+      "content": {
+        "heading": "$.basics.name",
+        "period": "21+ yrs exp",
+        "subheading": "Leader · Architect · Builder · Programmer · Mentor",
+        "tag": "resume",
+        "bullets": [
+          "A tech leader with firm principles (and a firm belief that arrays start at 0).",
+          "20 years as a technical architect: building, breaking, and making it better.",
+          "A true builder at heart - give me an empty repository and a blinking cursor.",
+          "I lead a 300+ engineering org, but I never stopped reading the diffs.",
+          "Mentor by design. Favorite return type: an engineer who outgrows their title."
+        ]
+      }
+    },
+    {
+      "number": 1,
+      "name": "Work · 2005",
+      "layout": ["bnn", "n.i", "nnn"],
+      "content": {
+        "heading": "Qube Cinemas",
+        "period": "2005 — 2006",
+        "subheading": "Software Developer",
+        "summary": "$.work[?(@.company=='Qube Cinemas')].summary",
+        "url": "$.work[?(@.company=='Qube Cinemas')].website",
+        "tag": "resume",
+        "bullets": []
+      }
+    },
+    {
+      "number": 2,
+      "name": "Founder · 2006",
+      "layout": ["bnnn", "n..n", "nnin"],
+      "content": {
+        "heading": "Smackall Games",
+        "period": "2006 — 2016",
+        "subheading": "Founder & Technology Head",
+        "summary": "$.work[?(@.company=='Smackall Games')].summary",
+        "url": "$.work[?(@.company=='Smackall Games')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='Smackall Games')].highlights"]
+      }
+    },
+    {
+      "number": 3,
+      "name": "Consultant · 2014",
+      "layout": ["bnnn", "i..n", "n..n", "nnnn"],
+      "content": {
+        "heading": "Amtex Inc",
+        "period": "2014 — 2016",
+        "subheading": "Technical Architect & Consultant",
+        "summary": "$.work[?(@.company=='Amtex Inc')].summary",
+        "url": "$.work[?(@.company=='Amtex Inc')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='Amtex Inc')].highlights"]
+      }
+    },
+    {
+      "number": 4,
+      "name": "Work · 2016",
+      "layout": ["bnnnn", "n...n", "nnnin"],
+      "content": {
+        "heading": "Altimetrik",
+        "period": "2016 — 2017",
+        "subheading": "Architect — AnyDevice Capability Centre",
+        "summary": "$.work[?(@.company=='Altimetrik Inc')].summary",
+        "url": "$.work[?(@.company=='Altimetrik Inc')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='Altimetrik Inc')].highlights"]
+      }
+    },
+    {
+      "number": 5,
+      "name": "Work · 2017",
+      "layout": ["bnnnn", "n...n", "n...i", "nnnnn"],
+      "content": {
+        "heading": "CaratLane",
+        "period": "2017 — 2019",
+        "subheading": "Engineering Manager",
+        "summary": "$.work[?(@.company=='CaratLane')].summary",
+        "url": "$.work[?(@.company=='CaratLane')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='CaratLane')].highlights"]
+      }
+    },
+    {
+      "number": 6,
+      "name": "Work · 2019",
+      "layout": ["bnnnnn", "n....n", "i....n", "nnnnnn"],
+      "content": {
+        "heading": "Volante Technologies",
+        "period": "2019 — 2023",
+        "subheading": "Senior Director — Product Development",
+        "summary": "$.work[?(@.company=='Volante Technologies')].summary",
+        "url": "$.work[?(@.company=='Volante Technologies')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='Volante Technologies')].highlights"]
+      }
+    },
+    {
+      "number": 7,
+      "name": "Work · 2023",
+      "layout": ["bnnnnn", "n....n", "n....n", "n....i", "nnnnnn"],
+      "content": {
+        "heading": "Global Payments Inc",
+        "period": "2023 — present",
+        "subheading": "Senior Director — Product Engineering",
+        "summary": "$.work[?(@.company=='Global Payments Inc')].summary",
+        "url": "$.work[?(@.company=='Global Payments Inc')].website",
+        "tag": "resume",
+        "bullets": ["$.work[?(@.company=='Global Payments Inc')].highlights"]
+      }
+    },
+    {
+      "number": 8,
+      "name": "Awards - IoT",
+      "layout": ["bnn", "n.i", "nnn"],
+      "content": {
+        "heading": "Awards & Recognition",
+        "tag": "resume",
+        "bullets": [],
+        "awards": [
+          {
+            "title": "$.awards[0].title",
+            "summary": "$.awards[0].summary"
+          }
+        ]
+      }
+    },
+    {
+      "number": 9,
+      "name": "Awards - 2011",
+      "layout": ["bnnn", "i..n", "nnnn"],
+      "content": {
+        "heading": "Awards & Recognition",
+        "tag": "resume",
+        "bullets": [],
+        "awards": [
+          {
+            "title": "$.awards[1].title",
+            "awarder": "$.awards[1].awarder",
+            "date": "2011",
+            "summary": "$.awards[1].summary"
+          }
+        ]
+      }
+    },
+    {
+      "number": 10,
+      "name": "Awards - 2013",
+      "layout": ["bnnn", "n..n", "n..i", "nnnn"],
+      "content": {
+        "heading": "Awards & Recognition",
+        "tag": "resume",
+        "bullets": [],
+        "awards": [
+          {
+            "title": "$.awards[2].title",
+            "awarder": "$.awards[2].awarder",
+            "date": "2013",
+            "summary": "$.awards[2].summary"
+          }
+        ]
+      }
+    },
+    {
+      "number": 11,
+      "name": "Education",
+      "layout": ["bnn", "i.n", "n.n", "nnn"],
+      "content": {
+        "heading": "$.education[0].institution",
+        "period": "2000 — 2004",
+        "subheading": "Bachelor · Mechanical Engineering",
+        "tag": "resume",
+        "bullets": []
+      }
+    },
+    {
+      "number": 12,
+      "name": "GitHub",
+      "layout": ["bnnnnn", "n....n", "n....n", "n....i", "nnnnnn"],
+      "content": {
+        "heading": "GitHub",
+        "url": "$.basics.profiles[?(@.network=='Github')].url",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 13,
+      "name": "LinkedIn",
+      "layout": ["bnnnnnn", "n.....n", "i.....n", "nnnnnnn"],
+      "content": {
+        "heading": "LinkedIn",
+        "url": "$.basics.profiles[?(@.network=='LinkedIn')].url",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 14,
+      "name": "Blog",
+      "layout": ["bnnn", "n..n", "n..n", "n..i", "n..n", "nnnn"],
+      "content": {
+        "heading": "Blog",
+        "url": "$.basics.profiles[?(@.network=='Blog')].url",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 15,
+      "name": "Contact",
+      "layout": ["bnnnnn", "n....n", "n....i", "nnnnnn"],
+      "content": {
+        "heading": "Get in touch",
+        "subheading": "Find me here",
+        "summary": "Reach me at any of these — and clear this final level to unlock my phone number.",
+        "tag": "resume",
+        "email": "$.basics.email",
+        "location": "Chennai, India",
+        "links": [
+          { "label": "GitHub", "url": "$.basics.profiles[?(@.network=='Github')].url" },
+          { "label": "LinkedIn", "url": "$.basics.profiles[?(@.network=='LinkedIn')].url" },
+          { "label": "Blog", "url": "$.basics.profiles[?(@.network=='Blog')].url" }
+        ],
+        "bullets": []
+      }
+    }
+  ]
+}

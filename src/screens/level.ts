@@ -6,6 +6,18 @@ import { TELEPORT_SHRINK } from '../game/player';
 import { buildLevel, CUBE_SIZE, type TileAction } from '../game/grid';
 import type { LevelDef } from '../game/levels';
 import type { Screen } from '../game/app';
+// Obfuscated phone (e.g. "0x…"), provided by the resume-refs Vite plugin. Decoded
+// only here, only after the player finishes the whole game — never stored or
+// shipped as plain text.
+import contact from 'virtual:contact';
+
+/** Decode the obfuscated phone ("0x2507B120E" → "+91 99401 77422"). */
+function decodePhone(encoded: string): string {
+  const n = Number(encoded);
+  if (!Number.isFinite(n) || n <= 0) return '';
+  const local = String(n).replace(/(\d{5})(\d{5})$/, '$1 $2');
+  return `+91 ${local}`;
+}
 
 const KEY_MAP: Record<string, Direction> = {
   ArrowRight: 'right', KeyD: 'right',
@@ -73,11 +85,16 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const infoHeading = $('info-heading');
   const infoPeriod = $('info-period');
   const infoSub = $('info-sub');
+  const infoSummary = $('info-summary');
   const infoBullets = $('info-bullets');
+  const infoContact = $('info-contact');
+  const infoAwards = $('info-awards');
+  const infoLink = $('info-link');
   const infoContinue = $('info-continue');
 
   const winOverlay = $('win-overlay');
   const winSub = $('win-sub');
+  const winUnlock = $('win-unlock');
   const winNext = $('win-next');
   const winHome = $('win-home');
 
@@ -110,12 +127,82 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     if (infoHeading) infoHeading.textContent = c.heading;
     if (infoPeriod) { infoPeriod.textContent = c.period ?? ''; infoPeriod.style.display = c.period ? '' : 'none'; }
     if (infoSub) { infoSub.textContent = c.subheading ?? ''; infoSub.style.display = c.subheading ? '' : 'none'; }
+    if (infoSummary) { infoSummary.textContent = c.summary ?? ''; infoSummary.style.display = c.summary ? '' : 'none'; }
     if (infoBullets) {
       infoBullets.innerHTML = '';
+      infoBullets.style.display = c.bullets.length ? '' : 'none';
       for (const b of c.bullets) {
         const li = document.createElement('li');
         li.textContent = b;
         infoBullets.appendChild(li);
+      }
+    }
+    if (infoContact) {
+      infoContact.innerHTML = '';
+      const rows: HTMLElement[] = [];
+      if (c.email) {
+        const a = document.createElement('a');
+        a.className = 'contact-link';
+        a.href = `mailto:${c.email}`;
+        a.textContent = c.email;
+        rows.push(a);
+      }
+      for (const link of c.links ?? []) {
+        const a = document.createElement('a');
+        a.className = 'contact-link';
+        a.href = link.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = `${link.label} ↗`;
+        rows.push(a);
+      }
+      if (c.location) {
+        const s = document.createElement('span');
+        s.className = 'contact-loc';
+        s.textContent = c.location;
+        rows.push(s);
+      }
+      infoContact.style.display = rows.length ? '' : 'none';
+      rows.forEach((el) => infoContact.appendChild(el));
+    }
+    if (infoAwards) {
+      infoAwards.innerHTML = '';
+      const awards = c.awards ?? [];
+      infoAwards.style.display = awards.length ? '' : 'none';
+      for (const a of awards) {
+        const item = document.createElement('div');
+        item.className = 'award';
+
+        const title = document.createElement('div');
+        title.className = 'award-title';
+        title.textContent = a.title;
+        item.appendChild(title);
+
+        const meta = [a.awarder, a.date].filter(Boolean).join(' · ');
+        if (meta) {
+          const metaEl = document.createElement('div');
+          metaEl.className = 'award-meta';
+          metaEl.textContent = meta;
+          item.appendChild(metaEl);
+        }
+
+        const desc = document.createElement('div');
+        desc.className = 'award-desc';
+        desc.textContent = a.summary;
+        item.appendChild(desc);
+
+        infoAwards.appendChild(item);
+      }
+    }
+    if (infoLink instanceof HTMLAnchorElement) {
+      if (c.url) {
+        const host = c.url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+        infoLink.href = c.url;
+        infoLink.textContent = `${c.linkLabel ?? host} ↗`;
+        infoLink.style.display = '';
+      } else {
+        infoLink.removeAttribute('href');
+        infoLink.style.display = 'none';
       }
     }
     state.paused = true;
@@ -138,6 +225,12 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       ? `Level ${pad3(def.number)} cleared — ${def.name}.`
       : `That's the last level — you've seen the whole story.`;
     if (winNext) winNext.style.display = hasNext ? '' : 'none';
+    // Finishing the final level unlocks the phone number — the reward for playing.
+    if (winUnlock) {
+      const phone = !hasNext ? decodePhone(contact.phone) : '';
+      winUnlock.textContent = phone ? `Unlocked — call me: ${phone}` : '';
+      winUnlock.style.display = phone ? '' : 'none';
+    }
     showOverlay(winOverlay);
     focusFirst(winNext, winHome);
   }

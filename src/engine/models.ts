@@ -12,7 +12,8 @@ interface NormalizedModel {
 }
 
 /**
- * Load an OBJ + its MTL from /models/, then scale it (via `fit`, which receives
+ * Load an OBJ + its MTL from the deploy-relative models/ dir, then scale it (via
+ * `fit`, which receives
  * the raw bounding-box size and returns a uniform scale factor) and centre its
  * bounding box on the origin so it can be used as a pivot template.
  *
@@ -24,14 +25,17 @@ async function loadNormalizedModel(
   objFile: string,
   fit: (size: THREE.Vector3) => number,
 ): Promise<NormalizedModel> {
+  // Base-relative so models resolve under the GitHub Pages project path
+  // (BASE_URL is "/" in dev, "/resume/" in the production build).
+  const modelsDir = `${import.meta.env.BASE_URL}models/`;
   const mtlLoader = new MTLLoader();
-  mtlLoader.setPath('/models/');
+  mtlLoader.setPath(modelsDir);
   const materials = await mtlLoader.loadAsync(mtlFile);
   materials.preload();
 
   const objLoader = new OBJLoader();
   objLoader.setMaterials(materials);
-  const root = await objLoader.loadAsync(`/models/${objFile}`);
+  const root = await objLoader.loadAsync(`${modelsDir}${objFile}`);
 
   // Force world-matrix propagation so Box3.setFromObject works before render.
   root.updateMatrixWorld(true);

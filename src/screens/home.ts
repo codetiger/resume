@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { PALETTE, clamp } from '../core';
 import type { Engine } from '../engine/scene';
 import { createTile } from '../game/tile';
-import { createNumberDisplay, type NumberDisplay } from '../game/decoration';
+import { createNumberDisplay } from '../game/decoration';
 import type { LevelDef } from '../game/levels';
 import type { Screen } from '../game/app';
 
@@ -32,7 +32,6 @@ export interface HomeScreenOptions {
 
 interface Tile {
   wrapper: THREE.Group;
-  number: NumberDisplay;
   levelIndex: number;
   /** Recolour / restore the tile's 3 materials to mark it as the current selection. */
   setSelected: (on: boolean) => void;
@@ -130,6 +129,12 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   const group = new THREE.Group();
   syncRollerWidths();
 
+  // Sequential unlock: a level is playable only once the previous one is cleared.
+  // The first level — and any already-completed level — is always open.
+  const isUnlocked = (i: number): boolean =>
+    i === 0 || completed.has(levels[i].number) || completed.has(levels[i - 1].number);
+  const select = (i: number): void => { if (isUnlocked(i)) onSelect(i); };
+
   // When the visitor prefers reduced motion, page instantly and drop the row
   // tumble (the CSS roller/pulse are already stilled by a media query).
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -177,7 +182,8 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       wrapper.add(tile);
 
       const number = createNumberDisplay(PALETTE.decoration.shift);
-      number.set(def.number);
+      if (isUnlocked(i)) number.set(def.number);
+      else number.lock();
       // Sit the odometer toward the back (up on screen) so the name plate below it
       // gets clear room on the platform's surface.
       number.group.position.z = -0.16;
@@ -232,7 +238,7 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       const year = rest.join('·').trim();
       wrapper.add(createNameLabel(main.trim(), year));
 
-      tiles.push({ wrapper, number, levelIndex: i, setSelected });
+      tiles.push({ wrapper, levelIndex: i, setSelected });
     }
     rows.push({ group: rowGroup, tiles });
   }
@@ -298,7 +304,7 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       else if (code === 'ArrowLeft' || code === 'KeyA') setFocus(focus - 1);
       else if (code === 'ArrowDown' || code === 'KeyS') setFocus(focus + COLS);
       else if (code === 'ArrowUp' || code === 'KeyW') setFocus(focus - COLS);
-      else if (code === 'Enter' || code === 'Space') onSelect(focus);
+      else if (code === 'Enter' || code === 'Space') select(focus);
     },
 
     onPointerDown(ndcX: number, ndcY: number) {
@@ -309,11 +315,11 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       for (const hit of hits) {
         let o: THREE.Object3D | null = hit.object;
         while (o && o.userData.levelIndex === undefined) o = o.parent;
-        if (o) { onSelect(o.userData.levelIndex as number); return; }
+        if (o) { select(o.userData.levelIndex as number); return; }
       }
     },
 
-    tick(elapsed: number) {
+    tick() {
       view += (targetTop - view) * (reduceMotion ? 1 : EASE);
       if (Math.abs(targetTop - view) < 0.0015) view = targetTop;
 
@@ -357,7 +363,6 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
           const isFocus = t.levelIndex === focus;
           t.wrapper.scale.setScalar(isFocus ? SCALE * FOCUS_SCALE : SCALE);
           t.wrapper.position.y = isFocus ? FOCUS_LIFT : 0;
-          t.number.update(elapsed);
         });
       });
     },

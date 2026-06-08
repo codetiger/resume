@@ -3,22 +3,32 @@
 An interactive, gamified résumé. Roll a cube across a 3D tile grid (Three.js); a static
 HTML résumé generated from JSON serves as the no-JavaScript fallback.
 
-Demo — [Harishankar Narayanan](https://codetiger.github.io/resume/public/)
+Demo — [Game](https://codetiger.github.io/resume/) · [Static résumé](https://codetiger.github.io/resume/resume.html)
 
 ## Two stacks
 
 | Stack | Entry | Purpose |
 |-------|-------|---------|
 | **Game** (primary) | `index.html` + `src/` | Three.js + TypeScript puzzle résumé, built with Vite. |
-| **Static fallback** | `public/index.html` | Generated from `resume.json` by the Python builder; what recruiters land on without WebGL/JS. |
+| **Static fallback** | `public/resume.html` (generated) | Generated from `resume.json` by the Python builder; what recruiters land on without WebGL/JS. |
+
+`resume.json` is the single source of truth: the game's `src/game/levels.json`
+references it with JSONPath (`$…`) strings, resolved at build time by the
+`resume-refs` Vite plugin in `vite.config.ts`.
 
 ## Game (Three.js)
 
 ```bash
 npm install
-npm run dev      # Vite dev server at http://localhost:5173
-npm run build    # tsc --noEmit + vite build → dist/
+npm run dev        # Vite dev server at http://localhost:5173
+npm run build      # tsc --noEmit + vite build → dist/ (game only)
+npm run build:site # python3 build.py + npm run build → dist/ (game + static résumé)
 ```
+
+Deployment is automated: pushing to `master` runs `.github/workflows/deploy.yml`,
+which builds both stacks and publishes `dist/` to GitHub Pages (game at `/resume/`,
+static résumé at `/resume/resume.html`). Requires repo **Settings → Pages → Source =
+"GitHub Actions"** (one-time).
 
 Source layout under `src/`:
 
@@ -30,9 +40,9 @@ Source layout under `src/`:
 
 ```bash
 pip3 install -r requirements.txt
-python3 build.py          # resume.json + template.html → public/index.html
+python3 build.py          # resume.json + template.html → public/resume.html
 ```
 
 - **Content:** edit `resume.json` ([JSON Resume](https://jsonresume.org/schema/) schema).
 - **Design/layout:** edit `template.html` (Jinja2 template, CSS inlined).
-- `public/index.html` is generated — do not edit by hand; regenerate with `python3 build.py`.
+- `public/resume.html` is generated — do not edit by hand; regenerate with `python3 build.py`.

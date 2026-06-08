@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build public/index.html from resume.json + template.html using Jinja2."""
+"""Build public/resume.html from resume.json + template.html using Jinja2.
+
+Output lands in public/ (Vite's publicDir) as resume.html — NOT index.html — so the
+Vite build copies it to dist/resume.html and it sits side by side with the game
+(dist/index.html) instead of clobbering it."""
 
 import base64
 import json
@@ -13,7 +17,7 @@ from jinja2 import Environment, FileSystemLoader
 ROOT = Path(__file__).resolve().parent
 RESUME_PATH = ROOT / "resume.json"
 TEMPLATE_NAME = "template.html"
-OUTPUT_PATH = ROOT / "public" / "index.html"
+OUTPUT_PATH = ROOT / "public" / "resume.html"
 AVATAR_SIZE = 144
 HEX_RADIUS = 2       # fine grid radius (data resolution)
 INDEX_BITS = 5       # bits per cell; palette = 2^INDEX_BITS colors
@@ -74,9 +78,9 @@ def prebake_data(resume):
     email = b.get("email", "")
     if email:
         ct_parts.append(f'<span><a href="mailto:{email}">{email}</a></span>')
-    phone = b.get("phone", "")
-    if phone:
-        ct_parts.append(f'<span class="d">&middot;</span><span><a href="tel:{phone}">{phone}</a></span>')
+    # Phone is deliberately NOT rendered here — it's unlocked by playing the game.
+    # (The raw number is also obfuscated in resume.json so it can't be scraped.)
+    ct_parts.append('<span class="d">&middot;</span><span><a href="./">Play the game for my number &#8594;</a></span>')
     lines.append("".join(ct_parts))
 
     # Pre-bake profile links HTML

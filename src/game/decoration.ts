@@ -538,27 +538,35 @@ const NUM_CUBE = 0.022;                       // small cube size
 const NUM_DIGIT_PITCH = 0.255;                // X distance between digit centres
 const NUM_BOTTOM_Y = BASE_Y - 0.03;           // hidden under the surface
 const NUM_TOP_Y = BASE_Y + 0.02;              // raised
-const NUM_ROLL_DURATION = 0.5;                // seconds for one digit to roll over
 
 // One geometry shared by every odometer cube across every display — the level
 // grid can show a dozen displays at once, so per-cube allocation is avoided.
 const NUMBER_CUBE_GEO = new THREE.BoxGeometry(NUM_CUBE, NUM_CUBE, NUM_CUBE);
 
+// Padlock glyph (same 8×8 cube-grid language as the digits): shown in place of
+// the number when a level is still locked.
+const LOCK_FRAME: Frame = [
+  [0, 0, 1, 1, 1, 1, 0, 0],
+  [0, 1, 1, 0, 0, 1, 1, 0],
+  [0, 1, 1, 0, 0, 1, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 0, 0, 1, 1, 1],
+  [1, 1, 1, 0, 0, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1],
+];
+
 export interface NumberDisplay {
   group: THREE.Group;
   /** Show n (0…10^maxDigits − 1) — no leading zeros, centred on the platform. */
   set: (n: number) => void;
-  /** Drive the roll animation; call each frame with absolute elapsed seconds. */
-  update: (elapsed: number) => void;
+  /** Show a padlock glyph instead of a number (the level is still locked). */
+  lock: () => void;
 }
 
 interface DigitCell {
   group: THREE.Group;
   cubes: THREE.Mesh[][];
-  shown: number | null;  // null = inactive (leading-zero slot, hidden)
-  from: number;          // digit rolling out the top
-  to: number;            // digit rolling in / currently shown
-  rollStart: number | null;
 }
 
 export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay {
@@ -578,40 +586,27 @@ export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay
     const cubes = Array.from({ length: GRID }, (_, r) =>
       Array.from({ length: GRID }, (_, c) => {
         const mesh = new THREE.Mesh(NUMBER_CUBE_GEO, material);
-        // No shadows: many displays animate at once and they read fine lit.
+        // No shadows: many displays render at once and they read fine lit.
         mesh.position.set((c - (GRID - 1) / 2) * NUM_STEP, NUM_BOTTOM_Y, (r - (GRID - 1) / 2) * NUM_STEP);
         mesh.visible = false;
         cellGroup.add(mesh);
         return mesh;
       }),
     );
-    return { group: cellGroup, cubes, shown: null, from: 0, to: 0, rollStart: null };
+    return { group: cellGroup, cubes };
   });
 
-  let lastElapsed = 0;
-
-  // Render a cell from its `from` glyph rolling up into its `to` glyph at progress
-  // p∈[0,1]. A 16-row virtual strip (from on top of to) slides up by p·GRID rows.
-  const renderCell = (cell: DigitCell, p: number): void => {
-    const from = DIGITS[cell.from] ?? DIGITS[0];
-    const to = DIGITS[cell.to] ?? DIGITS[0];
-    const shift = p * GRID;
+  // Render a glyph statically: raise the "on" cubes, sink the rest. No animation —
+  // the number (or lock) appears immediately at its final value.
+  const renderFrame = (cell: DigitCell, frame: Frame): void => {
     for (let r = 0; r < GRID; r++) {
-      const src = Math.round(r + shift); // 0…GRID = from, GRID…2·GRID = to
-      const frame = src < GRID ? from : to;
-      const fr = src < GRID ? src : src - GRID;
       for (let c = 0; c < GRID; c++) {
-        const on = !!frame[fr] && frame[fr][c] === 1;
+        const on = !!frame[r] && frame[r][c] === 1;
         const mesh = cell.cubes[r][c];
         mesh.visible = on;
         mesh.position.y = on ? NUM_TOP_Y : NUM_BOTTOM_Y;
       }
     }
-  };
-
-  const renderStatic = (cell: DigitCell): void => {
-    cell.from = cell.to;
-    renderCell(cell, 0);
   };
 
   return {
@@ -625,29 +620,22 @@ export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay
           // Centre the significant digits across the platform.
           cell.group.position.x = (i - (len - 1) / 2) * NUM_DIGIT_PITCH;
           cell.group.visible = true;
-          const d = Number(str[i]);
-          if (cell.shown === null) { cell.from = 0; cell.to = d; cell.rollStart = lastElapsed; }
-          else if (d !== cell.shown) { cell.from = cell.shown; cell.to = d; cell.rollStart = lastElapsed; }
-          cell.shown = d;
+          renderFrame(cell, DIGITS[Number(str[i])] ?? DIGITS[0]);
         } else {
           cell.group.visible = false;
-          cell.shown = null;
-          cell.rollStart = null;
         }
       });
     },
-    update(elapsed: number) {
-      lastElapsed = elapsed;
-      for (const cell of cells) {
-        if (cell.rollStart === null) continue;
-        const p = (elapsed - cell.rollStart) / NUM_ROLL_DURATION;
-        if (p >= 1) {
-          cell.rollStart = null;
-          renderStatic(cell);
+    lock() {
+      cells.forEach((cell, i) => {
+        if (i === 0) {
+          cell.group.position.x = 0;            // single centred glyph
+          cell.group.visible = true;
+          renderFrame(cell, LOCK_FRAME);
         } else {
-          renderCell(cell, p);
+          cell.group.visible = false;
         }
-      }
+      });
     },
   };
 }
