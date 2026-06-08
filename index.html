@@ -332,6 +332,7 @@
                 -webkit-backdrop-filter: blur(12px);
                 padding: 1.5rem;
                 overflow-y: auto;
+                pointer-events: auto;
             }
             .overlay h2 {
                 font-size: clamp(1.5rem, 5vw, 2.8rem);
@@ -368,6 +369,22 @@
                 transition:
                     background 0.2s,
                     color 0.2s;
+            }
+            /* Keyboard-shortcut badge inside an overlay button. Inherits the button's
+               colour so each overlay's palette (cyan / mint / red) carries through. */
+            .overlay button kbd {
+                display: inline-block;
+                margin-left: 0.6em;
+                padding: 0.05em 0.45em;
+                min-width: 1.1em;
+                font-family: "SF Mono", "Fira Code", monospace;
+                font-size: 0.72em;
+                line-height: 1.3;
+                text-align: center;
+                letter-spacing: 0.05em;
+                border: 1px solid currentColor;
+                border-radius: 3px;
+                opacity: 0.7;
             }
 
             /* Info card — the game-styled résumé reveal. */
@@ -621,7 +638,7 @@
                 <div class="info-sub" id="info-sub"></div>
                 <ul id="info-bullets"></ul>
                 <div class="btn-row">
-                    <button id="info-continue">Continue ▸</button>
+                    <button id="info-continue">Continue ▸<kbd>↵</kbd></button>
                 </div>
             </div>
         </div>
@@ -637,8 +654,8 @@
             <h2>Level&nbsp;Clear</h2>
             <p id="win-sub">All tiles cleared — you made it back to base.</p>
             <div class="btn-row">
-                <button id="win-next">Next ▸</button>
-                <button id="win-home">Home</button>
+                <button id="win-next">Next ▸<kbd>N</kbd></button>
+                <button id="win-home">Home<kbd>H</kbd></button>
             </div>
         </div>
 
@@ -653,8 +670,8 @@
             <h2>Game&nbsp;Over</h2>
             <p id="gameover-sub">You fell off the edge.</p>
             <div class="btn-row">
-                <button id="gameover-retry">Retry</button>
-                <button id="gameover-home">Home</button>
+                <button id="gameover-retry">Retry<kbd>R</kbd></button>
+                <button id="gameover-home">Home<kbd>H</kbd></button>
             </div>
         </div>
 

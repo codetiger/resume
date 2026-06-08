@@ -35,16 +35,20 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const level = buildLevel(def.layout, assets.template, assets.tileHeight);
   const SWIRL_Y = assets.tileHeight / 2 + CUBE_SIZE / 2;
 
-  // A blast that reaches the cube's tile destroys the ground under it.
-  level.setOnPlayerLost(() => player.drop());
-
   const state = {
     playerCol: 0, playerRow: 0,
     prevCol: 0, prevRow: 0,
-    wasMoving: false,
+    // A move is in flight whose landing hasn't been resolved yet. Driven by the
+    // physics, not a frame-boundary edge, so the landing can never be skipped by
+    // a new move queued in the gap between the roll finishing and the next tick.
+    arrivalPending: false,
     won: false, gameOver: false,
     paused: false, // info card open
   };
+
+  // A blast that reaches the cube's tile destroys the ground under it: the cube
+  // drops, and that drop owes a landing (resolved into a game-over).
+  level.setOnPlayerLost(() => { player.drop(); state.arrivalPending = true; });
 
   // Place the player on the base tile.
   const baseEntry = [...level.tiles.entries()].find(([, t]) => t.userData.kind === 'base');
@@ -129,15 +133,39 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     showOverlay(gameOverOverlay);
   }
 
-  // Buttons (onclick replaces any prior handler, so screens never stack listeners).
-  if (infoContinue) infoContinue.onclick = dismissInfo;
-  // Also dismiss by clicking the dimmed backdrop outside the card, as a fallback
-  // if the button is ever awkward to hit.
+  // Each overlay button binds a click and one or more keys to the SAME action, so
+  // mouse and keyboard always stay in parity and no button can be left half-wired.
+  // onKey() dispatches a press against the active overlay's button set (below).
+  interface OverlayButton { el: HTMLElement | null; action: () => void; keys: string[]; }
+  const infoButtons: OverlayButton[] = [
+    { el: infoContinue, action: dismissInfo, keys: ['Enter', 'Space', 'Escape'] },
+  ];
+  const winButtons: OverlayButton[] = [
+    { el: winNext, action: opts.onNext, keys: ['Enter', 'KeyN'] },
+    // Enter falls through to Home only when Next is hidden (last level), since
+    // dispatchKey() skips hidden buttons and returns on the first match.
+    { el: winHome, action: opts.onHome, keys: ['Enter', 'KeyH'] },
+  ];
+  const gameOverButtons: OverlayButton[] = [
+    { el: gameOverRetry, action: opts.onRetry, keys: ['Enter', 'KeyR'] },
+    { el: gameOverHome, action: opts.onHome, keys: ['KeyH'] },
+  ];
+  const allButtons = [...infoButtons, ...winButtons, ...gameOverButtons];
+
+  // onclick replaces any prior handler, so screens never stack listeners.
+  for (const b of allButtons) if (b.el) b.el.onclick = b.action;
+  // Also dismiss the info card by clicking the dimmed backdrop outside it, as a
+  // fallback if the button is ever awkward to hit. Win/game-over keep no backdrop
+  // action — their two choices have no single obvious default.
   if (infoOverlay) infoOverlay.onclick = (e) => { if (e.target === infoOverlay) dismissInfo(); };
-  if (winNext) winNext.onclick = opts.onNext;
-  if (winHome) winHome.onclick = opts.onHome;
-  if (gameOverRetry) gameOverRetry.onclick = opts.onRetry;
-  if (gameOverHome) gameOverHome.onclick = opts.onHome;
+
+  // Run the first visible button whose key set contains the press.
+  const dispatchKey = (buttons: OverlayButton[], code: string): void => {
+    for (const b of buttons) {
+      if (!b.el || b.el.style.display === 'none') continue;
+      if (b.keys.includes(code)) { b.action(); return; }
+    }
+  };
 
   // ─── tile-action dispatch ──────────────────────────────────────────────────────
   function applyAction(action: TileAction, elapsed: number): void {
@@ -171,13 +199,40 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     }
   }
 
+  // Latest tick time, so a landing flushed from input (tryMove) can start a tile's
+  // fall/effects at very nearly the right moment without waiting for the next tick.
+  let lastElapsed = 0;
+
+  // Resolve the move that just finished: crumble the tile stepped off, apply the
+  // landed-on tile's effect, then check win. A slide/teleport started here owes a
+  // further landing, so arrivalPending tracks whatever motion is now in flight.
+  function processLanding(elapsed: number): void {
+    if (player.hasFallen()) { state.arrivalPending = false; showGameOver(); return; }
+    const action = level.onPlayerLand(state.playerCol, state.playerRow, state.prevCol, state.prevRow, elapsed);
+    applyAction(action, elapsed);
+    updateRemaining();
+    state.arrivalPending = player.isMoving();
+    if (!player.isMoving() && level.isWon(state.playerCol, state.playerRow)) showWin();
+  }
+
+  // Flush a pending landing the instant the cube comes to rest. Safe to call any
+  // time; it is the single gate through which every landing is processed.
+  function settleIfLanded(elapsed: number): void {
+    if (state.won || state.gameOver) return;
+    if (state.arrivalPending && !player.isMoving()) processLanding(elapsed);
+  }
+
   function tryMove(dir: Direction): void {
+    // Resolve the previous tile's landing before moving on, so a fast second press
+    // in the gap after a roll can never skip a crumble (and orphan a green tile).
+    settleIfLanded(lastElapsed);
     if (player.isMoving()) return;
     const [dCol, dRow] = DIRECTION_DELTA[dir];
     const nextCol = state.playerCol + dCol;
     const nextRow = state.playerRow + dRow;
     if (!level.isTraversable(nextCol, nextRow)) {
       player.fall(dir);
+      state.arrivalPending = true;
       return;
     }
     state.prevCol = state.playerCol;
@@ -185,39 +240,24 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     state.playerCol = nextCol;
     state.playerRow = nextRow;
     player.move(dir);
+    state.arrivalPending = true;
   }
 
   return {
     group: level.group,
 
     onKey(code: string) {
-      // While the info card is open, any confirm key dismisses it; ignore moves.
-      if (state.paused) {
-        if (code === 'Enter' || code === 'Space' || code === 'Escape') dismissInfo();
-        return;
-      }
-      if (state.won) { if (code === 'Enter') (index + 1 < total ? opts.onNext : opts.onHome)(); return; }
-      if (state.gameOver) { if (code === 'Enter') opts.onRetry(); return; }
+      // An open overlay captures keys (confirm/navigation); movement is ignored.
+      if (state.paused) { dispatchKey(infoButtons, code); return; }
+      if (state.won) { dispatchKey(winButtons, code); return; }
+      if (state.gameOver) { dispatchKey(gameOverButtons, code); return; }
       const dir = KEY_MAP[code];
       if (dir) tryMove(dir);
     },
 
     tick(elapsed: number) {
-      const moving = player.isMoving();
-
-      if (state.wasMoving && !moving && !state.won && !state.gameOver) {
-        if (player.hasFallen()) {
-          showGameOver();
-        } else {
-          const action = level.onPlayerLand(state.playerCol, state.playerRow, state.prevCol, state.prevRow, elapsed);
-          applyAction(action, elapsed);
-          updateRemaining();
-          if (!player.isMoving() && level.isWon(state.playerCol, state.playerRow)) {
-            showWin();
-          }
-        }
-      }
-      state.wasMoving = moving;
+      lastElapsed = elapsed;
+      settleIfLanded(elapsed);
 
       player.update(elapsed);
       level.update(elapsed, `${state.playerCol},${state.playerRow}`);
@@ -227,12 +267,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       hideOverlay(infoOverlay);
       hideOverlay(winOverlay);
       hideOverlay(gameOverOverlay);
-      if (infoContinue) infoContinue.onclick = null;
+      for (const b of allButtons) if (b.el) b.el.onclick = null;
       if (infoOverlay) infoOverlay.onclick = null;
-      if (winNext) winNext.onclick = null;
-      if (winHome) winHome.onclick = null;
-      if (gameOverRetry) gameOverRetry.onclick = null;
-      if (gameOverHome) gameOverHome.onclick = null;
 
       level.effects.dispose();
       // Dispose the per-tile and decoration materials this level created. Geometry
