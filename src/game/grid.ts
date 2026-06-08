@@ -204,7 +204,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
   function removeTile(key: string, elapsed: number, delay = 0): void {
     const def = cellDefs.get(key);
-    if (!def || def.kind === 'base' || def.kind === 'info') return;
+    if (!def || def.kind === 'base') return;
     if (tileStates.get(key) !== 'active') return;
     tileStates.set(key, 'gone');
     const tile = tiles.get(key)!;
@@ -356,10 +356,12 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     const fromDef = cellDefs.get(fromKey);
     const toDef = cellDefs.get(toKey);
 
-    // Stepping off a tile: disappear-normal tiles crumble away; a blast behaves
-    // like a landmine — armed while the cube sits on it, fuse lit once it leaves.
-    // Arrow / shift / disappear-line tiles persist (reusable / triggered).
-    if (fromDef && fromDef.kind === 'disappear-normal') {
+    // Stepping off a tile: disappear-normal and info tiles crumble away (info
+    // tiles look like green tiles and are consumed once their content has been
+    // revealed on landing); a blast behaves like a landmine — armed while the
+    // cube sits on it, fuse lit once it leaves. Arrow / shift / disappear-line
+    // tiles persist (reusable / triggered).
+    if (fromDef && (fromDef.kind === 'disappear-normal' || fromDef.kind === 'info')) {
       removeTile(fromKey, elapsed);
     } else if (fromDef && fromDef.kind === 'explosive') {
       igniteBlast(fromKey, elapsed);
@@ -385,7 +387,8 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       }
 
       case 'info':
-        // Landing on the goal tile reveals its content; it is never consumed.
+        // Landing reveals the tile's content; the tile itself crumbles like a
+        // normal green tile once the cube rolls off (handled in the step-off block).
         return { type: 'info' };
 
       case 'shift': {
