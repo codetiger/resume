@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PALETTE } from '../core';
+import { PALETTE, clamp } from '../core';
 import type { Engine } from '../engine/scene';
 import { createTile } from '../game/tile';
 import { createNumberDisplay, type NumberDisplay } from '../game/decoration';
@@ -20,7 +20,6 @@ const WHEEL_STEP = 90;     // wheel delta needed to page one row
 const FOCUS_LIFT = 0.32;   // how high the selected tile rises above its row
 const FOCUS_SCALE = 1.32;  // and how much bigger it swells
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, hi));
 const columnsForWidth = (w: number) => clamp(Math.round(w / 180), 2, 8);
 
 export interface HomeScreenOptions {
@@ -130,6 +129,10 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   const { engine, assets, levels, completed, onSelect } = opts;
   const group = new THREE.Group();
   syncRollerWidths();
+
+  // When the visitor prefers reduced motion, page instantly and drop the row
+  // tumble (the CSS roller/pulse are already stilled by a media query).
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
   // Responsive layout: columns from width, then size the platforms to fill the
   // visible world width at the grid's depth (which scales with viewport aspect).
@@ -311,7 +314,7 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
     },
 
     tick(elapsed: number) {
-      view += (targetTop - view) * EASE;
+      view += (targetTop - view) * (reduceMotion ? 1 : EASE);
       if (Math.abs(targetTop - view) < 0.0015) view = targetTop;
 
       // Move the inverted "selected" look only when the focus actually changes.
@@ -342,8 +345,8 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
         }
         row.group.visible = true;
 
-        const yOff = u > 0 ? -DROP * fall(u) : 0;
-        const rot = u > 0 ? u * SPIN : 0;
+        const yOff = u > 0 && !reduceMotion ? -DROP * fall(u) : 0;
+        const rot = u > 0 && !reduceMotion ? u * SPIN : 0;
 
         // Keep off-band rows pinned at their edge slot's depth while they fall.
         const zSlot = clamp(slot, 0, VISIBLE_ROWS - 1);

@@ -12,7 +12,8 @@ const SWIRL_SPIN = 7;            // rad/s the orbiting swirl lines rotate
 const SWIRL_DURATION = 0.44;     // s a teleport vortex lives (≈ shrink + grow)
 const DT_CLAMP = 0.1;            // ignore huge gaps (tab refocus) so nothing teleports
 
-// Shared, app-lifetime resources, freed by Effects.dispose().
+// Shared, app-lifetime resources. createEffects() runs once per level, so these
+// must outlive any single level's dispose() and are intentionally never freed.
 const sphereGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 18, 18);
 const ringGeo = new THREE.TorusGeometry(SPHERE_RADIUS * 1.7, 0.012, 8, 40);
 const vortexRingGeo = new THREE.TorusGeometry(0.32, 0.03, 10, 48);
@@ -258,14 +259,14 @@ export function createEffects(): Effects {
   }
 
   function dispose(): void {
+    // Free this level's in-flight nodes and their per-instance materials. The
+    // shared sphere/ring/halo geometry + texture are app-lifetime and reused by
+    // the next level's Effects, so they are deliberately left intact — disposing
+    // them here would pull GPU buffers out from under the following level.
     for (let i = projectiles.length - 1; i >= 0; i--) disposeNode(projectiles[i].mesh, projectiles[i].mats);
     for (let i = swirls.length - 1; i >= 0; i--) disposeNode(swirls[i].mesh, swirls[i].mats);
     projectiles.length = 0;
     swirls.length = 0;
-    sphereGeo.dispose();
-    ringGeo.dispose();
-    vortexRingGeo.dispose();
-    haloTex.dispose();
   }
 
   return { group, spawnProjectile, spawnSwirl, update, dispose };

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import type { Direction } from '../core';
+import { easeInOutQuad, type Direction } from '../core';
 
 const ROLL_DURATION = 0.18;             // seconds for one 90° roll
 const ROLLS_PER_MOVE = 2;               // two rolls land the cube on the next tile
@@ -99,10 +99,6 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
   const tmpQuat = new THREE.Quaternion();
   const tmpVec = new THREE.Vector3();
   const tmpOffset = new THREE.Vector3();
-
-  function easeInOutQuad(t: number): number {
-    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  }
 
   function applyRest(): void {
     group.position.copy(restPos);

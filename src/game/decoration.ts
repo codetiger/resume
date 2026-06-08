@@ -70,7 +70,10 @@ function buildCubeGrid(group: THREE.Group, material: THREE.Material): THREE.Mesh
   return Array.from({ length: GRID }, (_, r) =>
     Array.from({ length: GRID }, (_, c) => {
       const mesh = new THREE.Mesh(geo, material);
-      mesh.castShadow = true;
+      // These overlay cubes are tiny and cosmetic: there can be hundreds on screen
+      // at once, so they don't cast shadows (that doubled their render cost in the
+      // shadow pass for no real visual gain). They still receive the scene shading.
+      mesh.castShadow = false;
       mesh.receiveShadow = true;
       mesh.position.set((c - (GRID - 1) / 2) * STEP, BOTTOM_Y, (r - (GRID - 1) / 2) * STEP);
       mesh.visible = false;
@@ -97,6 +100,9 @@ function makeDecoration(frames: Frame[], color: number): Decoration {
   // so the opening frame appears stable rather than rising from nowhere.
   let prevFrameIdx = -1;
   let curFrameIdx = -1;
+  // Once a frame's rise/sink has settled (ramp hit 1) the cube positions hold
+  // until the next frame flips, so we skip the 64-cube rewrite during that dwell.
+  let settled = false;
 
   return {
     group,
@@ -108,7 +114,9 @@ function makeDecoration(frames: Frame[], color: number): Decoration {
       if (fi !== curFrameIdx) {
         prevFrameIdx = curFrameIdx === -1 ? fi : curFrameIdx;
         curFrameIdx = fi;
+        settled = false;
       }
+      if (settled) return;   // nothing moving this frame — leave the cubes as they are
 
       const cur = frames[curFrameIdx];
       const prev = frames[prevFrameIdx];
@@ -120,6 +128,7 @@ function makeDecoration(frames: Frame[], color: number): Decoration {
           mesh.visible = y > BOTTOM_Y + 0.001;
         }
       }
+      if (ramp >= 1) settled = true;
     },
   };
 }

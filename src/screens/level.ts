@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { DIRECTION_DELTA, PALETTE, type Direction } from '../core';
+import { DIRECTION_DELTA, PALETTE, cellKey, parseCellKey, type Direction } from '../core';
 import type { Engine } from '../engine/scene';
 import type { Player } from '../game/player';
 import { TELEPORT_SHRINK } from '../game/player';
@@ -54,7 +54,7 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // Place the player on the base tile.
   const baseEntry = [...level.tiles.entries()].find(([, t]) => t.userData.kind === 'base');
   if (baseEntry) {
-    const [col, row] = baseEntry[0].split(',').map(Number);
+    const [col, row] = parseCellKey(baseEntry[0]);
     state.playerCol = col;
     state.playerRow = row;
   }
@@ -96,6 +96,13 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const hideOverlay = (el: HTMLElement | null) => { if (el) el.style.display = 'none'; };
   const showOverlay = (el: HTMLElement | null) => { if (el) el.style.display = 'flex'; };
 
+  // Accessibility: when a dialog opens, move focus to its first visible button so
+  // keyboard / screen-reader users land inside it; when it closes, release focus so
+  // it never lingers on a now-hidden control.
+  const focusFirst = (...buttons: (HTMLElement | null)[]) =>
+    buttons.find((b) => b && b.style.display !== 'none')?.focus();
+  const releaseFocus = () => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); };
+
   function showInfo(): void {
     const c = def.content;
     if (infoCard) infoCard.classList.toggle('meta', c.tag === 'meta');
@@ -113,11 +120,13 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     }
     state.paused = true;
     showOverlay(infoOverlay);
+    focusFirst(infoContinue);
   }
 
   function dismissInfo(): void {
     state.paused = false;
     hideOverlay(infoOverlay);
+    releaseFocus();
   }
 
   function showWin(): void {
@@ -130,12 +139,14 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       : `That's the last level — you've seen the whole story.`;
     if (winNext) winNext.style.display = hasNext ? '' : 'none';
     showOverlay(winOverlay);
+    focusFirst(winNext, winHome);
   }
 
   function showGameOver(): void {
     if (state.gameOver) return;
     state.gameOver = true;
     showOverlay(gameOverOverlay);
+    focusFirst(gameOverRetry);
   }
 
   // Esc pause menu. Only opens during active play (not over another overlay); the
@@ -145,11 +156,13 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     if (state.won || state.gameOver || state.paused || state.pauseMenu) return;
     state.pauseMenu = true;
     showOverlay(pauseOverlay);
+    focusFirst(pauseRetry);
   }
 
   function resume(): void {
     state.pauseMenu = false;
     hideOverlay(pauseOverlay);
+    releaseFocus();
   }
 
   // Each overlay button binds a click and one or more keys to the SAME action, so
@@ -282,8 +295,16 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       if (state.won) { dispatchKey(winButtons, code); return; }
       if (state.gameOver) { dispatchKey(gameOverButtons, code); return; }
       if (code === 'Escape') { openPause(); return; }
+      if (code === 'KeyR') { opts.onRetry(); return; }  // quick restart mid-play
       const dir = KEY_MAP[code];
       if (dir) tryMove(dir);
+    },
+
+    // A touch swipe / d-pad press, routed through the same move gate as the keys.
+    // Ignored while any overlay is up so a stray swipe can't move behind a dialog.
+    onSwipe(dir: Direction) {
+      if (state.paused || state.pauseMenu || state.won || state.gameOver) return;
+      tryMove(dir);
     },
 
     tick(elapsed: number) {
@@ -291,7 +312,7 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       settleIfLanded(elapsed);
 
       player.update(elapsed);
-      level.update(elapsed, `${state.playerCol},${state.playerRow}`);
+      level.update(elapsed, cellKey(state.playerCol, state.playerRow));
     },
 
     dispose() {

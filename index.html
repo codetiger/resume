@@ -35,6 +35,9 @@
                 width: 100vw;
                 height: 100vh;
                 display: block;
+                /* Let the game own touch gestures (swipe to roll) rather than the
+                   browser panning/zooming the page during play. */
+                touch-action: none;
             }
 
             /* ── shared label vocabulary ─────────────────────────────────────────── */
@@ -114,6 +117,44 @@
             #hud-counter span {
                 color: rgba(200, 240, 255, 0.9);
                 font-weight: 700;
+            }
+
+            /* ── on-screen d-pad ─────────────────────────────────────────────────── */
+            /* Hidden by default; revealed only on coarse-pointer (touch) devices while
+               a level is on screen, as a fallback for players who'd rather tap than
+               swipe. Buttons drive the same move path as a swipe (see app.ts). */
+            #dpad {
+                display: none;
+            }
+            @media (pointer: coarse) {
+                body.screen-level #dpad {
+                    display: grid;
+                    position: fixed;
+                    left: 1rem;
+                    bottom: 1rem;
+                    z-index: 12;
+                    grid-template-columns: repeat(3, 3.1rem);
+                    grid-template-rows: repeat(3, 3.1rem);
+                    gap: 0.3rem;
+                    opacity: 0.6;
+                }
+                #dpad button {
+                    -webkit-tap-highlight-color: transparent;
+                    background: rgba(8, 16, 28, 0.6);
+                    border: 1px solid rgba(140, 220, 255, 0.4);
+                    border-radius: 9px;
+                    color: rgba(190, 230, 255, 0.95);
+                    font-size: 1.1rem;
+                    line-height: 1;
+                    cursor: pointer;
+                }
+                #dpad button:active {
+                    background: rgba(140, 220, 255, 0.22);
+                }
+                #dpad-up { grid-area: 1 / 2; }
+                #dpad-left { grid-area: 2 / 1; }
+                #dpad-right { grid-area: 2 / 3; }
+                #dpad-down { grid-area: 3 / 2; }
             }
 
             /* ── home / level-select ─────────────────────────────────────────────── */
@@ -272,52 +313,6 @@
                 right: 1.5rem;
             }
 
-            /* Projected level labels under each platform. */
-            #home-levels {
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                z-index: 11;
-            }
-            .level-label {
-                position: absolute;
-                top: 0;
-                left: 0;
-                pointer-events: auto;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                line-height: 1.25;
-                white-space: nowrap;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: rgba(170, 210, 240, 0.7);
-                transition:
-                    color 0.15s,
-                    text-shadow 0.15s;
-                user-select: none;
-            }
-            .level-label .ll-name {
-                font-size: 0.6rem;
-                font-weight: 700;
-            }
-            .level-label .ll-year {
-                font-size: 0.54rem;
-                color: rgba(140, 220, 255, 0.55);
-            }
-            .level-label:hover {
-                color: rgba(220, 240, 255, 0.95);
-            }
-            .level-label.focused {
-                color: #fff;
-                text-shadow: 0 0 18px rgba(140, 220, 255, 0.8);
-            }
-            .level-label.done .ll-name::after {
-                content: " ✓";
-                color: #ffd166;
-            }
-
             /* ── overlays (info / win / game-over) ───────────────────────────────── */
             .overlay {
                 position: fixed;
@@ -357,7 +352,7 @@
                 justify-content: center;
             }
             .overlay button {
-                padding: 0.65rem 2rem;
+                padding: clamp(0.55rem, 2.2vw, 0.7rem) clamp(1.1rem, 5vw, 2rem);
                 background: transparent;
                 border: 1px solid;
                 font-size: 0.76rem;
@@ -369,6 +364,13 @@
                 transition:
                     background 0.2s,
                     color 0.2s;
+            }
+            /* Visible keyboard focus on the dark theme — the browser default ring is
+               nearly invisible here. Inherits each overlay's accent via currentColor. */
+            .overlay button:focus-visible,
+            #dpad button:focus-visible {
+                outline: 2px solid currentColor;
+                outline-offset: 3px;
             }
             /* Keyboard-shortcut badge inside an overlay button. Inherits the button's
                colour so each overlay's palette (cyan / mint / red) carries through. */
@@ -400,6 +402,16 @@
                 border-radius: 10px;
                 padding: 2rem 2rem 1.6rem;
                 box-shadow: 0 0 60px rgba(20, 60, 90, 0.5);
+                scrollbar-width: thin;
+                scrollbar-color: rgba(140, 220, 255, 0.4) transparent;
+            }
+            /* Visible-but-subtle scrollbar for a long info card on small screens. */
+            #info-card::-webkit-scrollbar {
+                width: 8px;
+            }
+            #info-card::-webkit-scrollbar-thumb {
+                background: rgba(140, 220, 255, 0.35);
+                border-radius: 4px;
             }
             #info-card .info-num {
                 position: absolute;
@@ -530,9 +542,6 @@
             body.screen-home #home-hud {
                 display: block;
             }
-            body.screen-level #home-levels {
-                display: none;
-            }
 
             /* Mobile: shrink the header so three full rows of platforms fit. */
             @media (max-width: 640px) {
@@ -564,8 +573,23 @@
                     font-size: 0.6rem;
                     letter-spacing: 0.12em;
                 }
-                .level-label {
-                    font-size: 0.58rem;
+            }
+
+            /* Respect a reduced-motion preference: stop the decorative loops (the
+               rolling tagline, the pulsing hints). The cube roll itself is the core
+               interaction and stays; the home grid's row tumble is calmed in JS. */
+            @media (prefers-reduced-motion: reduce) {
+                #home-hud .roller,
+                #home-hud .roller-track,
+                #hud .hint,
+                #home-hud .home-hint {
+                    animation: none !important;
+                }
+                #home-hud .roller {
+                    width: var(--w0, max-content);
+                }
+                #home-hud .roller-track {
+                    transform: translateY(0);
                 }
             }
         </style>
@@ -586,6 +610,14 @@
         </div>
         <div id="hud-counter" aria-live="polite">
             Tiles remaining: <span id="hud-remaining">—</span>
+        </div>
+
+        <!-- Touch d-pad (coarse-pointer + in-level only; see CSS) -->
+        <div id="dpad">
+            <button id="dpad-up" type="button" aria-label="Move up">↑</button>
+            <button id="dpad-left" type="button" aria-label="Move left">←</button>
+            <button id="dpad-right" type="button" aria-label="Move right">→</button>
+            <button id="dpad-down" type="button" aria-label="Move down">↓</button>
         </div>
 
         <!-- Home / level-select -->
@@ -618,7 +650,6 @@
             <div class="home-corner left">Chennai, India</div>
             <div class="home-corner right">21+ years</div>
         </div>
-        <div id="home-levels"></div>
 
         <noscript>
             <div

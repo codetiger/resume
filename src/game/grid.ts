@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { DIRECTION_DELTA, PALETTE, noise, type Direction } from '../core';
+import { DIRECTION_DELTA, PALETTE, noise, cellKey, parseCellKey, type Direction } from '../core';
 import type { TileKind } from './tile';
 import { createTile } from './tile';
 import { createEffects, type Effects, type ReachTarget } from './effects';
@@ -163,7 +163,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       tile.position.copy(pos);
       group.add(tile);
 
-      const key = `${col},${row}`;
+      const key = cellKey(col, row);
       tiles.set(key, tile);
       cellDefs.set(key, cell);
       tileStates.set(key, 'active');
@@ -249,7 +249,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     triggeredLines.add(startKey);
     const def = cellDefs.get(startKey);
     if (!def) return;
-    const [col, row] = startKey.split(',').map(Number);
+    const [col, row] = parseCellKey(startKey);
     const sweepDir = def.sweepDir ?? 'row';
     const origin = sphereOrigin(col, row);
 
@@ -262,7 +262,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       let c = col + dc;
       let r = row + dr;
       while (c >= 0 && c < cols && r >= 0 && r < rows) {
-        const k = `${c},${r}`;
+        const k = cellKey(c, r);
         if (cellDefs.has(k)) targets.push({ pos: sphereOrigin(c, r), onReach: () => reachTile(k) });
         c += dc;
         r += dr;
@@ -300,13 +300,13 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
     // A red sphere flies to each of the four neighbours, destroying whatever tile
     // it finds and lighting any neighbouring fuse / line as it arrives.
-    const [col, row] = key.split(',').map(Number);
+    const [col, row] = parseCellKey(key);
     const origin = sphereOrigin(col, row);
     const neighbours: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     for (const [dc, dr] of neighbours) {
       const c = col + dc;
       const r = row + dr;
-      const k = `${c},${r}`;
+      const k = cellKey(c, r);
       if (!cellDefs.has(k)) continue;
       effects.spawnProjectile({
         origin,
@@ -319,11 +319,11 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
   function isTraversable(col: number, row: number): boolean {
     if (col < 0 || col >= cols || row < 0 || row >= rows) return false;
-    return tileStates.get(`${col},${row}`) === 'active';
+    return tileStates.get(cellKey(col, row)) === 'active';
   }
 
   function isBase(col: number, row: number): boolean {
-    return cellDefs.get(`${col},${row}`)?.kind === 'base';
+    return cellDefs.get(cellKey(col, row))?.kind === 'base';
   }
 
   function isWon(playerCol: number, playerRow: number): boolean {
@@ -351,8 +351,8 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     fromRow: number,
     elapsed: number,
   ): TileAction {
-    const fromKey = `${fromCol},${fromRow}`;
-    const toKey = `${col},${row}`;
+    const fromKey = cellKey(fromCol, fromRow);
+    const toKey = cellKey(col, row);
     const fromDef = cellDefs.get(fromKey);
     const toDef = cellDefs.get(toKey);
 
@@ -401,7 +401,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
         });
         // Don't teleport back if we just arrived from the partner (would infinite-loop).
         if (partnerKey && partnerKey !== fromKey) {
-          const [pc, pr] = (partnerKey as string).split(',').map(Number);
+          const [pc, pr] = parseCellKey(partnerKey as string);
           return { type: 'teleport', toCol: pc, toRow: pr };
         }
         break;

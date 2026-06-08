@@ -19,8 +19,14 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x07140e);
 
+  // Treat coarse-pointer or small viewports as mobile: cheaper pixel ratio and a
+  // smaller shadow map keep the fragment + shadow passes affordable on phones.
+  const mobile =
+    (window.matchMedia?.('(pointer: coarse)').matches ?? false) ||
+    Math.min(window.innerWidth, window.innerHeight) < 700;
+
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
@@ -57,7 +63,7 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
   const key = new THREE.DirectionalLight(0xffffff, 1.6);
   key.position.set(6, 10, 8);
   key.castShadow = true;
-  key.shadow.mapSize.setScalar(2048);
+  key.shadow.mapSize.setScalar(mobile ? 1024 : 2048);
   key.shadow.camera.near = 0.5;
   key.shadow.camera.far = 40;
   key.shadow.camera.left   = -8;

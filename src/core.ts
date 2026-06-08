@@ -21,6 +21,25 @@ export function noise(seed: number): number {
   return x - Math.floor(x);
 }
 
+/** Clamp `v` into the inclusive range [lo, hi]. */
+export function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(v, hi));
+}
+
+/** Smooth ease accelerating then decelerating; input and output both in [0, 1]. */
+export function easeInOutQuad(t: number): number {
+  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
+// Grid cells are keyed by "col,row" strings across the level state maps. These two
+// helpers are the single place that format/parse that key, so the format lives in
+// one spot instead of being re-spelled (and re-split) at every call site.
+export const cellKey = (col: number, row: number): string => `${col},${row}`;
+export const parseCellKey = (key: string): [number, number] => {
+  const [col, row] = key.split(',').map(Number);
+  return [col, row];
+};
+
 export const PALETTE = {
   /** Platform-mesh body colour per tile kind (neon-edged trim glow). */
   tileBody: {

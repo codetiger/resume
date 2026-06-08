@@ -307,19 +307,3 @@ export const LEVELS: LevelDef[] = [
     },
   },
 ];
-
-// ── TEST FILLER ──────────────────────────────────────────────────────────────
-// Pad the catalogue past 99 so the 2- and 3-digit odometer (centred, no leading
-// zeros) can be exercised on the home grid. Each filler reuses the last real
-// level's layout + content. Remove this block when done testing.
-{
-  const template = LEVELS[LEVELS.length - 1];
-  for (let n = template.number + 1; n <= 104; n++) {
-    LEVELS.push({
-      number: n,
-      name: `Test ${n}`,
-      layout: template.layout,
-      content: { ...template.content, heading: `Test Level ${n}` },
-    });
-  }
-}
