@@ -12,7 +12,6 @@ export interface Engine {
   render: () => void;
   cameraTarget: THREE.Vector3;
   cameraBasePosition: THREE.Vector3;
-  applyParallax: (tiltX: number, tiltY: number) => void;
   dispose: () => void;
 }
 
@@ -85,15 +84,6 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
   onResize();
   window.addEventListener("resize", onResize);
 
-  const tmp = new THREE.Vector3();
-  const applyParallax = (tiltX: number, tiltY: number) => {
-    tmp.copy(cameraBasePosition);
-    tmp.x += tiltX * 0.35;
-    tmp.y += -tiltY * 0.25;
-    camera.position.copy(tmp);
-    camera.lookAt(cameraTarget);
-  };
-
   return {
     scene,
     camera,
@@ -101,7 +91,6 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
     render: () => renderer.render(scene, camera),
     cameraTarget,
     cameraBasePosition,
-    applyParallax,
     dispose: () => {
       window.removeEventListener("resize", onResize);
       renderer.dispose();

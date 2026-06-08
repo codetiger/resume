@@ -160,11 +160,41 @@
                 font-size: clamp(1.05rem, 2.8vw, 1.5rem);
                 color: rgba(206, 230, 250, 0.92);
             }
-            /* Rolling word: a vertical odometer that cycles through the labels. */
+            /* Rolling word: a vertical odometer that cycles through the labels.
+               Its width animates (rollw) in lock-step with the vertical roll so the
+               clip box hugs whichever word is showing — keeping the "This is …" line
+               centred instead of padded out to the widest word. Per-word widths
+               (--w0…--w4) are measured and injected by the home screen JS. */
             #home-hud .roller {
                 display: inline-block;
                 height: 1.5em;
                 overflow: hidden;
+                animation: rollw 11s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+            }
+            @keyframes rollw {
+                0%,
+                16% {
+                    width: var(--w0, max-content);
+                }
+                20%,
+                36% {
+                    width: var(--w1, max-content);
+                }
+                40%,
+                56% {
+                    width: var(--w2, max-content);
+                }
+                60%,
+                76% {
+                    width: var(--w3, max-content);
+                }
+                80%,
+                96% {
+                    width: var(--w4, max-content);
+                }
+                100% {
+                    width: var(--w0, max-content);
+                }
             }
             #home-hud .roller-track {
                 display: flex;
@@ -204,17 +234,6 @@
                 100% {
                     transform: translateY(-7.5em);
                 }
-            }
-            #home-hud #home-subtagline {
-                position: absolute;
-                top: 50vh; /* repositioned by JS to sit just above the level grid */
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                text-align: center;
-                font-size: clamp(0.78rem, 2vw, 0.95rem);
-                letter-spacing: 0.04em;
-                color: rgba(196, 222, 245, 0.82);
             }
             #home-hud #home-avatar {
                 margin-top: 1.5rem;
@@ -559,9 +578,6 @@
                     Senior Director · Product Engineering
                 </div>
             </div>
-            <p id="home-subtagline">
-                Roll the cube through 21 years of building things.
-            </p>
             <div class="home-hint">
                 Click a platform · or use ← → ↑ ↓ and Enter
             </div>

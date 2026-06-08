@@ -97,10 +97,39 @@ function createNameLabel(name: string, year: string): THREE.Mesh {
   return mesh;
 }
 
+// The rolling "This is …" word reserves the widest label's width by default, so
+// shorter words sit off-centre. Measure each word with the roller's own font and
+// feed the widths into the CSS width-animation (keyframes rollw) as --w0…--wN, so
+// the clip box tracks the visible word and the line stays centred. Re-runnable on
+// resize, since the font size shifts at the mobile breakpoint.
+function syncRollerWidths(): void {
+  const roller = document.querySelector<HTMLElement>('#home-hud .roller');
+  const words = roller ? Array.from(roller.querySelectorAll<HTMLElement>('.roller-track > span')) : [];
+  if (!roller || !words.length) return;
+
+  const cs = getComputedStyle(words[0]);
+  const probe = document.createElement('span');
+  Object.assign(probe.style, {
+    position: 'absolute',
+    visibility: 'hidden',
+    whiteSpace: 'nowrap',
+    fontWeight: cs.fontWeight,
+    fontSize: cs.fontSize,
+    fontFamily: cs.fontFamily,
+    letterSpacing: cs.letterSpacing,
+  });
+  document.body.appendChild(probe);
+  words.forEach((w, i) => {
+    probe.textContent = w.textContent;
+    roller.style.setProperty(`--w${i}`, `${Math.ceil(probe.getBoundingClientRect().width)}px`);
+  });
+  probe.remove();
+}
+
 export function createHomeScreen(opts: HomeScreenOptions): Screen {
   const { engine, assets, levels, completed, onSelect } = opts;
   const group = new THREE.Group();
-  const subtagline = document.getElementById('home-subtagline');
+  syncRollerWidths();
 
   // Responsive layout: columns from width, then size the platforms to fill the
   // visible world width at the grid's depth (which scales with viewport aspect).
@@ -250,10 +279,10 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   window.addEventListener('wheel', onWheel, { passive: false });
   window.addEventListener('touchstart', onTouchStart, { passive: true });
   window.addEventListener('touchmove', onTouchMove, { passive: false });
+  window.addEventListener('resize', syncRollerWidths);
 
   const raycaster = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
-  const worldPos = new THREE.Vector3();
 
   // Spatial → fall distance. Squared term gives a gravity-like acceleration.
   const fall = (u: number) => u * (1 + 0.55 * u);
@@ -282,9 +311,6 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
     },
 
     tick(elapsed: number) {
-      const { camera } = engine;
-      const h = window.innerHeight;
-
       view += (targetTop - view) * EASE;
       if (Math.abs(targetTop - view) < 0.0015) view = targetTop;
 
@@ -331,19 +357,13 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
           t.number.update(elapsed);
         });
       });
-
-      // Pin the "Roll the cube…" caption just above the top row of platforms.
-      if (subtagline) {
-        worldPos.set(0, 0, Z_TOP - ROW_DZ * 0.7);
-        worldPos.project(camera);
-        subtagline.style.top = `${Math.round((-worldPos.y * 0.5 + 0.5) * h)}px`;
-      }
     },
 
     dispose() {
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('resize', syncRollerWidths);
       rows.forEach((row) => row.tiles.forEach((t) => {
         t.wrapper.traverse((obj) => {
           if (obj instanceof THREE.Mesh) {

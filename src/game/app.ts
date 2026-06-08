@@ -49,7 +49,7 @@ function saveCompleted(set: Set<number>): void {
 // One persistent engine + render loop + player; screens are swapped in and out of
 // the scene by mounting/unmounting a single root group.
 export function createApp(engine: Engine, assets: LoadedAssets): App {
-  const { scene, render, applyParallax } = engine;
+  const { scene, render } = engine;
 
   const player = createPlayer({ model: assets.playerModel, tileHeight: assets.tileHeight, cubeSize: CUBE_SIZE });
   scene.add(player.group);
@@ -102,16 +102,6 @@ export function createApp(engine: Engine, assets: LoadedAssets): App {
     },
 
     start() {
-      const targetTilt = new THREE.Vector2();
-      const currentTilt = new THREE.Vector2();
-
-      window.addEventListener('pointermove', (e) => {
-        targetTilt.set(
-          (e.clientX / window.innerWidth) * 2 - 1,
-          (e.clientY / window.innerHeight) * 2 - 1,
-        );
-      });
-
       window.addEventListener('keydown', (e) => {
         current?.onKey?.(e.code);
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
@@ -136,10 +126,6 @@ export function createApp(engine: Engine, assets: LoadedAssets): App {
         last = elapsed;
 
         current?.tick(elapsed, dt);
-
-        currentTilt.x += (targetTilt.x - currentTilt.x) * 0.05;
-        currentTilt.y += (targetTilt.y - currentTilt.y) * 0.05;
-        applyParallax(currentTilt.x, currentTilt.y);
 
         render();
         requestAnimationFrame(frame);
