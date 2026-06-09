@@ -12,6 +12,12 @@ use level_gen::topk;
 use rayon::prelude::*;
 use std::path::Path;
 
+// The campaign workload is allocator-bound: millions of solves each churn a fresh state
+// map + per-state adjacency Vecs (profile shows ~40-50% of self-time in the system malloc).
+// mimalloc is far faster for small-object churn and scales better across the rayon workers.
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 #[derive(Parser)]
 #[command(name = "level-gen", about = "Solver / generator / curator for the rolling-cube game")]
 struct Cli {

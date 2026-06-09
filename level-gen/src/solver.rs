@@ -7,7 +7,9 @@
 
 use crate::metrics::{self, QualityRaw};
 use crate::model::{Direction, Level, Sweep, TileKind};
-use std::collections::{HashMap, HashSet, VecDeque};
+use rustc_hash::{FxHashMap, FxHashSet};
+use smallvec::SmallVec;
+use std::collections::VecDeque;
 
 /// Doomed-loiter cap (move-ticks) for the delay metric — a doomed cycle can wander forever.
 const DELAY_CAP: u32 = 40;
@@ -109,8 +111,9 @@ pub(crate) struct State {
     pub(crate) pos: u16,
     pub(crate) present: u128,
     line_fired: u128,
-    /// Active explosive fuses, sorted by cell index for a canonical hash.
-    fuses: Vec<(u16, u8)>,
+    /// Active explosive fuses, sorted by cell index for a canonical hash. Inline-stored: a state
+    /// almost never has more than a couple of live fuses, so this avoids a heap alloc per state.
+    fuses: SmallVec<[(u16, u8); 4]>,
 }
 
 impl State {
@@ -125,13 +128,14 @@ pub(crate) fn start_state(level: &Level) -> State {
         pos: level.base as u16,
         present: level.present_mask(),
         line_fired: 0,
-        fuses: Vec::new(),
+        fuses: SmallVec::new(),
     }
 }
 
 /// The actions a player can take from `state`: the four rolls, plus `wait` only while a fuse burns.
-pub(crate) fn legal_actions(state: &State) -> Vec<Option<Direction>> {
-    let mut actions: Vec<Option<Direction>> = Direction::ALL.iter().map(|d| Some(*d)).collect();
+pub(crate) fn legal_actions(state: &State) -> SmallVec<[Option<Direction>; 5]> {
+    let mut actions: SmallVec<[Option<Direction>; 5]> =
+        Direction::ALL.iter().map(|d| Some(*d)).collect();
     if state.has_fuse() {
         actions.push(None);
     }
@@ -144,7 +148,7 @@ struct Sim<'a> {
     pos: usize,
     present: u128,
     line_fired: u128,
-    fuses: Vec<(usize, u8)>,
+    fuses: SmallVec<[(usize, u8); 4]>,
     lost: bool,
     events: ActEvents,
     /// Cells the cube occupies while resolving this action (landing + every arrow/shift hop) —
@@ -296,7 +300,7 @@ impl<'a> Sim<'a> {
         for f in self.fuses.iter_mut() {
             f.1 -= 1;
         }
-        let due: Vec<usize> = self
+        let due: SmallVec<[usize; 4]> = self
             .fuses
             .iter()
             .filter(|(_, t)| *t == 0)
@@ -354,7 +358,8 @@ impl<'a> Sim<'a> {
     }
 
     fn to_state(&self) -> State {
-        let mut fuses: Vec<(u16, u8)> = self.fuses.iter().map(|(c, t)| (*c as u16, *t)).collect();
+        let mut fuses: SmallVec<[(u16, u8); 4]> =
+            self.fuses.iter().map(|(c, t)| (*c as u16, *t)).collect();
         fuses.sort_unstable();
         State {
             pos: self.pos as u16,
@@ -451,7 +456,7 @@ struct Enumerator<'a> {
     can_win: &'a [bool],
     on_path: Vec<bool>,
     path: String,
-    canon: HashSet<String>,
+    canon: FxHashSet<String>,
     stored: Vec<String>,
     count: u32,
     visits: u64,
@@ -467,18 +472,21 @@ impl<'a> Enumerator<'a> {
         }
         self.visits += 1;
         if self.is_win[s as usize] {
-            let sol = self.path.clone();
-            let key = canonical(&sol);
+            // Only materialise a solution string when it's a new canonical form (and only clone it
+            // again if we're still storing representatives).
+            let key = canonical(&self.path);
             if self.canon.insert(key) {
                 self.count += 1;
                 if self.stored.len() < self.cfg.store_buffer {
-                    self.stored.push(sol);
+                    self.stored.push(self.path.clone());
                 }
             }
             return;
         }
-        let row = self.adj[s as usize].clone();
-        for (g, t) in row {
+        // `adj` is a borrow with the enumerator's own lifetime, independent of `&mut self`, so bind
+        // it to a local and iterate directly — no per-node row clone.
+        let adj = self.adj;
+        for &(g, t) in &adj[s as usize] {
             let t = t as usize;
             if !self.can_win[t] || self.on_path[t] {
                 continue;
@@ -501,14 +509,19 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let win_mask = level.win_mask();
     let greens = level.win_count();
 
-    let mut index: HashMap<State, u32> = HashMap::new();
-    let mut states: Vec<State> = Vec::new();
-    let mut adj: Vec<Vec<(char, u32)>> = Vec::new();
-    let mut is_win: Vec<bool> = Vec::new();
-    let mut dist: Vec<u32> = Vec::new();
+    // Pre-size the per-solve containers: starting from empty makes the state map rehash and the
+    // parallel Vecs reallocate repeatedly as the graph grows (the profile showed ~570 samples in
+    // `reserve_rehash` alone). Most boards stay well under a couple thousand states, so a modest
+    // hint (capped at `max_states`) covers the common case without over-allocating the rare giants.
+    let cap = cfg.max_states.min(2048);
+    let mut index: FxHashMap<State, u32> = FxHashMap::with_capacity_and_hasher(cap, Default::default());
+    let mut states: Vec<State> = Vec::with_capacity(cap);
+    let mut adj: Vec<Vec<(char, u32)>> = Vec::with_capacity(cap);
+    let mut is_win: Vec<bool> = Vec::with_capacity(cap);
+    let mut dist: Vec<u32> = Vec::with_capacity(cap);
     // Count of keypresses that kill from each state (fall / blast) — they leave no edge in `adj`,
     // but a real player can still press them, so they're the denominator of the random-walk model.
-    let mut death_moves: Vec<u8> = Vec::new();
+    let mut death_moves: Vec<u8> = Vec::with_capacity(cap);
 
     let start = start_state(level);
 
@@ -634,7 +647,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
             can_win: &can_win,
             on_path: vec![false; n],
             path: String::new(),
-            canon: HashSet::new(),
+            canon: FxHashSet::default(),
             stored: Vec::new(),
             count: 0,
             visits: 0,

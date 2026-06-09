@@ -9,7 +9,7 @@
 use crate::model::Level;
 use crate::solver::{self, SolveConfig};
 use rand::Rng;
-use std::collections::HashSet;
+use rustc_hash::FxHashSet;
 
 /// Outcome of screening a candidate board.
 pub struct ScreenStats {
@@ -21,7 +21,7 @@ pub struct ScreenStats {
 /// progress heuristic (clear win-tiles, then head to base). Returns whether it reaches a win.
 pub fn greedy_solves(level: &Level) -> bool {
     let mut state = solver::start_state(level);
-    let mut seen: HashSet<solver::State> = HashSet::new();
+    let mut seen: FxHashSet<solver::State> = FxHashSet::default();
     let guard = 8 * level.cells.len() + 16;
     for _ in 0..guard {
         if solver::state_is_win(level, &state) {

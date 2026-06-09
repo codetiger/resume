@@ -1,0 +1,6 @@
+# level-gen is an offline, locally-built tool (it is NOT compiled in the GitHub Actions deploy,
+# which only runs build.py + vite build). Building for the host CPU lets the compiler use every
+# native instruction and autovectorize the small hot loops (line sweep, fuse tick). No fast-math
+# is enabled, so IEEE FP semantics — and therefore solver output — are unchanged.
+[build]
+rustflags = ["-C", "target-cpu=native"]
