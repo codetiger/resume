@@ -50,6 +50,24 @@ pub fn greedy_solves(level: &Level) -> bool {
     false
 }
 
+/// One uniform-random rollout: press legal keys (including fatal ones) until a win, a death, or the
+/// step cap. Returns whether it reached a win.
+fn random_rollout_wins<R: Rng>(level: &Level, step_cap: usize, rng: &mut R) -> bool {
+    let mut state = solver::start_state(level);
+    for _ in 0..step_cap {
+        if solver::state_is_win(level, &state) {
+            return true;
+        }
+        let actions = solver::legal_actions(&state);
+        let pick = actions[rng.gen_range(0..actions.len())];
+        match solver::try_action(level, &state, pick) {
+            Some(ns) => state = ns,
+            None => return false, // pressed a key that kills → this attempt fails
+        }
+    }
+    false
+}
+
 /// Estimate the uniform-random player's win rate over `trials` rollouts. At each step the player
 /// presses one of the legal keys uniformly — including keys that kill — mirroring real fumbling.
 pub fn random_rate<R: Rng>(level: &Level, trials: u32, rng: &mut R) -> f64 {
@@ -59,25 +77,40 @@ pub fn random_rate<R: Rng>(level: &Level, trials: u32, rng: &mut R) -> f64 {
     let step_cap = 6 * level.cells.len() + 24;
     let mut wins = 0u32;
     for _ in 0..trials {
-        let mut state = solver::start_state(level);
-        let mut won = false;
-        for _ in 0..step_cap {
-            if solver::state_is_win(level, &state) {
-                won = true;
-                break;
-            }
-            let actions = solver::legal_actions(&state);
-            let pick = actions[rng.gen_range(0..actions.len())];
-            match solver::try_action(level, &state, pick) {
-                Some(ns) => state = ns,
-                None => break, // pressed a key that kills → this attempt fails
-            }
-        }
-        if won {
+        if random_rollout_wins(level, step_cap, rng) {
             wins += 1;
         }
     }
     wins as f64 / trials as f64
+}
+
+/// Decision-identical to `random_rate(level, trials, rng) > max_rate`, but stops the moment the
+/// verdict is sealed: once wins exceed the reject count it can only stay rejected, and once even
+/// every remaining trial winning couldn't reach it the board has already passed. Saves rollouts on
+/// the common easy boards (reject fast) and on the hard boards that proceed (accept fast).
+fn random_player_wins_too_often<R: Rng>(level: &Level, trials: u32, max_rate: f64, rng: &mut R) -> bool {
+    if trials == 0 {
+        return false; // matches random_rate == 0.0, which is never > max_rate (≥ 0)
+    }
+    let step_cap = 6 * level.cells.len() + 24;
+    // Use the *same* `wins/trials > max_rate` comparison `random_rate` does, so the verdict is
+    // bit-identical (not merely mathematically equal). wins only grows; remaining can add at most
+    // `remaining` more, so the final rate is bracketed and often decided early.
+    let t = trials as f64;
+    let mut wins = 0u32;
+    for k in 0..trials {
+        if random_rollout_wins(level, step_cap, rng) {
+            wins += 1;
+        }
+        if (wins as f64 / t) > max_rate {
+            return true; // already over → final rate ≥ this → reject
+        }
+        let remaining = trials - 1 - k;
+        if ((wins + remaining) as f64 / t) <= max_rate {
+            return false; // even all-remaining-wins stays ≤ threshold → never rejected
+        }
+    }
+    (wins as f64 / t) > max_rate
 }
 
 /// Run the full screen. `max_random` rejects boards a random player beats too often; `min_states`
@@ -95,23 +128,57 @@ pub fn screen<R: Rng>(
     if greedy_solves(level) {
         return None;
     }
-    // 2. A board random fumbling wins too often is the "2-3 attempts" board.
-    if random_rate(level, trials, rng) > max_random {
+    // 2. A board random fumbling wins too often is the "2-3 attempts" board. Early-exits the moment
+    //    the win-rate verdict is sealed (decision-identical to `random_rate > max_random`).
+    if random_player_wins_too_often(level, trials, max_random, rng) {
         return None;
     }
     // 3. Cheap capped BFS: confirm solvable + a real-sized state space and planning depth.
     let r = solver::solve(level, &SolveConfig::screen());
-    if !r.solvable {
+    if !r.solvable || r.reachable_states < min_states || r.shortest_path.unwrap_or(0) < min_path {
         return None;
     }
-    if r.reachable_states < min_states {
-        return None;
+    Some(ScreenStats { reachable: r.reachable_states, shortest: r.shortest_path.unwrap_or(0) })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::generate::{backbone, mutate, AllowSet, GenSpec};
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+
+    /// Build a varied "combined"-style board for a seed (no anneal — just backbone + a mutation
+    /// burst), mirroring how the campaign produces screen inputs.
+    fn sample_board(seed: u64) -> Option<Level> {
+        let spec = GenSpec::new(6, 6, 0.7, AllowSet::all(), seed);
+        let mut rng = ChaCha8Rng::seed_from_u64(seed ^ 0x9E37_79B9_7F4A_7C15);
+        let mut level = backbone(&spec, &mut rng)?;
+        let bursts = 3 + (seed as usize % 9);
+        for _ in 0..bursts {
+            if let Some(m) = mutate(&level, &spec, &mut rng) {
+                level = m;
+            }
+        }
+        Some(level)
     }
-    if r.shortest_path.unwrap_or(0) < min_path {
-        return None;
+
+    /// #1: the early-exit reject verdict matches the full `random_rate > max` decision exactly,
+    /// rollout-for-rollout (same rng seed feeds both).
+    #[test]
+    fn random_early_exit_matches_full_rate() {
+        for seed in 0..400u64 {
+            let Some(level) = sample_board(seed) else { continue };
+            for &trials in &[12u32, 48, 100] {
+                for &maxr in &[0.05f64, 0.15, 0.5] {
+                    let mut r1 = ChaCha8Rng::seed_from_u64(seed * 1_000_003 + 17);
+                    let full = random_rate(&level, trials, &mut r1) > maxr;
+                    let mut r2 = ChaCha8Rng::seed_from_u64(seed * 1_000_003 + 17);
+                    let fast = random_player_wins_too_often(&level, trials, maxr, &mut r2);
+                    assert_eq!(full, fast, "seed={seed} trials={trials} maxr={maxr}");
+                }
+            }
+        }
     }
-    Some(ScreenStats {
-        reachable: r.reachable_states,
-        shortest: r.shortest_path.unwrap_or(0),
-    })
+
 }

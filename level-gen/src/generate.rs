@@ -484,6 +484,15 @@ fn missing_required(level: &Level, require: &AllowSet) -> u32 {
     missing
 }
 
+/// Static validity gates that need **no solve** — a board failing any of these is rejected by
+/// `cost()` regardless of how it solves, so checking them first lets the anneal loop skip the
+/// (expensive) solve entirely. Mirrors the structural half of `cost()`'s reject condition.
+fn static_reject(level: &Level, spec: &GenSpec) -> bool {
+    level.green_count() < spec.greens_min as u32
+        || level.unpaired_shift_count() > 0
+        || level.useless_special_count() > 0
+}
+
 /// Cost to minimise: distance to the target difficulty (+ a penalty for missing required
 /// mechanics); infinite for invalid boards.
 fn cost(level: &Level, res: &SolveResult, diff: f64, spec: &GenSpec) -> f64 {
@@ -530,6 +539,11 @@ pub fn generate(spec: &GenSpec, dcfg: &DifficultyConfig, scfg: &SolveConfig) -> 
             Some(l) => l,
             None => continue,
         };
+        // Fail fast: a board failing a static gate is rejected by `cost()` anyway, so skip its
+        // solve. (No rng is consumed on this path either way, so the anneal trajectory is identical.)
+        if static_reject(&cand, spec) {
+            continue;
+        }
         let (cand_res, cand_diff) = evaluate(&cand, scfg, dcfg);
         let cand_cost = cost(&cand, &cand_res, cand_diff, spec);
         if !cand_cost.is_finite() {
