@@ -3,12 +3,21 @@
     {
       "number": 0,
       "name": "Who am I",
-      "layout": ["bi", "nn"],
+      "layout": [
+        "nbi",
+        ".n.",
+        "..."
+      ],
       "content": {
         "heading": "$.basics.name",
         "period": "21+ yrs exp",
         "subheading": "Leader · Architect · Builder · Programmer · Mentor",
-        "tags": ["Leadership", "Architecture", "Distributed Systems", "Payments"],
+        "tags": [
+          "Leadership",
+          "Architecture",
+          "Distributed Systems",
+          "Payments"
+        ],
         "tag": "resume",
         "bullets": [
           "A tech leader with firm principles (and a firm belief that arrays start at 0).",
@@ -22,14 +31,22 @@
     {
       "number": 1,
       "name": "Work · 2005",
-      "layout": ["bnn", "n.i", "nnn"],
+      "layout": [
+        "nir",
+        ".nb",
+        "nnr"
+      ],
       "content": {
         "heading": "Qube Cinemas",
         "period": "2005 — 2006",
         "subheading": "Software Developer",
         "summary": "$.work[?(@.company=='Qube Cinemas')].summary",
         "url": "$.work[?(@.company=='Qube Cinemas')].website",
-        "tags": ["Digital Cinema", "Content Security", "C++"],
+        "tags": [
+          "Digital Cinema",
+          "Content Security",
+          "C++"
+        ],
         "tag": "resume",
         "bullets": []
       }
@@ -37,101 +54,180 @@
     {
       "number": 2,
       "name": "Founder · 2006",
-      "layout": ["bnnn", "n..n", "nnin"],
+      "layout": [
+        "..nn",
+        ".ncb",
+        "...i"
+      ],
       "content": {
         "heading": "Smackall Games",
         "period": "2006 — 2016",
         "subheading": "Founder & Technology Head",
         "summary": "$.work[?(@.company=='Smackall Games')].summary",
         "url": "$.work[?(@.company=='Smackall Games')].website",
-        "tags": ["C++", "OpenGL ES", "3D Engine", "iOS", "Entrepreneurship"],
+        "tags": [
+          "C++",
+          "OpenGL ES",
+          "3D Engine",
+          "iOS",
+          "Entrepreneurship"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='Smackall Games')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='Smackall Games')].highlights"
+        ]
       }
     },
     {
       "number": 3,
       "name": "Consultant · 2014",
-      "layout": ["bnnn", "i..n", "n..n", "nnnn"],
+      "layout": [
+        "n...",
+        "bi..",
+        "xn.."
+      ],
       "content": {
         "heading": "Amtex Inc",
         "period": "2014 — 2016",
         "subheading": "Technical Architect & Consultant",
         "summary": "$.work[?(@.company=='Amtex Inc')].summary",
         "url": "$.work[?(@.company=='Amtex Inc')].website",
-        "tags": ["Mobile", "eCommerce", "Architecture", "Cloud"],
+        "tags": [
+          "Mobile",
+          "eCommerce",
+          "Architecture",
+          "Cloud"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='Amtex Inc')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='Amtex Inc')].highlights"
+        ]
       }
     },
     {
       "number": 4,
       "name": "Work · 2016",
-      "layout": ["bnnnn", "n...n", "nnnin"],
+      "layout": [
+        "ni..",
+        "b1n.",
+        "1n.."
+      ],
       "content": {
         "heading": "Altimetrik",
         "period": "2016 — 2017",
         "subheading": "Architect — AnyDevice Capability Centre",
         "summary": "$.work[?(@.company=='Altimetrik Inc')].summary",
         "url": "$.work[?(@.company=='Altimetrik Inc')].website",
-        "tags": ["Cloud IDE", "mBaaS", "Mobile", "Web"],
+        "tags": [
+          "Cloud IDE",
+          "mBaaS",
+          "Mobile",
+          "Web"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='Altimetrik Inc')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='Altimetrik Inc')].highlights"
+        ]
       }
     },
     {
       "number": 5,
       "name": "Work · 2017",
-      "layout": ["bnnnn", "n...n", "n...i", "nnnnn"],
+      "layout": [
+        "...",
+        "...",
+        ".n^",
+        "ibn"
+      ],
       "content": {
         "heading": "CaratLane",
         "period": "2017 — 2019",
         "subheading": "Engineering Manager",
         "summary": "$.work[?(@.company=='CaratLane')].summary",
         "url": "$.work[?(@.company=='CaratLane')].website",
-        "tags": ["eCommerce", "Microservices", "Machine Learning", "Personalization"],
+        "tags": [
+          "eCommerce",
+          "Microservices",
+          "Machine Learning",
+          "Personalization"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='CaratLane')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='CaratLane')].highlights"
+        ]
       }
     },
     {
       "number": 6,
       "name": "Work · 2019",
-      "layout": ["bnnnnn", "n....n", "i....n", "nnnnnn"],
+      "layout": [
+        "ccc",
+        "nbi",
+        "cnc"
+      ],
       "content": {
         "heading": "Volante Technologies",
         "period": "2019 — 2023",
         "subheading": "Senior Director — Product Development",
         "summary": "$.work[?(@.company=='Volante Technologies')].summary",
         "url": "$.work[?(@.company=='Volante Technologies')].website",
-        "tags": ["Payments", "Event-driven", "Microservices", "Cloud-native", "Java"],
+        "tags": [
+          "Payments",
+          "Event-driven",
+          "Microservices",
+          "Cloud-native",
+          "Java"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='Volante Technologies')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='Volante Technologies')].highlights"
+        ]
       }
     },
     {
       "number": 7,
       "name": "Work · 2023",
-      "layout": ["bnnnnn", "n....n", "n....n", "n....i", "nnnnnn"],
+      "layout": [
+        "nbi",
+        ".n.",
+        ".r.",
+        "..."
+      ],
       "content": {
         "heading": "Global Payments Inc",
         "period": "2023 — present",
         "subheading": "Senior Director — Product Engineering",
         "summary": "$.work[?(@.company=='Global Payments Inc')].summary",
         "url": "$.work[?(@.company=='Global Payments Inc')].website",
-        "tags": ["Enterprise Payments", "Scale", "Leadership", "Merchant Onboarding"],
+        "tags": [
+          "Enterprise Payments",
+          "Scale",
+          "Leadership",
+          "Merchant Onboarding"
+        ],
         "tag": "resume",
-        "bullets": ["$.work[?(@.company=='Global Payments Inc')].highlights"]
+        "bullets": [
+          "$.work[?(@.company=='Global Payments Inc')].highlights"
+        ]
       }
     },
     {
       "number": 8,
       "name": "Awards - IoT",
-      "layout": ["bnn", "n.i", "nnn"],
+      "layout": [
+        "rn.",
+        "nbi",
+        ".nr"
+      ],
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
-        "tags": ["Reverse Engineering", "Rust", "Firmware", "IoT"],
+        "tags": [
+          "Reverse Engineering",
+          "Rust",
+          "Firmware",
+          "IoT"
+        ],
         "bullets": [],
         "awards": [
           {
@@ -144,11 +240,19 @@
     {
       "number": 9,
       "name": "Awards - 2011",
-      "layout": ["bnnn", "i..n", "nnnn"],
+      "layout": [
+        "rbr",
+        "irn",
+        "rnr"
+      ],
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
-        "tags": ["AI", "Autonomous Agents", "Algorithms"],
+        "tags": [
+          "AI",
+          "Autonomous Agents",
+          "Algorithms"
+        ],
         "bullets": [],
         "awards": [
           {
@@ -163,11 +267,19 @@
     {
       "number": 10,
       "name": "Awards - 2013",
-      "layout": ["bnnn", "n..n", "n..i", "nnnn"],
+      "layout": [
+        "xbx",
+        "nin",
+        "xxx"
+      ],
       "content": {
         "heading": "Awards & Recognition",
         "tag": "resume",
-        "tags": ["GPS", "3D Reconstruction", "Mobile"],
+        "tags": [
+          "GPS",
+          "3D Reconstruction",
+          "Mobile"
+        ],
         "bullets": [],
         "awards": [
           {
@@ -182,12 +294,19 @@
     {
       "number": 11,
       "name": "Education",
-      "layout": ["bnn", "i.n", "n.n", "nnn"],
+      "layout": [
+        "v>.",
+        "bin",
+        "^n<",
+        "..."
+      ],
       "content": {
         "heading": "$.education[0].institution",
         "period": "2000 — 2004",
         "subheading": "Bachelor · Mechanical Engineering",
-        "tags": ["Mechanical Engineering"],
+        "tags": [
+          "Mechanical Engineering"
+        ],
         "tag": "resume",
         "bullets": []
       }
@@ -195,7 +314,11 @@
     {
       "number": 12,
       "name": "GitHub",
-      "layout": ["bnnnnn", "n....n", "n....n", "n....i", "nnnnnn"],
+      "layout": [
+        "vnn",
+        "n<^",
+        "b>i"
+      ],
       "content": {
         "heading": "GitHub",
         "subheading": "Where the code lives",
@@ -208,7 +331,12 @@
     {
       "number": 13,
       "name": "LinkedIn",
-      "layout": ["bnnnnnn", "n.....n", "i.....n", "nnnnnnn"],
+      "layout": [
+        "xnnx",
+        "xxxx",
+        "ix.x",
+        "xnxb"
+      ],
       "content": {
         "heading": "LinkedIn",
         "subheading": "The professional trail",
@@ -221,7 +349,12 @@
     {
       "number": 14,
       "name": "Blog",
-      "layout": ["bnnn", "n..n", "n..n", "n..i", "n..n", "nnnn"],
+      "layout": [
+        "bn<v",
+        "nvn<",
+        "<n.n",
+        "^inn"
+      ],
       "content": {
         "heading": "Blog",
         "subheading": "Long-form thinking",
@@ -234,7 +367,12 @@
     {
       "number": 15,
       "name": "Contact",
-      "layout": ["bnnnnn", "n....n", "n....i", "nnnnnn"],
+      "layout": [
+        "bxnx",
+        "xxxn",
+        "ixnx",
+        "nxxn"
+      ],
       "content": {
         "heading": "Get in touch",
         "subheading": "Find me here",
@@ -243,10 +381,275 @@
         "email": "$.basics.email",
         "location": "Chennai, India",
         "links": [
-          { "label": "GitHub", "url": "$.basics.profiles[?(@.network=='Github')].url" },
-          { "label": "LinkedIn", "url": "$.basics.profiles[?(@.network=='LinkedIn')].url" },
-          { "label": "Blog", "url": "$.basics.profiles[?(@.network=='Blog')].url" }
+          {
+            "label": "GitHub",
+            "url": "$.basics.profiles[?(@.network=='Github')].url"
+          },
+          {
+            "label": "LinkedIn",
+            "url": "$.basics.profiles[?(@.network=='LinkedIn')].url"
+          },
+          {
+            "label": "Blog",
+            "url": "$.basics.profiles[?(@.network=='Blog')].url"
+          }
         ],
+        "bullets": []
+      }
+    },
+    {
+      "number": 16,
+      "name": "Bonus 1",
+      "layout": [
+        "nnnc",
+        "n2n1",
+        "nbn1",
+        "n2.n"
+      ],
+      "content": {
+        "heading": "Bonus 1",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 17,
+      "name": "Bonus 2",
+      "layout": [
+        "1bnnn",
+        "nnnnn",
+        "n2nnn",
+        "12nnn"
+      ],
+      "content": {
+        "heading": "Bonus 2",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 18,
+      "name": "Bonus 3",
+      "layout": [
+        ".....",
+        "xxnnv",
+        "nnnnn",
+        "nnnnn",
+        ".nbnc",
+        ".nnn."
+      ],
+      "content": {
+        "heading": "Bonus 3",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 19,
+      "name": "Bonus 4",
+      "layout": [
+        ".....",
+        ".nnnn",
+        "1nnn2",
+        "nbn2n",
+        "n1.nn"
+      ],
+      "content": {
+        "heading": "Bonus 4",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 20,
+      "name": "Bonus 5",
+      "layout": [
+        "nnbn.",
+        "1.nn.",
+        "1.nn.",
+        "nnnn."
+      ],
+      "content": {
+        "heading": "Bonus 5",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 21,
+      "name": "Bonus 6",
+      "layout": [
+        ".....",
+        ".nn..",
+        "nn12n",
+        "^nbn^",
+        "cnnnc"
+      ],
+      "content": {
+        "heading": "Bonus 6",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 22,
+      "name": "Bonus 7",
+      "layout": [
+        "bnnn",
+        "nnnc",
+        "nrnn",
+        "nnnx"
+      ],
+      "content": {
+        "heading": "Bonus 7",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 23,
+      "name": "Bonus 8",
+      "layout": [
+        ".1nn.",
+        ".nnn.",
+        "nncnn",
+        "n.nbn",
+        "nn1nn"
+      ],
+      "content": {
+        "heading": "Bonus 8",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 24,
+      "name": "Bonus 9",
+      "layout": [
+        "v.nn",
+        ">nbn",
+        "nnnn",
+        "nnn<",
+        "nnrn"
+      ],
+      "content": {
+        "heading": "Bonus 9",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 25,
+      "name": "Bonus 10",
+      "layout": [
+        "nn.1nn",
+        "nnn.nn",
+        ">2n.nn",
+        "nnnn.n",
+        "b1.nn2"
+      ],
+      "content": {
+        "heading": "Bonus 10",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 26,
+      "name": "Bonus 11",
+      "layout": [
+        "nnnn",
+        "bnvn",
+        "nnrn",
+        "nn1n",
+        "nncx"
+      ],
+      "content": {
+        "heading": "Bonus 11",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 27,
+      "name": "Bonus 12",
+      "layout": [
+        "nnn1n",
+        "nnnnb",
+        "nn.nn",
+        "1nnnn"
+      ],
+      "content": {
+        "heading": "Bonus 12",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 28,
+      "name": "Bonus 13",
+      "layout": [
+        "11>nn",
+        "n.nnn",
+        "nnnnn",
+        "cnnnn",
+        ".n3.n",
+        "nnnnb"
+      ],
+      "content": {
+        "heading": "Bonus 13",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 29,
+      "name": "Bonus 14",
+      "layout": [
+        "n>n.n",
+        "nn1n4",
+        "1.cn.",
+        "4ncn3",
+        "2nnnc",
+        "nbnnn"
+      ],
+      "content": {
+        "heading": "Bonus 14",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 30,
+      "name": "Bonus 15",
+      "layout": [
+        "nnnnnn",
+        "1n.n3n",
+        "vn.bn2",
+        "n.n1r.",
+        "n4nn..",
+        "nn...."
+      ],
+      "content": {
+        "heading": "Bonus 15",
+        "tag": "meta",
+        "bullets": []
+      }
+    },
+    {
+      "number": 31,
+      "name": "Bonus 16",
+      "layout": [
+        ".n1n3",
+        "nnnnn",
+        "nnn.n",
+        "ncnbn",
+        "nnnnn",
+        "nn<2n"
+      ],
+      "content": {
+        "heading": "Bonus 16",
+        "tag": "meta",
         "bullets": []
       }
     }

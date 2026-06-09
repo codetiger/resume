@@ -326,10 +326,17 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     return cellDefs.get(cellKey(col, row))?.kind === 'base';
   }
 
+  // 'info' tiles count toward completion exactly like 'disappear-normal' greens: the level
+  // isn't done until the cube has cleared (stepped off) the info tile too — which guarantees
+  // the player lands on it and sees the content.
+  function countsForWin(kind: TileKind): boolean {
+    return kind === 'disappear-normal' || kind === 'info';
+  }
+
   function isWon(playerCol: number, playerRow: number): boolean {
     if (!isBase(playerCol, playerRow)) return false;
     for (const [key, state] of tileStates) {
-      if (cellDefs.get(key)!.kind === 'disappear-normal' && state !== 'gone') return false;
+      if (countsForWin(cellDefs.get(key)!.kind) && state !== 'gone') return false;
     }
     return true;
   }
@@ -337,7 +344,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   function remaining(): number {
     let count = 0;
     tileStates.forEach((state, key) => {
-      if (cellDefs.get(key)!.kind === 'disappear-normal' && state === 'active') count++;
+      if (countsForWin(cellDefs.get(key)!.kind) && state === 'active') count++;
     });
     return count;
   }
@@ -485,8 +492,9 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 // ─── layout helpers ────────────────────────────────────────────────────────────
 
 /** Parse a compact string layout into CellDef[][].
- *  'r' = disappear-line row, 'c' = disappear-line col.
- *  Arrow tiles default to dir:'right'; all shift tiles share shiftId 1. */
+ *  'r' = disappear-line row, 'c' = disappear-line col, 'x' = explosive, 'i' = info.
+ *  Arrows: 'a'/'>' right, '<' left, '^' back (up a row), 'v' forward (down a row).
+ *  Teleports: 't' is pair 1; digits '1'–'9' are paired by the digit (two cells per id). */
 export function parseLayout(rows: string[]): LevelLayout {
   return rows.map((r) =>
     r.split('').map((ch): CellDef | null => {
@@ -496,8 +504,12 @@ export function parseLayout(rows: string[]): LevelLayout {
       if (ch === 'r') return { kind: 'disappear-line', sweepDir: 'row' };
       if (ch === 'c') return { kind: 'disappear-line', sweepDir: 'col' };
       if (ch === 'x') return { kind: 'explosive' };
-      if (ch === 'a') return { kind: 'arrow', dir: 'right' };
+      if (ch === 'a' || ch === '>') return { kind: 'arrow', dir: 'right' };
+      if (ch === '<') return { kind: 'arrow', dir: 'left' };
+      if (ch === '^') return { kind: 'arrow', dir: 'back' };
+      if (ch === 'v') return { kind: 'arrow', dir: 'forward' };
       if (ch === 't') return { kind: 'shift', shiftId: 1 };
+      if (ch >= '1' && ch <= '9') return { kind: 'shift', shiftId: Number(ch) };
       if (ch === 'i') return { kind: 'info' };
       throw new Error(`Unknown layout char: "${ch}"`);
     }),

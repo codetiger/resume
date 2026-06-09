@@ -6,18 +6,18 @@ import rawLevels from 'virtual:levels';
 // The résumé-as-game level catalogue. Content lives in `levels.json` (so the story
 // is editable as data); this module loads it and turns each compact layout into a
 // parsed grid. Each level is a real puzzle: the cube starts on the base tile ('b'),
-// and you clear every green tile ('n') and return to base to win. One gold "info"
-// tile ('i') sits on the route — landing on it reveals that level's story in the
-// on-screen card.
+// and you clear every green tile ('n') and return to base to win. Content levels
+// carry one gold "info" tile ('i') on the route — landing on it reveals that level's
+// story in the on-screen card; pure-puzzle "bonus" levels have no 'i'.
 //
-// LAYOUT RULE — solvability. The cube moves one whole tile per press and a green
-// tile crumbles the instant the cube steps off it, so a level is solvable iff its
-// tiles form a single closed loop (you trace it once and arrive back at base).
-// On the grid graph a returning loop must have an even number of cells, so every
-// layout in levels.json is an even-length ring of `base + greens + one info`. To
-// add levels, draw another even ring (rectangular rings are always even) and drop
-// a single 'i' anywhere on it. Specials (a/t/r/c/x) can be layered in later, but
-// keep the core traversal a closed loop.
+// The current catalogue is produced by the `level-gen` tool (see level-gen/): a
+// solver-verified, difficulty-curated 32-level ladder. The first levels introduce
+// one tile type at a time and stay easy, then difficulty ramps up. Layouts may use
+// the full mechanic set — arrows ('>' '<' '^' 'v'), teleport pairs (digits '1'–'9'),
+// line sweeps ('r' 'c') and explosives ('x') — all parsed by parseLayout in grid.ts.
+// To regenerate: `cd level-gen && cargo run --release -- gen --batch 1500 --profile
+// spread` then `... curate --profile initial32`, and wire the result with
+// `level-gen/wire_ladder.py`.
 
 /** A single award/recognition entry, mirroring the résumé's `awards`. */
 export interface LevelAward {
@@ -61,7 +61,7 @@ export interface LevelDef {
   number: number;
   /** Shown as the platform's label on the home screen and the level HUD. */
   name: string;
-  /** Compact char grid → parseLayout. Exactly one 'i'. A closed even loop. */
+  /** Compact char grid → parseLayout. Content levels carry one 'i'; bonus levels have none. */
   layout: LevelLayout;
   content: LevelContent;
 }

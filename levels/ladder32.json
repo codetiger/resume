@@ -1,0 +1,554 @@
+{
+  "levels": [
+    {
+      "number": 0,
+      "name": "gen-3x3-easy-s9552",
+      "layout": [
+        "ibn",
+        ".n.",
+        "..."
+      ],
+      "difficulty": 0.03260869565217391,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9552",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 1,
+      "name": "gen-3x3-easy-s9433",
+      "layout": [
+        "inr",
+        ".nb",
+        "nnr"
+      ],
+      "difficulty": 0.07546583850931676,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9433",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 2,
+      "name": "gen-4x3-easy-s9272",
+      "layout": [
+        "..in",
+        ".ncb",
+        "...n"
+      ],
+      "difficulty": 0.04166666666666667,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x3-easy-s9272",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 3,
+      "name": "gen-4x3-easy-s9201",
+      "layout": [
+        "n...",
+        "bn..",
+        "xi.."
+      ],
+      "difficulty": 0.03965768661397363,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x3-easy-s9201",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 4,
+      "name": "gen-4x3-easy-s9514",
+      "layout": [
+        "ni..",
+        "b1n.",
+        "1n.."
+      ],
+      "difficulty": 0.04509170005152249,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x3-easy-s9514",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 5,
+      "name": "gen-3x4-easy-s9497",
+      "layout": [
+        "...",
+        "...",
+        ".i^",
+        "nbn"
+      ],
+      "difficulty": 0.03260869565217391,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x4-easy-s9497",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 6,
+      "name": "gen-3x3-easy-s9578",
+      "layout": [
+        "ccc",
+        "ibn",
+        "cnc"
+      ],
+      "difficulty": 0.07639209795730487,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9578",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 7,
+      "name": "gen-3x4-easy-s9061",
+      "layout": [
+        "ibn",
+        ".n.",
+        ".r.",
+        "..."
+      ],
+      "difficulty": 0.08260869565217391,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x4-easy-s9061",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 8,
+      "name": "gen-3x3-easy-s9313",
+      "layout": [
+        "ri.",
+        "nbn",
+        ".nr"
+      ],
+      "difficulty": 0.08360443085077454,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9313",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 9,
+      "name": "gen-3x3-easy-s9097",
+      "layout": [
+        "rbr",
+        "irn",
+        "rnr"
+      ],
+      "difficulty": 0.0875921375921376,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9097",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 10,
+      "name": "gen-3x3-easy-s9147",
+      "layout": [
+        "xbx",
+        "inn",
+        "xxx"
+      ],
+      "difficulty": 0.10891992697231158,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9147",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 11,
+      "name": "gen-3x4-easy-s9089",
+      "layout": [
+        "v>.",
+        "bni",
+        "^n<",
+        "..."
+      ],
+      "difficulty": 0.13522727272727272,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x4-easy-s9089",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 12,
+      "name": "gen-3x3-easy-s9293",
+      "layout": [
+        "vni",
+        "n<^",
+        "b>n"
+      ],
+      "difficulty": 0.16414141414141414,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-3x3-easy-s9293",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 13,
+      "name": "gen-4x4-medium-s9525",
+      "layout": [
+        "xinx",
+        "xxxx",
+        "nx.x",
+        "xnxb"
+      ],
+      "difficulty": 0.2065029333445667,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s9525",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 14,
+      "name": "gen-4x4-medium-s9239",
+      "layout": [
+        "bn<v",
+        "nvn<",
+        "<n.n",
+        "^nni"
+      ],
+      "difficulty": 0.23877551020408164,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s9239",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 15,
+      "name": "gen-4x4-medium-s9189",
+      "layout": [
+        "bxnx",
+        "xxxn",
+        "nxnx",
+        "nxxi"
+      ],
+      "difficulty": 0.26129141960217933,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s9189",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 16,
+      "name": "gen-4x4-medium-s9677",
+      "layout": [
+        "innc",
+        "n2n1",
+        "nbn1",
+        "n2.n"
+      ],
+      "difficulty": 0.2874566470604226,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s9677",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 17,
+      "name": "gen-5x4-medium-s9727",
+      "layout": [
+        "1bnnn",
+        "nnnnn",
+        "n2nnn",
+        "12nni"
+      ],
+      "difficulty": 0.33396854044202506,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x4-medium-s9727",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 18,
+      "name": "gen-5x6-medium-s10305",
+      "layout": [
+        ".....",
+        "xxniv",
+        "nnnnn",
+        "nnnnn",
+        ".nbnc",
+        ".nnn."
+      ],
+      "difficulty": 0.3766037949517975,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-medium-s10305",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 19,
+      "name": "gen-5x5-hard-s9876",
+      "layout": [
+        ".....",
+        ".nnni",
+        "1nnn2",
+        "nbn2n",
+        "n1.nn"
+      ],
+      "difficulty": 0.4525224309260557,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s9876",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 20,
+      "name": "gen-5x4-hard-s9944",
+      "layout": [
+        "nnbn.",
+        "1.nn.",
+        "1.nn.",
+        "innn."
+      ],
+      "difficulty": 0.4732069290100549,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x4-hard-s9944",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 21,
+      "name": "gen-5x5-hard-s9869",
+      "layout": [
+        ".....",
+        ".in..",
+        "nn12n",
+        "^nbn^",
+        "cnnnc"
+      ],
+      "difficulty": 0.503984969714737,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s9869",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 22,
+      "name": "gen-4x4-hard-s10125",
+      "layout": [
+        "bnnn",
+        "nnnc",
+        "nrni",
+        "nnnx"
+      ],
+      "difficulty": 0.5343037692627521,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s10125",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 23,
+      "name": "gen-5x5-hard-s9974",
+      "layout": [
+        ".1in.",
+        ".nnn.",
+        "nncnn",
+        "n.nbn",
+        "nn1nn"
+      ],
+      "difficulty": 0.5709340911176102,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s9974",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 24,
+      "name": "gen-4x5-hard-s9987",
+      "layout": [
+        "v.nn",
+        ">nbn",
+        "nnnn",
+        "nnn<",
+        "inrn"
+      ],
+      "difficulty": 0.580413130786245,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-hard-s9987",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 25,
+      "name": "gen-6x5-hard-s10270",
+      "layout": [
+        "nn.1ni",
+        "nnn.nn",
+        ">2n.nn",
+        "nnnn.n",
+        "b1.nn2"
+      ],
+      "difficulty": 0.6098731865883767,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-hard-s10270",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 26,
+      "name": "gen-4x5-hard-s10099",
+      "layout": [
+        "nnnn",
+        "bnvn",
+        "nnrn",
+        "nn1i",
+        "nncx"
+      ],
+      "difficulty": 0.6387651937738532,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-hard-s10099",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 27,
+      "name": "gen-5x4-hard-s10112",
+      "layout": [
+        "inn1n",
+        "nnnnb",
+        "nn.nn",
+        "1nnnn"
+      ],
+      "difficulty": 0.668746740575355,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x4-hard-s10112",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 28,
+      "name": "gen-5x6-hard-s10341",
+      "layout": [
+        "11>nn",
+        "i.nnn",
+        "nnnnn",
+        "cnnnn",
+        ".n3.n",
+        "nnnnb"
+      ],
+      "difficulty": 0.6987157313129702,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-hard-s10341",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 29,
+      "name": "gen-5x6-expert-s10108",
+      "layout": [
+        "n>n.i",
+        "nn1n4",
+        "1.cn.",
+        "4ncn3",
+        "2nnnc",
+        "nbnnn"
+      ],
+      "difficulty": 0.7106189386666995,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s10108",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 30,
+      "name": "gen-6x6-expert-s10325",
+      "layout": [
+        "nnnnnn",
+        "1n.n3n",
+        "vn.bn2",
+        "n.n1r.",
+        "n4nn..",
+        "in...."
+      ],
+      "difficulty": 0.7547868456185896,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s10325",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 31,
+      "name": "gen-5x6-expert-s10368",
+      "layout": [
+        ".i1n3",
+        "nnnnn",
+        "nnn.n",
+        "ncnbn",
+        "nnnnn",
+        "nn<2n"
+      ],
+      "difficulty": 0.7839441780810046,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s10368",
+        "tag": "bonus"
+      }
+    }
+  ]
+}
