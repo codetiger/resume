@@ -150,6 +150,8 @@ function syncRollerWidths(): void {
 
 export function createHomeScreen(opts: HomeScreenOptions): Screen {
   const { engine, assets, levels, completed, onSelect } = opts;
+  // Restore the default framing (a level screen may have pulled the camera back for a big board).
+  engine.frameBoard(6);
   const group = new THREE.Group();
   syncRollerWidths();
 

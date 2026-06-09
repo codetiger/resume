@@ -26,6 +26,17 @@ Static fallback:
 - **Build everything:** `npm run build:site` (`build.py`, then `vite build` → `dist/`)
 - **Install Python deps:** `pip3 install -r requirements.txt`
 
+Level generation (Rust, `level-gen/` — build with `cargo build --release` first):
+- **Campaign:** `level-gen campaign --name run1 --duration 60m` — streams + screens millions of
+  boards, keeps the best per (size × mechanic × band) bucket in `levels/campaigns/<name>/pool.json`.
+  Resumable (`--resume`), Ctrl-C-safe. The quality model selects for levels that **need a plan**:
+  resists random/greedy play (a hard gate), delayed consequences, sharp solution, spectacle.
+- **Status / report:** `level-gen campaign-status --name run1` · `level-gen rank --name run1 --out ../levels/report.md`.
+- **Curate:** `level-gen curate --from-campaign run1 --profile initial32 --out ../levels/ladder32.json`
+  — 6 tutorial rungs then a steep ramp into hard/expert.
+- **Wire into the game:** `python3 level-gen/wire_ladder.py` (ladder32.json + résumé content → `src/game/levels.json`).
+- **Selftest:** `level-gen selftest` solves DEMO + every shipped level and prints the quality model.
+
 ## Architecture
 
 ### Game (`src/`)

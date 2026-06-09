@@ -4,6 +4,9 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 const CAMERA_FOV = 38;
 const CAMERA_DISTANCE = 10;
 const CAMERA_ELEVATION_DEG = 35;
+// Board edge (in tiles) the base distance is tuned for; larger boards pull the camera back so an
+// 8×8 frames like a 6×6. Boards ≤ this keep the exact original framing (distance unchanged).
+const CAMERA_REF_DIM = 6;
 
 export interface Engine {
   scene: THREE.Scene;
@@ -12,6 +15,8 @@ export interface Engine {
   render: () => void;
   cameraTarget: THREE.Vector3;
   cameraBasePosition: THREE.Vector3;
+  /** Pull the camera back to frame a board whose largest edge is `maxDim` tiles. */
+  frameBoard: (maxDim: number) => void;
   dispose: () => void;
 }
 
@@ -41,14 +46,21 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
   );
 
   const elevRad = (CAMERA_ELEVATION_DEG * Math.PI) / 180;
+  const cameraTarget = new THREE.Vector3(0, 0, 0);
   const cameraBasePosition = new THREE.Vector3(
     0,
     CAMERA_DISTANCE * Math.sin(elevRad),
     CAMERA_DISTANCE * Math.cos(elevRad),
   );
-  camera.position.copy(cameraBasePosition);
-  const cameraTarget = new THREE.Vector3(0, 0, 0);
-  camera.lookAt(cameraTarget);
+
+  // Distance scales with the board's largest edge (relative to the tuned reference), so bigger
+  // boards stay fully framed. ≤ reference keeps the original distance exactly.
+  const frameBoard = (maxDim: number) => {
+    const dist = CAMERA_DISTANCE * Math.max(1, maxDim / CAMERA_REF_DIM);
+    camera.position.set(0, dist * Math.sin(elevRad), dist * Math.cos(elevRad));
+    camera.lookAt(cameraTarget);
+  };
+  frameBoard(CAMERA_REF_DIM);
 
   // IBL environment — gives every surface normal ambient specular regardless of directional light angle.
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -97,6 +109,7 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
     render: () => renderer.render(scene, camera),
     cameraTarget,
     cameraBasePosition,
+    frameBoard,
     dispose: () => {
       window.removeEventListener("resize", onResize);
       renderer.dispose();

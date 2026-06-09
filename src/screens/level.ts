@@ -48,6 +48,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const { assets, player, def, index, total } = opts;
 
   const level = buildLevel(def.layout, assets.template, assets.tileHeight);
+  // Frame the camera to this board's size so larger (up to 8×8) levels stay fully in view.
+  opts.engine.frameBoard(Math.max(level.cols, level.rows));
   const SWIRL_Y = assets.tileHeight / 2 + CUBE_SIZE / 2;
 
   const state = {
@@ -484,6 +486,21 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
 
       player.update(elapsed);
       level.update(elapsed, cellKey(state.playerCol, state.playerRow));
+
+      // A delayed blast (3-2-1 fuse) or a chain reaction can clear the final tiles *after* the cube
+      // is already at rest on the base — the landing-time check in processLanding misses that. Keep
+      // the counter live and re-check the win once motion + chains have settled.
+      if (!state.won && !state.gameOver) {
+        updateRemaining();
+        if (
+          !state.arrivalPending &&
+          !player.isMoving() &&
+          !player.hasFallen() &&
+          level.isWon(state.playerCol, state.playerRow)
+        ) {
+          showWin();
+        }
+      }
     },
 
     dispose() {

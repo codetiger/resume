@@ -1,38 +1,42 @@
-//! Difficulty as a pure function of the solver's raw data. Transparent and re-tunable: a whole
-//! pool can be re-ranked instantly by changing the weights, with no re-solving. See `PROPOSAL.md` §4.
+//! Quality as a pure function of the solver's raw player-behaviour metrics. Transparent and
+//! re-tunable: a whole pool can be re-ranked instantly by changing the weights, with no re-solving.
 //!
-//! The headline term is the **needle**: hardness from "many places to explore, few of them solve".
-//! Crucially it needs *both* a large reachable space *and* few solutions — a tiny board with one
-//! solution is easy (constrained), not hard. The other terms are planning depth (shortest path) and
-//! unforgiveness (dead-end fraction).
+//! The model selects for levels that **need a plan**, not levels that are merely large. The terms,
+//! in weight order:
+//!  - **resistance** — `1 − random_solve_prob`: a thoughtless player almost never stumbles in.
+//!    This is the headline fix for "solvable in 2-3 attempts" (also a hard gate in `generate`).
+//!  - **planning** — commitment (wrong moves doom you) + delay (you stay alive long after the
+//!    mistake): the point-of-no-return feel.
+//!  - **uniqueness** — `1 − optimal_path_fraction`: a sharp needle in a large can-win haystack.
+//!  - **branching** — genuine decision points where most plausible moves are traps (not a corridor).
+//!  - **spectacle** — the solution actually triggers lines/blasts/teleports ("interesting to watch").
+//!
+//! Structural symmetry ("recognizable patterns") is applied at curation (`curate::symmetry`), not
+//! here, so this score stays a pure function of solver data.
 
+use crate::metrics::QualityRaw;
 use crate::solver::SolveResult;
 
 #[derive(Clone, Debug)]
 pub struct DifficultyConfig {
-    pub w_needle: f64,
-    pub w_len: f64,
-    pub w_trap: f64,
-    /// Reachable-state count below which a board counts as "trivially small" (needle → 0).
-    pub s_min: f64,
-    /// Reachable-state count that saturates the "big space" factor.
-    pub s_ref: f64,
-    /// Solutions softening constant: fewness = k_rare / (N + k_rare).
-    pub k_rare: f64,
-    /// Shortest-path length that saturates the planning-depth term.
-    pub l_ref: f64,
+    pub w_random: f64,
+    pub w_planning: f64,
+    pub w_uniqueness: f64,
+    pub w_branching: f64,
+    pub w_spectacle: f64,
+    /// Doomed-wander length (move-ticks) that saturates the delay half of the planning term.
+    pub delay_ref: f64,
 }
 
 impl Default for DifficultyConfig {
     fn default() -> Self {
         DifficultyConfig {
-            w_needle: 0.45,
-            w_len: 0.25,
-            w_trap: 0.30,
-            s_min: 40.0,
-            s_ref: 50_000.0,
-            k_rare: 6.0,
-            l_ref: 40.0,
+            w_random: 0.35,
+            w_planning: 0.25,
+            w_uniqueness: 0.15,
+            w_branching: 0.10,
+            w_spectacle: 0.15,
+            delay_ref: 6.0,
         }
     }
 }
@@ -50,62 +54,88 @@ fn clamp01(x: f64) -> f64 {
 /// Component terms, exposed for calibration/inspection.
 #[derive(Clone, Debug)]
 pub struct DifficultyBreakdown {
-    /// "Big explorable space" factor in [0,1].
-    pub bigspace: f64,
-    /// "Few solutions" factor in [0,1].
-    pub fewness: f64,
-    /// needle = bigspace × fewness.
-    pub needle: f64,
-    /// Planning depth (shortest path) in [0,1].
-    pub depth: f64,
-    /// Dead-end fraction in [0,1].
-    pub trap: f64,
+    /// Trial-and-error resistance, `1 − random_solve_prob`.
+    pub resistance: f64,
+    /// Planning pressure: commitment + delayed consequence.
+    pub planning: f64,
+    /// Solution sharpness, `1 − optimal_path_fraction`.
+    pub uniqueness: f64,
+    /// Genuine-decision quality, damped by corridor fraction.
+    pub branching: f64,
+    /// Watchability: activations along the solution + whether they're required.
+    pub spectacle: f64,
     pub score: f64,
+}
+
+fn breakdown_from(q: &QualityRaw, cfg: &DifficultyConfig) -> DifficultyBreakdown {
+    let resistance = clamp01(1.0 - q.random_solve_prob);
+    let delay = sat(q.max_doom_delay as f64 / cfg.delay_ref);
+    let planning = clamp01(0.6 * q.commitment + 0.4 * delay);
+    let uniqueness = clamp01(1.0 - q.optimal_path_fraction);
+    let branching = clamp01(q.decision * (1.0 - 0.5 * q.forced_fraction));
+    let spectacle = clamp01(0.5 * q.spectacle + 0.5 * if q.spectacle_required { 1.0 } else { 0.0 });
+
+    let score = clamp01(
+        cfg.w_random * resistance
+            + cfg.w_planning * planning
+            + cfg.w_uniqueness * uniqueness
+            + cfg.w_branching * branching
+            + cfg.w_spectacle * spectacle,
+    );
+
+    DifficultyBreakdown {
+        resistance,
+        planning,
+        uniqueness,
+        branching,
+        spectacle,
+        score,
+    }
 }
 
 pub fn breakdown(r: &SolveResult, cfg: &DifficultyConfig) -> Option<DifficultyBreakdown> {
     if !r.solvable {
         return None;
     }
-    let l = r.shortest_path.unwrap_or(0) as f64;
-    let n = r.solution_count as f64;
-    let s = r.reachable_states as f64;
-    let t = r.dead_end_states as f64;
-
-    // Big space: 0 below s_min, ramps to 1 at s_ref (log scale).
-    let bigspace = clamp01(
-        ((s + 1.0).ln() - cfg.s_min.ln()) / (cfg.s_ref.ln() - cfg.s_min.ln()),
-    );
-    // Few solutions: 1 when N→0, decays as solutions multiply.
-    let fewness = cfg.k_rare / (n + cfg.k_rare);
-    let needle = bigspace * fewness;
-
-    let depth = sat(l / cfg.l_ref);
-    let trap = t / s.max(1.0);
-
-    let score = clamp01(cfg.w_needle * needle + cfg.w_len * depth + cfg.w_trap * trap);
-
-    Some(DifficultyBreakdown {
-        bigspace,
-        fewness,
-        needle,
-        depth,
-        trap,
-        score,
-    })
+    r.quality.as_ref().map(|q| breakdown_from(q, cfg))
 }
 
-/// Difficulty in `[0,1]`, or `None` if unsolvable.
+/// Quality in `[0,1]`, or `None` if unsolvable / quality not computed (screen pass).
 pub fn score(r: &SolveResult, cfg: &DifficultyConfig) -> Option<f64> {
     breakdown(r, cfg).map(|b| b.score)
 }
 
-pub fn band(score: Option<f64>) -> &'static str {
-    match score {
-        None => "unsolvable",
-        Some(x) if x < 0.20 => "easy",
-        Some(x) if x < 0.45 => "medium",
-        Some(x) if x < 0.70 => "hard",
-        Some(_) => "expert",
+/// Difficulty band, derived from behavioural **gates** (not arbitrary score thresholds), so the
+/// labels mean what they say: an "easy" board is one a thoughtless player can crack; "expert"
+/// resists random play almost entirely and punishes nearly every misstep.
+pub fn band(r: &SolveResult, cfg: &DifficultyConfig) -> &'static str {
+    if !r.solvable {
+        return "unsolvable";
+    }
+    let q = match &r.quality {
+        Some(q) => q,
+        // No quality computed (screen pass): fall back to a coarse score-only banding.
+        None => {
+            return match score(r, cfg) {
+                Some(x) if x < 0.20 => "easy",
+                Some(x) if x < 0.45 => "medium",
+                Some(x) if x < 0.70 => "hard",
+                Some(_) => "expert",
+                None => "easy",
+            }
+        }
+    };
+    let rsp = q.random_solve_prob;
+    let commit = q.commitment;
+    let sp = r.shortest_path.unwrap_or(0);
+
+    if q.greedy_solves || rsp > 0.30 || sp < 4 {
+        "easy"
+    } else if rsp <= 0.01 && commit >= 0.50 {
+        "expert"
+    } else if rsp <= 0.05 && commit >= 0.35 {
+        "hard"
+    } else {
+        "medium"
     }
 }

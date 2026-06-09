@@ -2,551 +2,573 @@
   "levels": [
     {
       "number": 0,
-      "name": "gen-3x3-easy-s9552",
+      "name": "gen-4x4-easy-s2",
       "layout": [
-        "ibn",
-        ".n.",
-        "..."
+        "....",
+        "....",
+        "..i.",
+        ".nbn"
       ],
-      "difficulty": 0.03260869565217391,
+      "difficulty": 0.4432373046875,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9552",
+        "heading": "gen-4x4-easy-s2",
         "tag": "bonus"
       }
     },
     {
       "number": 1,
-      "name": "gen-3x3-easy-s9433",
+      "name": "gen-5x5-easy-s48712",
       "layout": [
-        "inr",
-        ".nb",
-        "nnr"
+        ".....",
+        ".....",
+        ".....",
+        ".nri.",
+        ".brn."
       ],
-      "difficulty": 0.07546583850931676,
+      "difficulty": 0.5986601854278706,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9433",
+        "heading": "gen-5x5-easy-s48712",
         "tag": "bonus"
       }
     },
     {
       "number": 2,
-      "name": "gen-4x3-easy-s9272",
+      "name": "gen-4x5-easy-s28414",
       "layout": [
-        "..in",
-        ".ncb",
-        "...n"
+        "n...",
+        "b...",
+        "c...",
+        "n...",
+        "i..."
       ],
-      "difficulty": 0.04166666666666667,
+      "difficulty": 0.5742578125,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-4x3-easy-s9272",
+        "heading": "gen-4x5-easy-s28414",
         "tag": "bonus"
       }
     },
     {
       "number": 3,
-      "name": "gen-4x3-easy-s9201",
+      "name": "gen-4x5-easy-s58517",
       "layout": [
-        "n...",
-        "bn..",
-        "xi.."
+        "....",
+        "..i.",
+        ".nxb",
+        "..n.",
+        "...."
       ],
-      "difficulty": 0.03965768661397363,
+      "difficulty": 0.5682057142857143,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-4x3-easy-s9201",
+        "heading": "gen-4x5-easy-s58517",
         "tag": "bonus"
       }
     },
     {
       "number": 4,
-      "name": "gen-4x3-easy-s9514",
+      "name": "gen-4x5-easy-s50211",
       "layout": [
-        "ni..",
-        "b1n.",
-        "1n.."
+        "....",
+        "...n",
+        "2i2b",
+        "...n",
+        "...."
       ],
-      "difficulty": 0.04509170005152249,
+      "difficulty": 0.5868269732978189,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-4x3-easy-s9514",
+        "heading": "gen-4x5-easy-s50211",
         "tag": "bonus"
       }
     },
     {
       "number": 5,
-      "name": "gen-3x4-easy-s9497",
+      "name": "gen-4x5-easy-s101900",
       "layout": [
-        "...",
-        "...",
-        ".i^",
-        "nbn"
+        "....",
+        ">i..",
+        "nbn.",
+        ".n..",
+        "...."
       ],
-      "difficulty": 0.03260869565217391,
+      "difficulty": 0.4422761198762175,
       "band": "easy",
       "content": {
         "bullets": [],
-        "heading": "gen-3x4-easy-s9497",
+        "heading": "gen-4x5-easy-s101900",
         "tag": "bonus"
       }
     },
     {
       "number": 6,
-      "name": "gen-3x3-easy-s9578",
+      "name": "gen-4x4-medium-s219814",
       "layout": [
-        "ccc",
-        "ibn",
-        "cnc"
+        "i.n.",
+        "cn..",
+        "cbc.",
+        "nnn."
       ],
-      "difficulty": 0.07639209795730487,
-      "band": "easy",
+      "difficulty": 0.5136788017931848,
+      "band": "medium",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9578",
+        "heading": "gen-4x4-medium-s219814",
         "tag": "bonus"
       }
     },
     {
       "number": 7,
-      "name": "gen-3x4-easy-s9061",
+      "name": "gen-4x5-medium-s147209",
       "layout": [
-        "ibn",
-        ".n.",
-        ".r.",
-        "..."
+        ".nn.",
+        "cbc.",
+        "cn..",
+        "n.n.",
+        "i.n."
       ],
-      "difficulty": 0.08260869565217391,
-      "band": "easy",
+      "difficulty": 0.5137338087865373,
+      "band": "medium",
       "content": {
         "bullets": [],
-        "heading": "gen-3x4-easy-s9061",
+        "heading": "gen-4x5-medium-s147209",
         "tag": "bonus"
       }
     },
     {
       "number": 8,
-      "name": "gen-3x3-easy-s9313",
+      "name": "gen-5x5-medium-s246805",
       "layout": [
-        "ri.",
-        "nbn",
-        ".nr"
+        "i.n..",
+        ".nc..",
+        "cbc..",
+        "nnn..",
+        "..n.."
       ],
-      "difficulty": 0.08360443085077454,
-      "band": "easy",
+      "difficulty": 0.5173472321282819,
+      "band": "medium",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9313",
+        "heading": "gen-5x5-medium-s246805",
         "tag": "bonus"
       }
     },
     {
       "number": 9,
-      "name": "gen-3x3-easy-s9097",
+      "name": "gen-5x5-hard-s4534",
       "layout": [
-        "rbr",
-        "irn",
-        "rnr"
+        ".....",
+        ".....",
+        "inn..",
+        "1b1..",
+        ".nn.."
       ],
-      "difficulty": 0.0875921375921376,
-      "band": "easy",
+      "difficulty": 0.6565113775046302,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9097",
+        "heading": "gen-5x5-hard-s4534",
         "tag": "bonus"
       }
     },
     {
       "number": 10,
-      "name": "gen-3x3-easy-s9147",
+      "name": "gen-4x4-hard-s337517",
       "layout": [
-        "xbx",
-        "inn",
-        "xxx"
+        "nnni",
+        "xbnx",
+        "nnnn",
+        "...."
       ],
-      "difficulty": 0.10891992697231158,
-      "band": "easy",
+      "difficulty": 0.6629478303980587,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9147",
+        "heading": "gen-4x4-hard-s337517",
         "tag": "bonus"
       }
     },
     {
       "number": 11,
-      "name": "gen-3x4-easy-s9089",
+      "name": "gen-4x4-hard-s244248",
       "layout": [
-        "v>.",
-        "bni",
-        "^n<",
-        "..."
+        "inn.",
+        "nbc1",
+        "nn..",
+        "1..."
       ],
-      "difficulty": 0.13522727272727272,
-      "band": "easy",
+      "difficulty": 0.6658759964622032,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-3x4-easy-s9089",
+        "heading": "gen-4x4-hard-s244248",
         "tag": "bonus"
       }
     },
     {
       "number": 12,
-      "name": "gen-3x3-easy-s9293",
+      "name": "gen-5x5-hard-s220195",
       "layout": [
-        "vni",
-        "n<^",
-        "b>n"
+        "..inn",
+        ".nxbn",
+        ".....",
+        ".....",
+        "....."
       ],
-      "difficulty": 0.16414141414141414,
-      "band": "easy",
+      "difficulty": 0.6997903390664099,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-3x3-easy-s9293",
+        "heading": "gen-5x5-hard-s220195",
         "tag": "bonus"
       }
     },
     {
       "number": 13,
-      "name": "gen-4x4-medium-s9525",
+      "name": "gen-6x5-hard-s226946",
       "layout": [
-        "xinx",
-        "xxxx",
-        "nx.x",
-        "xnxb"
+        "2.....",
+        "bxn...",
+        "nn....",
+        "2n....",
+        "ni...."
       ],
-      "difficulty": 0.2065029333445667,
-      "band": "medium",
+      "difficulty": 0.7062449287893,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-4x4-medium-s9525",
+        "heading": "gen-6x5-hard-s226946",
         "tag": "bonus"
       }
     },
     {
       "number": 14,
-      "name": "gen-4x4-medium-s9239",
+      "name": "gen-4x4-hard-s382009",
       "layout": [
-        "bn<v",
-        "nvn<",
-        "<n.n",
-        "^nni"
+        "nnn2",
+        "nnbn",
+        "n21n",
+        "in1n"
       ],
-      "difficulty": 0.23877551020408164,
-      "band": "medium",
+      "difficulty": 0.7071403229684248,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-4x4-medium-s9239",
+        "heading": "gen-4x4-hard-s382009",
         "tag": "bonus"
       }
     },
     {
       "number": 15,
-      "name": "gen-4x4-medium-s9189",
+      "name": "gen-4x4-hard-s151846",
       "layout": [
-        "bxnx",
-        "xxxn",
-        "nxnx",
-        "nxxi"
+        "nbnn",
+        "nxni",
+        ".n..",
+        "...."
       ],
-      "difficulty": 0.26129141960217933,
-      "band": "medium",
+      "difficulty": 0.7109631194814903,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-4x4-medium-s9189",
+        "heading": "gen-4x4-hard-s151846",
         "tag": "bonus"
       }
     },
     {
       "number": 16,
-      "name": "gen-4x4-medium-s9677",
+      "name": "gen-5x5-hard-s199264",
       "layout": [
-        "innc",
-        "n2n1",
-        "nbn1",
-        "n2.n"
+        ".nnbn",
+        "nx1nn",
+        ".nnn1",
+        ".in.n",
+        "....."
       ],
-      "difficulty": 0.2874566470604226,
-      "band": "medium",
+      "difficulty": 0.7325422570132742,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-4x4-medium-s9677",
+        "heading": "gen-5x5-hard-s199264",
         "tag": "bonus"
       }
     },
     {
       "number": 17,
-      "name": "gen-5x4-medium-s9727",
+      "name": "gen-4x4-hard-s90254",
       "layout": [
-        "1bnnn",
-        "nnnnn",
-        "n2nnn",
-        "12nni"
+        ".nni",
+        ".11n",
+        ".bnn",
+        ".nnc"
       ],
-      "difficulty": 0.33396854044202506,
-      "band": "medium",
+      "difficulty": 0.7639403244485574,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-5x4-medium-s9727",
+        "heading": "gen-4x4-hard-s90254",
         "tag": "bonus"
       }
     },
     {
       "number": 18,
-      "name": "gen-5x6-medium-s10305",
+      "name": "gen-4x4-hard-s403736",
       "layout": [
-        ".....",
-        "xxniv",
-        "nnnnn",
-        "nnnnn",
-        ".nbnc",
-        ".nnn."
+        "nxxv",
+        "nnnb",
+        "nnnn",
+        "innr"
       ],
-      "difficulty": 0.3766037949517975,
-      "band": "medium",
+      "difficulty": 0.7640552474068646,
+      "band": "hard",
       "content": {
         "bullets": [],
-        "heading": "gen-5x6-medium-s10305",
+        "heading": "gen-4x4-hard-s403736",
         "tag": "bonus"
       }
     },
     {
       "number": 19,
-      "name": "gen-5x5-hard-s9876",
+      "name": "gen-5x6-expert-s186171",
       "layout": [
+        ".nni.",
+        "n2nn.",
+        ".bn..",
+        "n2...",
         ".....",
-        ".nnni",
-        "1nnn2",
-        "nbn2n",
-        "n1.nn"
+        "....."
       ],
-      "difficulty": 0.4525224309260557,
-      "band": "hard",
+      "difficulty": 0.7857505994939387,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x5-hard-s9876",
+        "heading": "gen-5x6-expert-s186171",
         "tag": "bonus"
       }
     },
     {
       "number": 20,
-      "name": "gen-5x4-hard-s9944",
+      "name": "gen-6x5-expert-s375445",
       "layout": [
-        "nnbn.",
-        "1.nn.",
-        "1.nn.",
-        "innn."
+        "......",
+        ".in...",
+        "nxcn..",
+        "n.nn..",
+        "n1b1n."
       ],
-      "difficulty": 0.4732069290100549,
-      "band": "hard",
+      "difficulty": 0.7890566280779202,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x4-hard-s9944",
+        "heading": "gen-6x5-expert-s375445",
         "tag": "bonus"
       }
     },
     {
       "number": 21,
-      "name": "gen-5x5-hard-s9869",
+      "name": "gen-4x4-expert-s59427",
       "layout": [
-        ".....",
-        ".in..",
-        "nn12n",
-        "^nbn^",
-        "cnnnc"
+        "nnni",
+        "nnnr",
+        "n11n",
+        "nb.."
       ],
-      "difficulty": 0.503984969714737,
-      "band": "hard",
+      "difficulty": 0.7925704923101531,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x5-hard-s9869",
+        "heading": "gen-4x4-expert-s59427",
         "tag": "bonus"
       }
     },
     {
       "number": 22,
-      "name": "gen-4x4-hard-s10125",
+      "name": "gen-8x7-expert-s20737",
       "layout": [
-        "bnnn",
-        "nnnc",
-        "nrni",
-        "nnnx"
+        "........",
+        ".2......",
+        "11......",
+        "innn....",
+        "nnnn....",
+        "n.b2n...",
+        "nnnn<..."
       ],
-      "difficulty": 0.5343037692627521,
-      "band": "hard",
+      "difficulty": 0.7928365331572946,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-4x4-hard-s10125",
+        "heading": "gen-8x7-expert-s20737",
         "tag": "bonus"
       }
     },
     {
       "number": 23,
-      "name": "gen-5x5-hard-s9974",
+      "name": "gen-6x6-expert-s351387",
       "layout": [
-        ".1in.",
-        ".nnn.",
-        "nncnn",
-        "n.nbn",
-        "nn1nn"
+        "i21...",
+        "n1nnn.",
+        ".nnnn.",
+        ".n..n.",
+        ".nbnn.",
+        "..2n.."
       ],
-      "difficulty": 0.5709340911176102,
-      "band": "hard",
+      "difficulty": 0.793060944867465,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x5-hard-s9974",
+        "heading": "gen-6x6-expert-s351387",
         "tag": "bonus"
       }
     },
     {
       "number": 24,
-      "name": "gen-4x5-hard-s9987",
+      "name": "gen-4x4-expert-s347665",
       "layout": [
-        "v.nn",
-        ">nbn",
-        "nnnn",
-        "nnn<",
-        "inrn"
+        "i1nn",
+        ".ncb",
+        ".nn1",
+        ".nnn"
       ],
-      "difficulty": 0.580413130786245,
-      "band": "hard",
+      "difficulty": 0.7930920859232107,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-4x5-hard-s9987",
+        "heading": "gen-4x4-expert-s347665",
         "tag": "bonus"
       }
     },
     {
       "number": 25,
-      "name": "gen-6x5-hard-s10270",
+      "name": "gen-5x5-expert-s231134",
       "layout": [
-        "nn.1ni",
-        "nnn.nn",
-        ">2n.nn",
-        "nnnn.n",
-        "b1.nn2"
+        "innnn",
+        "21..n",
+        "2n.nb",
+        ".nnn1",
+        ".nnnn"
       ],
-      "difficulty": 0.6098731865883767,
-      "band": "hard",
+      "difficulty": 0.7931700298423826,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-6x5-hard-s10270",
+        "heading": "gen-5x5-expert-s231134",
         "tag": "bonus"
       }
     },
     {
       "number": 26,
-      "name": "gen-4x5-hard-s10099",
+      "name": "gen-6x5-expert-s256655",
       "layout": [
-        "nnnn",
-        "bnvn",
-        "nnrn",
-        "nn1i",
-        "nncx"
+        "21.nni",
+        "rnnn.n",
+        "nbn.n2",
+        "nn1nnr",
+        "......"
       ],
-      "difficulty": 0.6387651937738532,
-      "band": "hard",
+      "difficulty": 0.7938438443908489,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-4x5-hard-s10099",
+        "heading": "gen-6x5-expert-s256655",
         "tag": "bonus"
       }
     },
     {
       "number": 27,
-      "name": "gen-5x4-hard-s10112",
+      "name": "gen-5x6-expert-s121227",
       "layout": [
-        "inn1n",
-        "nnnnb",
-        "nn.nn",
-        "1nnnn"
+        ".....",
+        "..inn",
+        "..nnn",
+        ".11b.",
+        ".nnn.",
+        ".rnnn"
       ],
-      "difficulty": 0.668746740575355,
-      "band": "hard",
+      "difficulty": 0.7941019254626112,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x4-hard-s10112",
+        "heading": "gen-5x6-expert-s121227",
         "tag": "bonus"
       }
     },
     {
       "number": 28,
-      "name": "gen-5x6-hard-s10341",
+      "name": "gen-4x4-expert-s95755",
       "layout": [
-        "11>nn",
-        "i.nnn",
-        "nnnnn",
-        "cnnnn",
-        ".n3.n",
-        "nnnnb"
+        "1n..",
+        "nbrn",
+        "nn.i",
+        "nnn1"
       ],
-      "difficulty": 0.6987157313129702,
-      "band": "hard",
+      "difficulty": 0.7946779239276596,
+      "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x6-hard-s10341",
+        "heading": "gen-4x4-expert-s95755",
         "tag": "bonus"
       }
     },
     {
       "number": 29,
-      "name": "gen-5x6-expert-s10108",
+      "name": "gen-7x6-expert-s270153",
       "layout": [
-        "n>n.i",
-        "nn1n4",
-        "1.cn.",
-        "4ncn3",
-        "2nnnc",
-        "nbnnn"
+        "nn.....",
+        "n11n...",
+        "nbnn...",
+        "nnn....",
+        "nnc....",
+        "..i...."
       ],
-      "difficulty": 0.7106189386666995,
+      "difficulty": 0.7974129401029206,
       "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x6-expert-s10108",
+        "heading": "gen-7x6-expert-s270153",
         "tag": "bonus"
       }
     },
     {
       "number": 30,
-      "name": "gen-6x6-expert-s10325",
+      "name": "gen-5x5-expert-s133224",
       "layout": [
-        "nnnnnn",
-        "1n.n3n",
-        "vn.bn2",
-        "n.n1r.",
-        "n4nn..",
-        "in...."
+        "n1...",
+        "nb.n.",
+        "nnnn.",
+        "..n1i",
+        "..nc."
       ],
-      "difficulty": 0.7547868456185896,
+      "difficulty": 0.80136466713899,
       "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-6x6-expert-s10325",
+        "heading": "gen-5x5-expert-s133224",
         "tag": "bonus"
       }
     },
     {
       "number": 31,
-      "name": "gen-5x6-expert-s10368",
+      "name": "gen-6x6-expert-s24674",
       "layout": [
-        ".i1n3",
-        "nnnnn",
-        "nnn.n",
-        "ncnbn",
-        "nnnnn",
-        "nn<2n"
+        "......",
+        ".....n",
+        "....n2",
+        "i3rnnn",
+        "n..n.n",
+        "nnn3b2"
       ],
-      "difficulty": 0.7839441780810046,
+      "difficulty": 0.8132597338059004,
       "band": "expert",
       "content": {
         "bullets": [],
-        "heading": "gen-5x6-expert-s10368",
+        "heading": "gen-6x6-expert-s24674",
         "tag": "bonus"
       }
     }

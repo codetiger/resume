@@ -76,9 +76,9 @@ pub enum TileKind {
     Base,
     /// `disappear-normal`. Crumbles on step-off; all must be cleared to win.
     Green,
-    /// Content tile. Counts toward the win exactly like `Green` and crumbles on step-off, but is
-    /// **immune to blasts/lines** (mirrors the game): so it can only be cleared by stepping on it,
-    /// which guarantees the player lands on it and sees the content.
+    /// Content tile. Behaves exactly like `Green` for destruction — crumbles on step-off and is
+    /// cleared by blasts/lines (mirrors the game) — and counts toward the win the same way. It
+    /// additionally reveals its résumé content when the cube lands on it.
     Info,
     /// Forces a one-tile slide in `dir` on landing (chains through consecutive arrows).
     Arrow(Direction),
@@ -155,6 +155,99 @@ impl Level {
             .iter()
             .filter(|c| matches!(c, Some(TileKind::Green)))
             .count() as u32
+    }
+
+    /// Count of special (non-green, non-base, non-info) tiles: arrows, shifts, lines, explosives.
+    pub fn special_count(&self) -> u32 {
+        self.cells
+            .iter()
+            .filter(|c| {
+                matches!(
+                    c,
+                    Some(TileKind::Arrow(_))
+                        | Some(TileKind::Shift(_))
+                        | Some(TileKind::Line(_))
+                        | Some(TileKind::Explosive)
+                )
+            })
+            .count() as u32
+    }
+
+    /// Is this cell a green-like tile a sweep/blast can clear (green or info)?
+    fn is_clearable(&self, idx: usize) -> bool {
+        matches!(self.cells[idx], Some(TileKind::Green) | Some(TileKind::Info))
+    }
+
+    /// Count of specials that can't actually clear a green when triggered: a line whose row/column
+    /// holds no green/info, or an explosive with no green/info among its four neighbours. Such a
+    /// tile fires uselessly, so the generator rejects boards that contain any.
+    pub fn useless_special_count(&self) -> u32 {
+        let mut count = 0;
+        for (i, cell) in self.cells.iter().enumerate() {
+            match cell {
+                Some(TileKind::Line(Sweep::Row)) => {
+                    let (_, r) = self.coords(i);
+                    let has = (0..self.cols).any(|c| {
+                        let k = self.idx(c, r);
+                        k != i && self.is_clearable(k)
+                    });
+                    if !has {
+                        count += 1;
+                    }
+                }
+                Some(TileKind::Line(Sweep::Col)) => {
+                    let (c, _) = self.coords(i);
+                    let has = (0..self.rows).any(|r| {
+                        let k = self.idx(c, r);
+                        k != i && self.is_clearable(k)
+                    });
+                    if !has {
+                        count += 1;
+                    }
+                }
+                Some(TileKind::Explosive) => {
+                    let has = Direction::ALL
+                        .iter()
+                        .any(|&d| self.neighbor(i, d).map_or(false, |nb| self.is_clearable(nb)));
+                    if !has {
+                        count += 1;
+                    }
+                }
+                _ => {}
+            }
+        }
+        count
+    }
+
+    /// Number of teleport ids that don't form a clean pair (a lone shift, or 3+ sharing an id).
+    pub fn unpaired_shift_count(&self) -> u32 {
+        let mut by_id: std::collections::HashMap<u8, u32> = std::collections::HashMap::new();
+        for c in &self.cells {
+            if let Some(TileKind::Shift(p)) = c {
+                *by_id.entry(*p).or_insert(0) += 1;
+            }
+        }
+        by_id.values().filter(|&&n| n != 2).count() as u32
+    }
+
+    /// Make every teleport id a clean pair: a lone shift becomes a green; for 3+ sharing an id,
+    /// keep the two lowest cells and green the rest. Keeps boards valid after any mutation.
+    pub fn normalize_shifts(&mut self) {
+        let mut by_id: std::collections::HashMap<u8, Vec<usize>> = std::collections::HashMap::new();
+        for (i, c) in self.cells.iter().enumerate() {
+            if let Some(TileKind::Shift(p)) = c {
+                by_id.entry(*p).or_default().push(i);
+            }
+        }
+        for idxs in by_id.values() {
+            for (k, &i) in idxs.iter().enumerate() {
+                // Keep the first two cells of a ≥2 group; green everything else.
+                if idxs.len() >= 2 && k < 2 {
+                    continue;
+                }
+                self.cells[i] = Some(TileKind::Green);
+            }
+        }
     }
 
     /// Tiles that must be cleared to win: greens + info.

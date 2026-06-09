@@ -1,12 +1,14 @@
 //! CLI entry point: `solve`, `selftest`, `gen` (single or `--batch`), and `curate`.
 
 use clap::{Parser, Subcommand};
+use level_gen::campaign::{self, CampaignCfg};
 use level_gen::curate::{self};
 use level_gen::difficulty::{self, DifficultyConfig};
 use level_gen::generate::{generate, AllowSet, GenSpec};
 use level_gen::io::{encode_layout, parse_game_levels, parse_layout, LevelRecord};
 use level_gen::model::{Direction, Level, TileKind};
 use level_gen::solver::{solve, solve_default, SolveConfig, SolveResult};
+use level_gen::topk;
 use rayon::prelude::*;
 use std::path::Path;
 
@@ -56,10 +58,78 @@ enum Cmd {
         /// Cap the ladder length (tutorial block + an evenly difficulty-spaced ramp).
         #[arg(long)]
         count: Option<usize>,
-        /// Selection profile: `ramp` (default even-spaced) or `initial32` (6+10+10+6 interest-banded).
+        /// Selection profile: `ramp` (default even-spaced) or `initial32` (6 tutorial + steep ramp).
         #[arg(long, default_value = "ramp")]
         profile: String,
+        /// Read the pool from a campaign (`<root>/<name>/pool.json`) instead of `dir`.
+        #[arg(long)]
+        from_campaign: Option<String>,
+        #[arg(long, default_value = "../levels/campaigns")]
+        root: String,
     },
+    /// Run (or resume) a streaming generation campaign that collects the best boards over time.
+    Campaign {
+        #[arg(long, default_value = "run1")]
+        name: String,
+        #[arg(long, default_value = "../levels/campaigns")]
+        root: String,
+        /// Wall-clock budget, e.g. `60m`, `1h`, `3600s`, or a bare number of seconds.
+        #[arg(long, default_value = "60m")]
+        duration: String,
+        #[arg(long, default_value_t = 0)]
+        threads: usize,
+        /// Best boards kept per (size × mechanic × band) bucket.
+        #[arg(long, default_value_t = 64)]
+        topk: usize,
+        /// Annealing iterations per combined board.
+        #[arg(long, default_value_t = 140)]
+        iters: usize,
+        #[arg(long, default_value_t = 1)]
+        seed_base: u64,
+        /// Largest board edge the sampler may request (≤ 8 keeps boards playable).
+        #[arg(long, default_value_t = 8)]
+        max_size: usize,
+        /// Reject a combined board a random player wins more often than this.
+        #[arg(long, default_value_t = 0.15)]
+        max_random: f64,
+        /// Resume from an existing campaign directory.
+        #[arg(long)]
+        resume: bool,
+    },
+    /// Print a campaign's manifest + best buckets.
+    CampaignStatus {
+        #[arg(long, default_value = "run1")]
+        name: String,
+        #[arg(long, default_value = "../levels/campaigns")]
+        root: String,
+    },
+    /// Write a browsable, per-bucket ranked report (markdown) from a campaign pool.
+    Rank {
+        #[arg(long, default_value = "run1")]
+        name: String,
+        #[arg(long, default_value = "../levels/campaigns")]
+        root: String,
+        #[arg(long, default_value = "../levels/report.md")]
+        out: String,
+        /// Boards to show per bucket.
+        #[arg(long, default_value_t = 8)]
+        per_bucket: usize,
+    },
+}
+
+/// Parse a duration string (`60m`, `1h`, `3600s`, or bare seconds) into seconds.
+fn parse_duration(s: &str) -> u64 {
+    let s = s.trim();
+    let (num, mult) = if let Some(n) = s.strip_suffix('h') {
+        (n, 3600)
+    } else if let Some(n) = s.strip_suffix('m') {
+        (n, 60)
+    } else if let Some(n) = s.strip_suffix('s') {
+        (n, 1)
+    } else {
+        (s, 1)
+    };
+    num.trim().parse::<u64>().unwrap_or(0).saturating_mul(mult)
 }
 
 /// DEMO_LAYOUT from `src/game/grid.ts` (the lone arrow is overridden to slide "back").
@@ -88,10 +158,30 @@ fn print_report(name: &str, level: &Level, r: &SolveResult) {
         r.solvable, r.shortest_path, r.solution_count, r.reachable_states, r.dead_end_states, r.exact
     );
     println!(
+        "   greens={} specials={} deadTiles={} unpairedShifts={} landsOnInfo={}",
+        level.green_count(),
+        level.special_count(),
+        r.dead_tiles,
+        level.unpaired_shift_count(),
+        r.lands_on_info,
+    );
+    println!(
         "   difficulty={} band={}",
         d.map(|x| format!("{:.3}", x)).unwrap_or_else(|| "—".into()),
-        difficulty::band(d)
+        difficulty::band(r, &dcfg)
     );
+    if let Some(b) = difficulty::breakdown(r, &dcfg) {
+        println!(
+            "   resist={:.2} plan={:.2} uniq={:.2} branch={:.2} spectacle={:.2}",
+            b.resistance, b.planning, b.uniqueness, b.branching, b.spectacle
+        );
+    }
+    if let Some(q) = &r.quality {
+        println!(
+            "   randomSolve={:.4} greedySolves={} commitment={:.2} doomDelay={} specReq={}",
+            q.random_solve_prob, q.greedy_solves, q.commitment, q.max_doom_delay, q.spectacle_required
+        );
+    }
     if !r.solutions.is_empty() {
         let sample: Vec<&String> = r.solutions.iter().take(4).collect();
         println!("   e.g. {:?}", sample);
@@ -118,9 +208,11 @@ fn record_for(level: &Level, name: String, seed: u64, target: f64, allow: &Allow
         reachable_states: r.reachable_states,
         dead_end_states: r.dead_end_states,
         difficulty: diff,
-        band: difficulty::band(diff).to_string(),
+        band: difficulty::band(&r, &dcfg).to_string(),
         exact: r.exact,
+        ..Default::default()
     }
+    .with_quality(r.quality.as_ref())
 }
 
 fn write_record(out_dir: &str, rec: &LevelRecord) -> std::io::Result<()> {
@@ -138,6 +230,7 @@ fn sa_solve_config() -> SolveConfig {
         visit_cap: 400_000,
         store_cap: 40,
         store_buffer: 600,
+        enumerate: true,
     }
 }
 
@@ -382,15 +475,24 @@ fn cmd_gen(
     }
 }
 
-fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str) {
+fn load_pool(dir: &str, out: &str, from_campaign: Option<&str>, root: &str) -> Vec<LevelRecord> {
+    if let Some(name) = from_campaign {
+        let cdir = format!("{}/{}", root, name);
+        let pool = campaign::load_pool(&cdir);
+        println!("Loaded {} boards from campaign {}/pool.json", pool.len(), cdir);
+        return pool;
+    }
     let mut pool: Vec<LevelRecord> = Vec::new();
+    let out_name = Path::new(out).file_name().and_then(|x| x.to_str());
     let entries = std::fs::read_dir(dir).expect("read pool dir");
     for e in entries.flatten() {
         let path = e.path();
         if path.extension().and_then(|x| x.to_str()) != Some("json") {
             continue;
         }
-        if path.file_name().and_then(|x| x.to_str()) == Some("ladder.json") {
+        // Don't fold a previously-written ladder back into the pool.
+        let fname = path.file_name().and_then(|x| x.to_str());
+        if fname == Some("ladder.json") || fname == out_name {
             continue;
         }
         if let Ok(text) = std::fs::read_to_string(&path) {
@@ -400,6 +502,11 @@ fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str) {
         }
     }
     println!("Loaded {} boards from {}/", pool.len(), dir);
+    pool
+}
+
+fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str, from_campaign: Option<&str>, root: &str) {
+    let pool = load_pool(dir, out, from_campaign, root);
     let ladder = match profile {
         "initial32" => curate::curate_initial(&pool),
         _ => curate::curate(&pool, count),
@@ -418,6 +525,93 @@ fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str) {
             tut.map(|t| format!("[{:?}]", t)).unwrap_or_default(),
         );
     }
+}
+
+fn cmd_campaign(
+    name: &str,
+    root: &str,
+    duration: &str,
+    threads: usize,
+    topk: usize,
+    iters: usize,
+    seed_base: u64,
+    max_size: usize,
+    max_random: f64,
+    resume: bool,
+) {
+    let cfg = CampaignCfg {
+        name: name.to_string(),
+        dir: format!("{}/{}", root, name),
+        duration_secs: parse_duration(duration),
+        topk,
+        iters,
+        tut_iters: 120,
+        seed_base,
+        flush_secs: 15,
+        threads,
+        max_random,
+        max_size,
+        screen_trials: 48,
+    };
+    campaign::run(cfg, resume);
+}
+
+/// Write a per-bucket markdown leaderboard (with ASCII board art) for eyeballing campaign picks.
+fn cmd_rank(name: &str, root: &str, out: &str, per_bucket: usize) {
+    use std::cmp::Ordering::Equal;
+    use std::collections::BTreeMap;
+    let cdir = format!("{}/{}", root, name);
+    let pool = campaign::load_pool(&cdir);
+    if pool.is_empty() {
+        eprintln!("Empty / missing pool at {}/pool.json", cdir);
+        return;
+    }
+    let mut buckets: BTreeMap<String, Vec<&LevelRecord>> = BTreeMap::new();
+    for r in &pool {
+        buckets.entry(topk::bucket_key(r)).or_default().push(r);
+    }
+    let mut keys: Vec<(String, f64)> = buckets
+        .iter()
+        .map(|(k, v)| {
+            let best = v.iter().filter_map(|r| r.difficulty).fold(f64::NEG_INFINITY, f64::max);
+            (k.clone(), best)
+        })
+        .collect();
+    keys.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(Equal));
+
+    let mut md = String::new();
+    md.push_str(&format!(
+        "# Level campaign report — {}\n\n{} boards across {} buckets, ranked by quality.\n\n",
+        name,
+        pool.len(),
+        buckets.len()
+    ));
+    for (key, best) in &keys {
+        let mut v = buckets[key].clone();
+        v.sort_by(|a, b| b.difficulty.partial_cmp(&a.difficulty).unwrap_or(Equal));
+        md.push_str(&format!("## {} — best {:.3} ({} boards)\n\n", key, best, v.len()));
+        for r in v.iter().take(per_bucket) {
+            md.push_str(&format!(
+                "- **{}** · quality {:.3} · randomSolve {:.4} · shortest {} · solutions {} · states {} · doomDelay {} · specReq {}\n",
+                r.name,
+                r.difficulty.unwrap_or(0.0),
+                r.random_solve_prob.unwrap_or(1.0),
+                r.solutions.first().map(|s| s.len()).unwrap_or(0),
+                r.solution_count,
+                r.reachable_states,
+                r.max_doom_delay.unwrap_or(0),
+                r.spectacle_required.unwrap_or(false),
+            ));
+            md.push_str("\n```\n");
+            for row in &r.layout {
+                md.push_str(row);
+                md.push('\n');
+            }
+            md.push_str("```\n\n");
+        }
+    }
+    std::fs::write(out, md).expect("write report");
+    println!("Wrote ranked report ({} buckets) → {}", buckets.len(), out);
 }
 
 fn cmd_selftest() {
@@ -439,22 +633,44 @@ fn cmd_selftest() {
             }
         };
         let r = solve_default(&level);
-        let status = if r.solvable { "✓" } else { "✗ UNSOLVABLE" };
+        let dead = r.dead_tiles;
+        let unpaired = level.unpaired_shift_count();
+        let useless = level.useless_special_count();
+        let mut flags: Vec<String> = Vec::new();
         if !r.solvable {
+            flags.push("UNSOLVABLE".into());
+        }
+        if dead > 0 {
+            flags.push(format!("{} DEAD-TILES", dead));
+        }
+        if unpaired > 0 {
+            flags.push(format!("{} UNPAIRED-SHIFT", unpaired));
+        }
+        if useless > 0 {
+            flags.push(format!("{} USELESS-SPECIAL", useless));
+        }
+        let status = if flags.is_empty() { "✓".to_string() } else { format!("✗ {}", flags.join(", ")) };
+        if !flags.is_empty() {
             failures += 1;
         }
         let dcfg = DifficultyConfig::default();
         let d = difficulty::score(&r, &dcfg);
+        let rsp = r
+            .quality
+            .as_ref()
+            .map(|q| format!("{:.3}", q.random_solve_prob))
+            .unwrap_or_else(|| "—".into());
         println!(
-            "  {} {:<18} L={:<3?} sols={:<5} states={:<5} dead={:<5} diff={} band={}",
+            "  {} {:<18} grn={:<2} spc={:<2} L={:<3?} states={:<6} rndSolve={:<6} diff={} band={}",
             status,
             g.name,
+            level.green_count(),
+            level.special_count(),
             r.shortest_path,
-            r.solution_count,
             r.reachable_states,
-            r.dead_end_states,
+            rsp,
             d.map(|x| format!("{:.2}", x)).unwrap_or_else(|| "—".into()),
-            difficulty::band(d),
+            difficulty::band(&r, &dcfg),
         );
     }
 
@@ -487,6 +703,29 @@ fn main() {
             out,
             count,
             profile,
-        } => cmd_curate(&dir, &out, count, &profile),
+            from_campaign,
+            root,
+        } => cmd_curate(&dir, &out, count, &profile, from_campaign.as_deref(), &root),
+        Cmd::Campaign {
+            name,
+            root,
+            duration,
+            threads,
+            topk,
+            iters,
+            seed_base,
+            max_size,
+            max_random,
+            resume,
+        } => cmd_campaign(
+            &name, &root, &duration, threads, topk, iters, seed_base, max_size, max_random, resume,
+        ),
+        Cmd::CampaignStatus { name, root } => campaign::status(&format!("{}/{}", root, name)),
+        Cmd::Rank {
+            name,
+            root,
+            out,
+            per_bucket,
+        } => cmd_rank(&name, &root, &out, per_bucket),
     }
 }

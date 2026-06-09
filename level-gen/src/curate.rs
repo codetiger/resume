@@ -4,9 +4,19 @@
 //! new mechanic at a time, then combined boards that ramp in difficulty. Each chosen board gets one
 //! green promoted to the in-game `i` (content marker). See `PROPOSAL.md` §7.
 
-use crate::io::LevelRecord;
+use crate::io::{parse_layout, LevelRecord};
 use serde::Serialize;
 use std::collections::HashSet;
+
+/// A board is "clean" if it has no useless specials (a line with no green in its line, a mine with
+/// no green neighbour) and no unpaired teleport. Used to keep such boards out of the ladder even if
+/// they slipped into an older pool generated before these gates existed.
+fn is_clean(rec: &LevelRecord) -> bool {
+    match parse_layout(&rec.layout) {
+        Ok(level) => level.useless_special_count() == 0 && level.unpaired_shift_count() == 0,
+        Err(_) => false,
+    }
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum Mechanic {
@@ -138,7 +148,7 @@ pub fn curate(pool: &[LevelRecord], max_levels: Option<usize>) -> Ladder {
 
     // Only consider solvable, scored boards, sorted easiest-first.
     let mut order: Vec<usize> = (0..pool.len())
-        .filter(|&i| pool[i].difficulty.is_some())
+        .filter(|&i| pool[i].difficulty.is_some() && is_clean(&pool[i]))
         .collect();
     order.sort_by(|&a, &b| {
         pool[a]
@@ -413,58 +423,54 @@ fn tutorial_score(rec: &LevelRecord) -> f64 {
     rec.difficulty.unwrap_or(1.0) + 0.5 * visual_complexity(rec) - 0.15 * interest(rec)
 }
 
-/// Pick `k` boards that **rise smoothly in difficulty** across `cands` while each being the most
-/// interesting + diverse within its difficulty slice. Splits the (difficulty-sorted) candidates into
-/// `k` buckets and takes one from each — so the block both ramps and stays interesting/varied.
-fn select_spread(
+/// Pick up to `k` highest-quality boards from `cands`, skipping near-duplicates of anything already
+/// chosen. Falls back to filling by quality if diversity leaves the band short.
+fn select_quality_diverse(
     sorted: &[&LevelRecord],
     cands: &[usize],
     k: usize,
     already: &[usize],
 ) -> Vec<usize> {
-    if cands.is_empty() || k == 0 {
-        return Vec::new();
-    }
-    let mut by_diff = cands.to_vec();
-    by_diff.sort_by(|&a, &b| {
-        sorted[a]
+    let mut by_q = cands.to_vec();
+    by_q.sort_by(|&a, &b| {
+        sorted[b]
             .difficulty
-            .partial_cmp(&sorted[b].difficulty)
+            .partial_cmp(&sorted[a].difficulty)
             .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| interest(sorted[b]).partial_cmp(&interest(sorted[a])).unwrap_or(std::cmp::Ordering::Equal))
     });
-    let m = by_diff.len();
     let mut picked: Vec<usize> = Vec::new();
-    for bucket in 0..k {
-        let lo = bucket * m / k;
-        let hi = (((bucket + 1) * m / k).max(lo + 1)).min(m);
-        // Within this difficulty slice, prefer the most interesting, diverse, unused board.
-        let mut slice: Vec<usize> = by_diff[lo..hi].to_vec();
-        slice.sort_by(|&a, &b| {
-            interest(sorted[b])
-                .partial_cmp(&interest(sorted[a]))
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
-        let mut chosen = slice.iter().copied().find(|&idx| {
-            !picked.contains(&idx)
-                && already
-                    .iter()
-                    .chain(picked.iter())
-                    .all(|&j| !similar(&sorted[idx].layout, &sorted[j].layout))
-        });
-        if chosen.is_none() {
-            chosen = slice.iter().copied().find(|idx| !picked.contains(idx));
+    for &idx in &by_q {
+        if picked.len() >= k {
+            break;
         }
-        if let Some(idx) = chosen {
+        let diverse = already
+            .iter()
+            .chain(picked.iter())
+            .all(|&j| !similar(&sorted[idx].layout, &sorted[j].layout));
+        if diverse {
             picked.push(idx);
+        }
+    }
+    if picked.len() < k {
+        for &idx in &by_q {
+            if picked.len() >= k {
+                break;
+            }
+            if !picked.contains(&idx) {
+                picked.push(idx);
+            }
         }
     }
     picked
 }
 
-/// Build the initial 32-level set: 6 tutorial (one per tile type) + 10 + 10 + 6, selected by
-/// interest + diversity over percentile bands, then ordered by rising difficulty after the tutorial.
+/// Build the initial 32-level set: 6 tutorial (one per tile type) then a **steep** ramp — only a
+/// handful of medium boards before the level jumps into hard/expert "needs-a-plan" territory.
+/// Picks the highest-quality, diverse board per band, then orders the ramp by rising difficulty.
 pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
-    let mut sorted: Vec<&LevelRecord> = pool.iter().filter(|r| r.difficulty.is_some()).collect();
+    let mut sorted: Vec<&LevelRecord> =
+        pool.iter().filter(|r| r.difficulty.is_some() && is_clean(r)).collect();
     sorted.sort_by(|a, b| {
         a.difficulty
             .partial_cmp(&b.difficulty)
@@ -474,54 +480,52 @@ pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
     if n == 0 {
         return Ladder { levels: Vec::new() };
     }
-    let pct = |i: usize| if n <= 1 { 0.0 } else { i as f64 / (n - 1) as f64 };
     let mut used = vec![false; n];
 
-    // Tutorial: best pure board for each tile type, in teaching order.
+    // Tutorial: the most learnable pure board for each tile type, in teaching order. Prefer
+    // `easy`-band (greedy-solvable) boards so the first six rungs are genuinely approachable;
+    // only fall back to harder pure boards if a mechanic has no easy example.
     let mut tutorial: Vec<usize> = Vec::new();
     for t in TUTORIAL_ORDER {
-        let best = (0..n)
-            .filter(|&i| !used[i] && tutorial_type_of(&sorted[i].layout) == Some(t))
-            .min_by(|&a, &b| {
-                tutorial_score(sorted[a])
-                    .partial_cmp(&tutorial_score(sorted[b]))
-                    .unwrap_or(std::cmp::Ordering::Equal)
-            });
-        if let Some(idx) = best {
+        let pick = |easy_only: bool| {
+            (0..n)
+                .filter(|&i| {
+                    !used[i]
+                        && tutorial_type_of(&sorted[i].layout) == Some(t)
+                        && (!easy_only || sorted[i].band == "easy")
+                })
+                .min_by(|&a, &b| {
+                    tutorial_score(sorted[a])
+                        .partial_cmp(&tutorial_score(sorted[b]))
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                })
+        };
+        if let Some(idx) = pick(true).or_else(|| pick(false)) {
             used[idx] = true;
             tutorial.push(idx);
         }
     }
 
-    // The ramp starts just above the hardest tutorial board, so it never dips back to trivial.
-    let floor = tutorial
-        .iter()
-        .map(|&i| sorted[i].difficulty.unwrap_or(0.0))
-        .fold(0.0_f64, f64::max);
-
-    // Bands by percentile of the full pool: early (15–45%), mid (45–85%), hard (85–100%).
-    // Each band spreads its picks across its difficulty range (rising) and stays interesting/diverse.
+    // Steep ramp: a few medium boards, then hard, then a deep expert bench. Each band picks the
+    // best, most diverse boards; bands that underflow are topped up from the harder bands below.
     let mut rest: Vec<usize> = Vec::new();
-    for (lo, hi, k) in [(0.15, 0.45, 10usize), (0.45, 0.85, 10), (0.85, 1.01, 6)] {
-        let cands: Vec<usize> = (0..n)
-            .filter(|&i| {
-                !used[i] && pct(i) > lo && pct(i) <= hi && sorted[i].difficulty.unwrap_or(0.0) > floor
-            })
-            .collect();
+    for (band, k) in [("medium", 4usize), ("hard", 10), ("expert", 12)] {
+        let cands: Vec<usize> = (0..n).filter(|&i| !used[i] && sorted[i].band == band).collect();
         let already: Vec<usize> = tutorial.iter().chain(rest.iter()).copied().collect();
-        for idx in select_spread(&sorted, &cands, k, &already) {
+        for idx in select_quality_diverse(&sorted, &cands, k, &already) {
             used[idx] = true;
             rest.push(idx);
         }
     }
 
-    // Nearest-fill to 32 if any band underflowed.
+    // Fill to 32 from the remaining hardest boards (keeps the ramp's upper character).
     let want = 32;
     if tutorial.len() + rest.len() < want {
         let mut extra: Vec<usize> = (0..n).filter(|&i| !used[i]).collect();
         extra.sort_by(|&a, &b| {
-            interest(sorted[b])
-                .partial_cmp(&interest(sorted[a]))
+            sorted[b]
+                .difficulty
+                .partial_cmp(&sorted[a].difficulty)
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
         for idx in extra {
@@ -585,16 +589,14 @@ mod tests {
     fn rec(layout: &[&str], difficulty: f64) -> LevelRecord {
         LevelRecord {
             name: "t".into(),
-            seed: 0,
             layout: layout.iter().map(|s| s.to_string()).collect(),
-            request: None,
-            solutions: vec![],
             solution_count: 1,
             reachable_states: 100,
             dead_end_states: 10,
             difficulty: Some(difficulty),
             band: "x".into(),
             exact: true,
+            ..Default::default()
         }
     }
 

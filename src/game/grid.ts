@@ -238,8 +238,12 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   function reachTile(key: string): void {
     const def = cellDefs.get(key);
     if (!def) return;
-    if (def.kind === 'disappear-normal') removeTile(key, frameElapsed);
-    else if (def.kind === 'explosive') igniteBlast(key, frameElapsed);
+    // A line sweep clears greens and info alike; if it clears the tile under the cube, the cube
+    // drops with it (loss), exactly like a blast.
+    if (def.kind === 'disappear-normal' || def.kind === 'info') {
+      removeTile(key, frameElapsed);
+      losePlayerIfOn(key);
+    } else if (def.kind === 'explosive') igniteBlast(key, frameElapsed);
     else if (def.kind === 'disappear-line') activateLine(key, frameElapsed);
     // arrow / shift / base: left untouched
   }
@@ -280,12 +284,12 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
 
   // What a blast does to a neighbouring tile when its sphere arrives. Unlike a
   // line sphere (reachTile), a blast destroys whatever it touches — green tiles,
-  // arrows, shift portals and spent line tiles all fall away. Explosives chain
-  // (their own fuse lights instead) and line tiles fire their sweep before
-  // collapsing. The base is indestructible. If the cube is on the tile, it drops.
+  // info tiles, arrows, shift portals and spent line tiles all fall away. Explosives
+  // chain (their own fuse lights instead) and line tiles fire their sweep before
+  // collapsing. Only the base is indestructible. If the cube is on the tile, it drops.
   function blastHit(key: string): void {
     const def = cellDefs.get(key);
-    if (!def || def.kind === 'base' || def.kind === 'info') return;
+    if (!def || def.kind === 'base') return;
     if (def.kind === 'explosive') { igniteBlast(key, frameElapsed); return; }
     if (def.kind === 'disappear-line') activateLine(key, frameElapsed);
     removeTile(key, frameElapsed);

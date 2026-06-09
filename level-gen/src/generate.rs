@@ -124,7 +124,8 @@ pub struct GenOutcome {
 
 impl GenOutcome {
     pub fn to_record(&self) -> LevelRecord {
-        let band = difficulty::band(Some(self.difficulty)).to_string();
+        let dcfg = DifficultyConfig::default();
+        let band = difficulty::band(&self.result, &dcfg).to_string();
         LevelRecord {
             name: format!(
                 "gen-{}x{}-{}-s{}",
@@ -145,7 +146,9 @@ impl GenOutcome {
             difficulty: Some(self.difficulty),
             band,
             exact: self.result.exact,
+            ..Default::default()
         }
+        .with_quality(self.result.quality.as_ref())
     }
 }
 
@@ -244,31 +247,37 @@ fn round_even(x: usize) -> usize {
 }
 
 /// Build the Phase-A backbone level (base + a loop of greens, everything else a hole).
-fn backbone(spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> {
+pub(crate) fn backbone(spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> {
     let cols = spec.cols;
     let rows = spec.rows;
     let cells = cols * rows;
     if cells < 4 {
         return None;
     }
-    // Bias loop size up with the target so harder requests start from a roomier board.
-    let want = ((0.35 + 0.45 * spec.target) * cells as f64) as usize;
-    let min_len = round_even(want.clamp(4, cells)).max(4);
-    let max_len = round_even(cells.min(min_len + cells / 2)).max(min_len);
+    // A modest ring, capped well below a Hamiltonian cycle: long loops on big boards are hard to
+    // build (and unnecessary — annealing adds the difficulty, growing greens / carving pits). Keep
+    // it small so `build_loop` reliably succeeds even on 8×8.
+    let want = ((0.25 + 0.10 * spec.target) * cells as f64) as usize;
+    let cap = (cells / 2).clamp(6, 16);
+    let mut min_len = round_even(want.clamp(4, cap)).max(4);
 
-    for _ in 0..40 {
-        // Try a handful of base positions / loops.
-        let base = rng.gen_range(0..cells);
-        if let Some(loop_cells) = build_loop(cols, rows, base, min_len, max_len, rng) {
-            let mut cells_vec = vec![None; cells];
-            for &c in &loop_cells {
-                cells_vec[c] = Some(TileKind::Green);
-            }
-            cells_vec[base] = Some(TileKind::Base);
-            if let Ok(level) = Level::new(cols, rows, cells_vec) {
-                return Some(level);
+    // If a target length proves too hard to close, shrink and retry — never give up on a board.
+    while min_len >= 4 {
+        let max_len = round_even((min_len + cells / 3).min(cells)).max(min_len);
+        for _ in 0..30 {
+            let base = rng.gen_range(0..cells);
+            if let Some(loop_cells) = build_loop(cols, rows, base, min_len, max_len, rng) {
+                let mut cells_vec = vec![None; cells];
+                for &c in &loop_cells {
+                    cells_vec[c] = Some(TileKind::Green);
+                }
+                cells_vec[base] = Some(TileKind::Base);
+                if let Ok(level) = Level::new(cols, rows, cells_vec) {
+                    return Some(level);
+                }
             }
         }
+        min_len -= 2;
     }
     None
 }
@@ -346,12 +355,16 @@ fn random_special(
 }
 
 /// Apply one random mutation to a clone of `level`. Returns `None` if the chosen op doesn't apply.
-fn mutate(level: &Level, spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> {
+pub(crate) fn mutate(level: &Level, spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> {
     let allow = &spec.allow;
     let cols = level.cols;
     let rows = level.rows;
     let mut next = level.clone();
-    let op = rng.gen_range(0..6);
+    // Weighted op table biased toward greens: the level is mostly green tiles to clear, with only
+    // a sprinkle of specials. Special-adding ops (2 = green→special, 4 = shift pair) are rare;
+    // green-adding (0) and special-removing (3) ops are common.
+    const OPS: [u8; 14] = [0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 4, 5, 6, 6];
+    let op = OPS[rng.gen_range(0..OPS.len())];
     match op {
         // 0: add a green on a hole adjacent to an existing tile (keeps the board connected).
         0 => {
@@ -399,7 +412,7 @@ fn mutate(level: &Level, spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> 
             next.cells[picks[1]] = Some(TileKind::Shift(pid));
         }
         // 5: flip an arrow's direction.
-        _ => {
+        5 => {
             let arrows: Vec<usize> = (0..cols * rows)
                 .filter(|&i| matches!(next.cells[i], Some(TileKind::Arrow(_))))
                 .collect();
@@ -412,7 +425,27 @@ fn mutate(level: &Level, spec: &GenSpec, rng: &mut ChaCha8Rng) -> Option<Level> 
             ];
             next.cells[c] = Some(TileKind::Arrow(*dirs.choose(rng).unwrap()));
         }
+        // 6: carve an interior pit — remove a green ringed by standing tiles. A hole the cube can
+        // fall into is what makes a wrong roll fatal, so this is the op that most directly raises
+        // commitment / lowers the random-solve rate (the "needs a plan" structural lever).
+        _ => {
+            let interior: Vec<usize> = green_indices(&next)
+                .into_iter()
+                .filter(|&i| {
+                    neighbors(cols, rows, i)
+                        .iter()
+                        .filter(|&&n| next.cells[n].is_some())
+                        .count()
+                        >= 3
+                })
+                .collect();
+            let &c = interior.choose(rng)?;
+            next.cells[c] = None;
+        }
     }
+    // Keep teleports paired: any lone shift left by a mutation (e.g. converting one of a pair to a
+    // green) becomes a green, so the board never carries an unpaired shift.
+    next.normalize_shifts();
     // Base must survive every mutation.
     if next.cells[next.base] != Some(TileKind::Base) {
         return None;
@@ -454,7 +487,15 @@ fn missing_required(level: &Level, require: &AllowSet) -> u32 {
 /// Cost to minimise: distance to the target difficulty (+ a penalty for missing required
 /// mechanics); infinite for invalid boards.
 fn cost(level: &Level, res: &SolveResult, diff: f64, spec: &GenSpec) -> f64 {
-    if !res.solvable || level.green_count() < spec.greens_min as u32 || diff.is_nan() {
+    // Validity gates: never accept unsolvable / degenerate boards, boards with useless (unreachable,
+    // never-cleared) tiles, or boards with an unpaired teleport.
+    if !res.solvable
+        || level.green_count() < spec.greens_min as u32
+        || diff.is_nan()
+        || res.dead_tiles > 0
+        || level.unpaired_shift_count() > 0
+        || level.useless_special_count() > 0
+    {
         f64::INFINITY
     } else {
         (diff - spec.target).abs() + 0.5 * missing_required(level, &spec.require) as f64

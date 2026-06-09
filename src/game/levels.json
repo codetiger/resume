@@ -4,9 +4,10 @@
       "number": 0,
       "name": "Who am I",
       "layout": [
-        "nbi",
-        ".n.",
-        "..."
+        "....",
+        "....",
+        "..n.",
+        ".ibn"
       ],
       "content": {
         "heading": "$.basics.name",
@@ -32,9 +33,11 @@
       "number": 1,
       "name": "Work · 2005",
       "layout": [
-        "nir",
-        ".nb",
-        "nnr"
+        ".....",
+        ".....",
+        ".....",
+        ".irn.",
+        ".brn."
       ],
       "content": {
         "heading": "Qube Cinemas",
@@ -55,9 +58,11 @@
       "number": 2,
       "name": "Founder · 2006",
       "layout": [
-        "..nn",
-        ".ncb",
-        "...i"
+        "i...",
+        "b...",
+        "c...",
+        "n...",
+        "n..."
       ],
       "content": {
         "heading": "Smackall Games",
@@ -82,9 +87,11 @@
       "number": 3,
       "name": "Consultant · 2014",
       "layout": [
-        "n...",
-        "bi..",
-        "xn.."
+        "....",
+        "..n.",
+        ".ixb",
+        "..n.",
+        "...."
       ],
       "content": {
         "heading": "Amtex Inc",
@@ -108,9 +115,11 @@
       "number": 4,
       "name": "Work · 2016",
       "layout": [
-        "ni..",
-        "b1n.",
-        "1n.."
+        "....",
+        "...n",
+        "2i2b",
+        "...n",
+        "...."
       ],
       "content": {
         "heading": "Altimetrik",
@@ -134,10 +143,11 @@
       "number": 5,
       "name": "Work · 2017",
       "layout": [
-        "...",
-        "...",
-        ".n^",
-        "ibn"
+        "....",
+        ">n..",
+        "ibn.",
+        ".n..",
+        "...."
       ],
       "content": {
         "heading": "CaratLane",
@@ -161,9 +171,10 @@
       "number": 6,
       "name": "Work · 2019",
       "layout": [
-        "ccc",
-        "nbi",
-        "cnc"
+        "n.n.",
+        "cn..",
+        "cbc.",
+        "inn."
       ],
       "content": {
         "heading": "Volante Technologies",
@@ -188,10 +199,11 @@
       "number": 7,
       "name": "Work · 2023",
       "layout": [
-        "nbi",
-        ".n.",
-        ".r.",
-        "..."
+        ".nn.",
+        "cbc.",
+        "ci..",
+        "n.n.",
+        "n.n."
       ],
       "content": {
         "heading": "Global Payments Inc",
@@ -215,9 +227,11 @@
       "number": 8,
       "name": "Awards - IoT",
       "layout": [
-        "rn.",
-        "nbi",
-        ".nr"
+        "n.n..",
+        ".nc..",
+        "cbc..",
+        "inn..",
+        "..n.."
       ],
       "content": {
         "heading": "Awards & Recognition",
@@ -241,9 +255,11 @@
       "number": 9,
       "name": "Awards - 2011",
       "layout": [
-        "rbr",
-        "irn",
-        "rnr"
+        ".....",
+        ".....",
+        "nin..",
+        "1b1..",
+        ".nn.."
       ],
       "content": {
         "heading": "Awards & Recognition",
@@ -268,9 +284,10 @@
       "number": 10,
       "name": "Awards - 2013",
       "layout": [
-        "xbx",
-        "nin",
-        "xxx"
+        "nnnn",
+        "xbix",
+        "nnnn",
+        "...."
       ],
       "content": {
         "heading": "Awards & Recognition",
@@ -295,10 +312,10 @@
       "number": 11,
       "name": "Education",
       "layout": [
-        "v>.",
-        "bin",
-        "^n<",
-        "..."
+        "nni.",
+        "nbc1",
+        "nn..",
+        "1..."
       ],
       "content": {
         "heading": "$.education[0].institution",
@@ -315,9 +332,11 @@
       "number": 12,
       "name": "GitHub",
       "layout": [
-        "vnn",
-        "n<^",
-        "b>i"
+        "..inn",
+        ".nxbn",
+        ".....",
+        ".....",
+        "....."
       ],
       "content": {
         "heading": "GitHub",
@@ -332,10 +351,11 @@
       "number": 13,
       "name": "LinkedIn",
       "layout": [
-        "xnnx",
-        "xxxx",
-        "ix.x",
-        "xnxb"
+        "2.....",
+        "bxn...",
+        "nn....",
+        "2n....",
+        "ni...."
       ],
       "content": {
         "heading": "LinkedIn",
@@ -350,10 +370,10 @@
       "number": 14,
       "name": "Blog",
       "layout": [
-        "bn<v",
-        "nvn<",
-        "<n.n",
-        "^inn"
+        "nnn2",
+        "nnbn",
+        "n21n",
+        "nn1i"
       ],
       "content": {
         "heading": "Blog",
@@ -368,10 +388,10 @@
       "number": 15,
       "name": "Contact",
       "layout": [
-        "bxnx",
-        "xxxn",
-        "ixnx",
-        "nxxn"
+        "nbnn",
+        "nxni",
+        ".n..",
+        "...."
       ],
       "content": {
         "heading": "Get in touch",
@@ -401,10 +421,11 @@
       "number": 16,
       "name": "Bonus 1",
       "layout": [
-        "nnnc",
-        "n2n1",
-        "nbn1",
-        "n2.n"
+        ".nnbn",
+        "nx1nn",
+        ".nnn1",
+        ".nn.n",
+        "....."
       ],
       "content": {
         "heading": "Bonus 1",
@@ -416,10 +437,10 @@
       "number": 17,
       "name": "Bonus 2",
       "layout": [
-        "1bnnn",
-        "nnnnn",
-        "n2nnn",
-        "12nnn"
+        ".nnn",
+        ".11n",
+        ".bnn",
+        ".nnc"
       ],
       "content": {
         "heading": "Bonus 2",
@@ -431,12 +452,10 @@
       "number": 18,
       "name": "Bonus 3",
       "layout": [
-        ".....",
-        "xxnnv",
-        "nnnnn",
-        "nnnnn",
-        ".nbnc",
-        ".nnn."
+        "nxxv",
+        "nnnb",
+        "nnnn",
+        "nnnr"
       ],
       "content": {
         "heading": "Bonus 3",
@@ -448,11 +467,12 @@
       "number": 19,
       "name": "Bonus 4",
       "layout": [
+        ".nnn.",
+        "n2nn.",
+        ".bn..",
+        "n2...",
         ".....",
-        ".nnnn",
-        "1nnn2",
-        "nbn2n",
-        "n1.nn"
+        "....."
       ],
       "content": {
         "heading": "Bonus 4",
@@ -464,10 +484,11 @@
       "number": 20,
       "name": "Bonus 5",
       "layout": [
-        "nnbn.",
-        "1.nn.",
-        "1.nn.",
-        "nnnn."
+        "......",
+        ".nn...",
+        "nxcn..",
+        "n.nn..",
+        "n1b1n."
       ],
       "content": {
         "heading": "Bonus 5",
@@ -479,11 +500,10 @@
       "number": 21,
       "name": "Bonus 6",
       "layout": [
-        ".....",
-        ".nn..",
-        "nn12n",
-        "^nbn^",
-        "cnnnc"
+        "nnnn",
+        "nnnr",
+        "n11n",
+        "nb.."
       ],
       "content": {
         "heading": "Bonus 6",
@@ -495,10 +515,13 @@
       "number": 22,
       "name": "Bonus 7",
       "layout": [
-        "bnnn",
-        "nnnc",
-        "nrnn",
-        "nnnx"
+        "........",
+        ".2......",
+        "11......",
+        "nnnn....",
+        "nnnn....",
+        "n.b2n...",
+        "nnnn<..."
       ],
       "content": {
         "heading": "Bonus 7",
@@ -510,11 +533,12 @@
       "number": 23,
       "name": "Bonus 8",
       "layout": [
-        ".1nn.",
-        ".nnn.",
-        "nncnn",
-        "n.nbn",
-        "nn1nn"
+        "n21...",
+        "n1nnn.",
+        ".nnnn.",
+        ".n..n.",
+        ".nbnn.",
+        "..2n.."
       ],
       "content": {
         "heading": "Bonus 8",
@@ -526,11 +550,10 @@
       "number": 24,
       "name": "Bonus 9",
       "layout": [
-        "v.nn",
-        ">nbn",
-        "nnnn",
-        "nnn<",
-        "nnrn"
+        "n1nn",
+        ".ncb",
+        ".nn1",
+        ".nnn"
       ],
       "content": {
         "heading": "Bonus 9",
@@ -542,11 +565,11 @@
       "number": 25,
       "name": "Bonus 10",
       "layout": [
-        "nn.1nn",
-        "nnn.nn",
-        ">2n.nn",
-        "nnnn.n",
-        "b1.nn2"
+        "nnnnn",
+        "21..n",
+        "2n.nb",
+        ".nnn1",
+        ".nnnn"
       ],
       "content": {
         "heading": "Bonus 10",
@@ -558,11 +581,11 @@
       "number": 26,
       "name": "Bonus 11",
       "layout": [
-        "nnnn",
-        "bnvn",
-        "nnrn",
-        "nn1n",
-        "nncx"
+        "21.nnn",
+        "rnnn.n",
+        "nbn.n2",
+        "nn1nnr",
+        "......"
       ],
       "content": {
         "heading": "Bonus 11",
@@ -574,10 +597,12 @@
       "number": 27,
       "name": "Bonus 12",
       "layout": [
-        "nnn1n",
-        "nnnnb",
-        "nn.nn",
-        "1nnnn"
+        ".....",
+        "..nnn",
+        "..nnn",
+        ".11b.",
+        ".nnn.",
+        ".rnnn"
       ],
       "content": {
         "heading": "Bonus 12",
@@ -589,12 +614,10 @@
       "number": 28,
       "name": "Bonus 13",
       "layout": [
-        "11>nn",
-        "n.nnn",
-        "nnnnn",
-        "cnnnn",
-        ".n3.n",
-        "nnnnb"
+        "1n..",
+        "nbrn",
+        "nn.n",
+        "nnn1"
       ],
       "content": {
         "heading": "Bonus 13",
@@ -606,12 +629,12 @@
       "number": 29,
       "name": "Bonus 14",
       "layout": [
-        "n>n.n",
-        "nn1n4",
-        "1.cn.",
-        "4ncn3",
-        "2nnnc",
-        "nbnnn"
+        "nn.....",
+        "n11n...",
+        "nbnn...",
+        "nnn....",
+        "nnc....",
+        "..n...."
       ],
       "content": {
         "heading": "Bonus 14",
@@ -623,12 +646,11 @@
       "number": 30,
       "name": "Bonus 15",
       "layout": [
-        "nnnnnn",
-        "1n.n3n",
-        "vn.bn2",
-        "n.n1r.",
-        "n4nn..",
-        "nn...."
+        "n1...",
+        "nb.n.",
+        "nnnn.",
+        "..n1n",
+        "..nc."
       ],
       "content": {
         "heading": "Bonus 15",
@@ -640,12 +662,12 @@
       "number": 31,
       "name": "Bonus 16",
       "layout": [
-        ".n1n3",
-        "nnnnn",
-        "nnn.n",
-        "ncnbn",
-        "nnnnn",
-        "nn<2n"
+        "......",
+        ".....n",
+        "....n2",
+        "n3rnnn",
+        "n..n.n",
+        "nnn3b2"
       ],
       "content": {
         "heading": "Bonus 16",

@@ -13,8 +13,13 @@ which keep their content across runs.
 import json
 import os
 import random
+import re
 import subprocess
 import tempfile
+
+# Levels 0-5 are the learnable tutorial rungs: keep them as easy as the layout allows by choosing
+# the info placement with the lowest resulting difficulty. Later content levels just need solvable.
+TUTORIAL_COUNT = 6
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
 LADDER = os.path.join(ROOT, "levels", "ladder32.json")
@@ -48,32 +53,54 @@ def put(layout, r, c, ch):
     layout[r] = "".join(row)
 
 
-def is_solvable(layout):
-    """Ask the solver whether this layout is solvable (info is required + step-only)."""
+def solve_info(layout):
+    """Run the solver on a layout; return (solvable, lands_on_info, difficulty)."""
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump({"layout": layout}, f)
         path = f.name
     try:
         res = subprocess.run([SOLVER, "solve", path], capture_output=True, text=True)
-        return "solvable=true" in res.stdout
+        solvable = "solvable=true" in res.stdout
+        lands = "landsOnInfo=true" in res.stdout
+        m = re.search(r"difficulty=([0-9.]+)", res.stdout)
+        return solvable, lands, (float(m.group(1)) if m else None)
     finally:
         os.unlink(path)
 
 
-def place_info(layout, rng):
-    """Put 'i' on a green that keeps the level solvable (info must be steppable). Returns layout."""
+def place_info(layout, rng, minimize=False):
+    """Put 'i' on a green where the level stays solvable AND the cube can actually land on the
+    info tile on a winning line (so its content is reachable). When `minimize`, pick the lowest-
+    difficulty such spot (keeps tutorial rungs learnable); otherwise the first one found. Falls
+    back to any solvable spot, then the first green, if nothing better exists."""
     greens = green_cells(layout)
-    rng.shuffle(greens)
+    rng.shuffle(greens)  # randomised tie-break / scan order
+    best_landable = None   # (difficulty, layout) — solvable AND landable
+    first_solvable = None  # (layout) — solvable but maybe not landable
     for r, c in greens:
         cand = list(layout)
         put(cand, r, c, "i")
-        if is_solvable(cand):
-            return cand
-    # Fallback: no verified spot (shouldn't happen) — use the first green.
+        solvable, lands, diff = solve_info(cand)
+        if not solvable:
+            continue
+        if first_solvable is None:
+            first_solvable = cand
+        if lands:
+            d = diff if diff is not None else 1.0
+            if best_landable is None or d < best_landable[0]:
+                best_landable = (d, cand)
+            if not minimize:
+                return cand  # first landable spot is good enough
+    if best_landable is not None:
+        return best_landable[1]
+    if first_solvable is not None:
+        print("  warning: no landable info spot; used a solvable (content may be blast-only)")
+        return first_solvable
+    # Fallback: nothing verified (shouldn't happen) — use the first green.
     cand = list(layout)
     r, c = green_cells(layout)[0]
     put(cand, r, c, "i")
-    print(f"  warning: no solver-verified info placement; used first green")
+    print("  warning: no solver-verified info placement; used first green")
     return cand
 
 
@@ -83,7 +110,8 @@ for idx, lvl in enumerate(ladder):
     layout = normalize(list(lvl["layout"]))
     if idx < len(resume):
         name, content = resume[idx]
-        layout = place_info(layout, rng)  # résumé info on a solver-verified random green
+        # Tutorial rungs (first 6): minimise added difficulty so they stay learnable.
+        layout = place_info(layout, rng, minimize=idx < TUTORIAL_COUNT)
         out.append({"number": idx, "name": name, "layout": layout, "content": content})
     else:
         bonus_n = idx - len(resume) + 1

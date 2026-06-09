@@ -102,7 +102,7 @@ pub struct GenRequest {
 }
 
 /// One generated/solved board as stored in `levels/*.json` — simple `layout` + raw solution data.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LevelRecord {
     pub name: String,
@@ -122,6 +122,52 @@ pub struct LevelRecord {
     pub band: String,
     /// `false` when solution enumeration / state exploration was capped.
     pub exact: bool,
+    // ── player-behaviour quality scalars (persisted so a pool re-ranks without re-solving) ──
+    /// Exact probability a uniform-random player wins — the headline anti-trial-and-error signal.
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub random_solve_prob: Option<f64>,
+    /// Does a naive progress-greedy player solve it first try?
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub greedy_solves: Option<bool>,
+    /// Mean fraction of on-path keypresses that doom you.
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub commitment: Option<f64>,
+    /// Longest oblivious wander after a wrong move (move-ticks).
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub max_doom_delay: Option<u32>,
+    /// Fraction of can-win states on a near-optimal path (small = sharp needle).
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub optimal_path_fraction: Option<f64>,
+    /// Mean trap-fraction at genuine decision points.
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub decision: Option<f64>,
+    /// Share of can-win states with exactly one safe move (corridor detector).
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub forced_fraction: Option<f64>,
+    /// Spectacle (line/blast/teleport activations along the solution), normalised.
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub spectacle: Option<f64>,
+    /// Winning requires engaging a special (no special-free solution).
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    pub spectacle_required: Option<bool>,
+}
+
+impl LevelRecord {
+    /// Copy the solver's quality scalars onto a record (no-op if quality wasn't computed).
+    pub fn with_quality(mut self, q: Option<&crate::metrics::QualityRaw>) -> Self {
+        if let Some(q) = q {
+            self.random_solve_prob = Some(q.random_solve_prob);
+            self.greedy_solves = Some(q.greedy_solves);
+            self.commitment = Some(q.commitment);
+            self.max_doom_delay = Some(q.max_doom_delay);
+            self.optimal_path_fraction = Some(q.optimal_path_fraction);
+            self.decision = Some(q.decision);
+            self.forced_fraction = Some(q.forced_fraction);
+            self.spectacle = Some(q.spectacle);
+            self.spectacle_required = Some(q.spectacle_required);
+        }
+        self
+    }
 }
 
 /// A minimal view of `src/game/levels.json` for self-tests (we only need name + layout).
