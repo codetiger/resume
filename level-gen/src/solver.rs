@@ -451,7 +451,7 @@ fn canonical(s: &str) -> String {
 }
 
 struct Enumerator<'a> {
-    adj: &'a [Vec<(char, u32)>],
+    adj: &'a [metrics::AdjRow],
     is_win: &'a [bool],
     can_win: &'a [bool],
     on_path: Vec<bool>,
@@ -516,7 +516,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let cap = cfg.max_states.min(2048);
     let mut index: FxHashMap<State, u32> = FxHashMap::with_capacity_and_hasher(cap, Default::default());
     let mut states: Vec<State> = Vec::with_capacity(cap);
-    let mut adj: Vec<Vec<(char, u32)>> = Vec::with_capacity(cap);
+    let mut adj: Vec<metrics::AdjRow> = Vec::with_capacity(cap);
     let mut is_win: Vec<bool> = Vec::with_capacity(cap);
     let mut dist: Vec<u32> = Vec::with_capacity(cap);
     // Count of keypresses that kill from each state (fall / blast) — they leave no edge in `adj`,
@@ -529,7 +529,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let start_win = is_win_state(&start, base, win_mask);
     index.insert(start.clone(), 0);
     states.push(start);
-    adj.push(Vec::new());
+    adj.push(metrics::AdjRow::new());
     is_win.push(start_win);
     dist.push(0);
     death_moves.push(0);
@@ -566,7 +566,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
                         let win = is_win_state(&ns, base, win_mask);
                         index.insert(ns.clone(), i);
                         states.push(ns);
-                        adj.push(Vec::new());
+                        adj.push(metrics::AdjRow::new());
                         is_win.push(win);
                         dist.push(dist[si as usize] + 1);
                         death_moves.push(0);
@@ -595,13 +595,29 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let n = states.len();
     let win_indices: Vec<u32> = (0..n as u32).filter(|&i| is_win[i as usize]).collect();
 
-    // Reverse reachability: which states can reach a win?
-    let mut rev: Vec<Vec<u32>> = vec![Vec::new(); n];
-    for (s, row) in adj.iter().enumerate() {
+    // Reverse reachability: which states can reach a win? Build the reverse adjacency as CSR
+    // (count in-degrees → prefix-sum offsets → fill one flat edge buffer) instead of `n` small
+    // heap Vecs — same traversal, no per-state allocation.
+    let mut rev_off = vec![0u32; n + 1];
+    for row in adj.iter() {
         for &(_, t) in row {
-            rev[t as usize].push(s as u32);
+            rev_off[t as usize + 1] += 1;
         }
     }
+    for i in 0..n {
+        rev_off[i + 1] += rev_off[i];
+    }
+    let mut rev_flat = vec![0u32; rev_off[n] as usize];
+    let mut cursor = rev_off.clone();
+    for (s, row) in adj.iter().enumerate() {
+        for &(_, t) in row {
+            let slot = cursor[t as usize] as usize;
+            rev_flat[slot] = s as u32;
+            cursor[t as usize] += 1;
+        }
+    }
+    let rev_of = |s: usize| &rev_flat[rev_off[s] as usize..rev_off[s + 1] as usize];
+
     let mut can_win = vec![false; n];
     // `dist_to_win[s]` = fewest forward moves from `s` to any win (u32::MAX if it can't reach one).
     let mut dist_to_win = vec![u32::MAX; n];
@@ -615,7 +631,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     }
     while let Some(s) = rq.pop_front() {
         let ds = dist_to_win[s as usize];
-        for &p in &rev[s as usize] {
+        for &p in rev_of(s as usize) {
             if !can_win[p as usize] {
                 can_win[p as usize] = true;
                 dist_to_win[p as usize] = ds + 1;
@@ -671,7 +687,6 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     // Full quality model — only at the deep tier (`enumerate`); the screen pass skips it.
     let quality = if cfg.enumerate && solvable {
         let sp = shortest_path.unwrap_or(0);
-        let greedy_h: Vec<f64> = states.iter().map(|s| greedy_heuristic(level, s)).collect();
         let (commitment, max_doom_delay) = metrics::commitment_and_delay(
             &adj, &death_moves, &can_win, &dist_to_win, &is_win, 0, DELAY_CAP,
         );
@@ -679,7 +694,8 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
         let (spectacle, spectacle_required) = spectacle_of(level, &solutions);
         Some(QualityRaw {
             random_solve_prob: metrics::random_solve_prob(&adj, &death_moves, &is_win, 0),
-            greedy_solves: metrics::greedy_solves(&adj, &greedy_h, &is_win, 0),
+            // Heuristic evaluated lazily per state the greedy walk visits (was an O(N) Vec).
+            greedy_solves: metrics::greedy_solves(&adj, |i| greedy_heuristic(level, &states[i]), &is_win, 0),
             commitment,
             max_doom_delay,
             optimal_path_fraction: metrics::optimal_path_fraction(&dist, &dist_to_win, &can_win, sp),
