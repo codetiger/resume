@@ -465,10 +465,16 @@ fn select_quality_diverse(
     picked
 }
 
-/// Build the initial 32-level set: 6 tutorial (one per tile type) then a **steep** ramp — only a
-/// handful of medium boards before the level jumps into hard/expert "needs-a-plan" territory.
-/// Picks the highest-quality, diverse board per band, then orders the ramp by rising difficulty.
+/// Build the initial 32-level set (the default `initial32` profile). See `curate_initial_n`.
 pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
+    curate_initial_n(pool, 32)
+}
+
+/// Build the initial `target`-level set: 6 tutorial (one per tile type) then a **steep** ramp — only
+/// a handful of medium boards before the level jumps into hard/expert "needs-a-plan" territory.
+/// Picks the highest-quality, diverse board per band, then orders the ramp by rising difficulty.
+/// Band quotas scale with `target` (for 32 they are exactly the original 4 medium / 10 hard / 12 expert).
+pub fn curate_initial_n(pool: &[LevelRecord], target: usize) -> Ladder {
     let mut sorted: Vec<&LevelRecord> =
         pool.iter().filter(|r| r.difficulty.is_some() && is_clean(r)).collect();
     sorted.sort_by(|a, b| {
@@ -508,8 +514,14 @@ pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
 
     // Steep ramp: a few medium boards, then hard, then a deep expert bench. Each band picks the
     // best, most diverse boards; bands that underflow are topped up from the harder bands below.
+    // Ramp quotas scale with the target length, keeping the original steep 15/38/47 split
+    // (for target=32 this is exactly 4 medium, 10 hard, 12 expert).
+    let ramp_total = target.saturating_sub(TUTORIAL_ORDER.len()).max(1);
+    let medium_k = (ramp_total as f64 * 0.15).round() as usize;
+    let hard_k = (ramp_total as f64 * 0.38).round() as usize;
+    let expert_k = ramp_total.saturating_sub(medium_k + hard_k);
     let mut rest: Vec<usize> = Vec::new();
-    for (band, k) in [("medium", 4usize), ("hard", 10), ("expert", 12)] {
+    for (band, k) in [("medium", medium_k), ("hard", hard_k), ("expert", expert_k)] {
         let cands: Vec<usize> = (0..n).filter(|&i| !used[i] && sorted[i].band == band).collect();
         let already: Vec<usize> = tutorial.iter().chain(rest.iter()).copied().collect();
         for idx in select_quality_diverse(&sorted, &cands, k, &already) {
@@ -518,8 +530,8 @@ pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
         }
     }
 
-    // Fill to 32 from the remaining hardest boards (keeps the ramp's upper character).
-    let want = 32;
+    // Fill to `target` from the remaining hardest boards (keeps the ramp's upper character).
+    let want = target;
     if tutorial.len() + rest.len() < want {
         let mut extra: Vec<usize> = (0..n).filter(|&i| !used[i]).collect();
         extra.sort_by(|&a, &b| {
