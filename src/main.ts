@@ -39,7 +39,7 @@ function setupExplorePopup(): void {
   // First visit: show it once, then remember. If storage is unavailable
   // (private mode), just show it — better than silently skipping the intro.
   let seen = false;
-  try { seen = localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch { seen = false; }
+  try { seen = localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch { /* keep the default: show the intro */ }
   if (!seen) {
     open();
     try { localStorage.setItem(INTRO_SEEN_KEY, '1'); } catch { /* ignore */ }

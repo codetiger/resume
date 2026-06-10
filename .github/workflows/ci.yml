@@ -1,0 +1,56 @@
+name: CI
+
+# Quality gate for the three stacks. Runs on PRs and on pushes to master
+# (the deploy workflow handles publishing; this one just proves the tree is green).
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy
+      - run: pytest
+
+  rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: level-gen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: level-gen
+      - run: cargo fmt --check
+      - run: cargo clippy --lib --bins --tests -- -D warnings
+      - run: cargo test
+      - run: cargo build --release
+      - run: ./target/release/level-gen selftest

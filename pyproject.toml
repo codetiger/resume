@@ -1,0 +1,26 @@
+# Tooling config for the Python static-fallback builder. There is no installable
+# package here — build.py / triangulate.py / level-gen/wire_ladder.py are scripts.
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["level-gen/target", "dist", "node_modules"]
+
+[tool.ruff.lint]
+# Pyflakes + pycodestyle errors, import sorting, pyupgrade, bugbear, simplify.
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests lean on assert and intentionally repetitive fixtures.
+"tests/**" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["build.py", "triangulate.py", "level-gen/wire_ladder.py", "tests"]
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

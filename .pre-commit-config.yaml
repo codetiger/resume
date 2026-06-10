@@ -1,0 +1,58 @@
+# Cross-stack pre-commit hooks. One-time setup:
+#   pip install -r requirements-dev.txt   # provides pre-commit's friends (ruff)
+#   pre-commit install
+# Run on demand against the whole tree:
+#   pre-commit run --all-files
+#
+# The TS and Rust hooks shell out to the project's own toolchains (npm/cargo),
+# so `npm ci` and a Rust toolchain must be available locally.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.json$'
+      - id: end-of-file-fixer
+        exclude: '\.json$'
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+      - id: check-yaml
+      - id: check-toml
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.16
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        # Respects .prettierignore; types_or limits the trigger set.
+        types_or: [ts, javascript, css, json, markdown, yaml]
+        pass_filenames: true
+      - id: eslint
+        name: eslint
+        entry: npx eslint --fix
+        language: system
+        files: \.ts$
+        exclude: '^(dist|node_modules)/'
+        pass_filenames: true
+      - id: cargo-fmt
+        name: cargo fmt (level-gen)
+        entry: bash -c 'cd level-gen && cargo fmt'
+        language: system
+        files: '^level-gen/.*\.rs$'
+        pass_filenames: false
+      - id: cargo-clippy
+        name: cargo clippy (level-gen)
+        entry: bash -c 'cd level-gen && cargo clippy --lib --bins --tests -- -D warnings'
+        language: system
+        files: '^level-gen/.*\.rs$'
+        pass_filenames: false

@@ -1,0 +1,7 @@
+# Dev/test tooling for the Python build scripts.
+#   pip install -r requirements-dev.txt
+-r requirements.txt
+
+ruff==0.15.16
+mypy==2.1.0
+pytest==9.0.2
