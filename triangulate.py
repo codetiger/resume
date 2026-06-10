@@ -13,12 +13,26 @@ import io
 import math
 import struct
 import zlib
+from collections.abc import Iterable
+from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 
-def _pack_bits(values, bits):
+def _open_image(image_path: str | Path) -> Image.Image:
+    """Open an image, raising a clear error if it's missing or undecodable
+    (instead of a bare FileNotFoundError / UnidentifiedImageError from PIL)."""
+    path = Path(image_path)
+    if not path.is_file():
+        raise FileNotFoundError(f"avatar image not found: {path}")
+    try:
+        return Image.open(path)
+    except UnidentifiedImageError as e:
+        raise ValueError(f"cannot decode avatar image {path}: {e}") from e
+
+
+def _pack_bits(values: Iterable[int], bits: int) -> bytes:
     """Pack an array of small integers into a bit stream, MSB first."""
     result = bytearray()
     buf = 0
@@ -34,7 +48,13 @@ def _pack_bits(values, bits):
     return bytes(result)
 
 
-def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, coarse_factor=2):
+def export_hex_mosaic(
+    image_path: str | Path,
+    hex_radius: int = 2,
+    canvas_size: int = 144,
+    index_bits: int = 5,
+    coarse_factor: int = 2,
+) -> str:
     """Export hex mosaic data for a single image as deflate-compressed base64.
 
     Generates a pointy-top hexagonal grid inside an inscribed circle.
@@ -72,8 +92,8 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
     print(f"Hex grid: fine r={hex_radius}px, coarse r={coarse_radius}px, {n_cells} cells")
 
     # Step 1: Load image and sample at cell centers (full color depth)
-    img = Image.open(image_path).convert("RGB")
-    img = img.resize((canvas_size, canvas_size), Image.LANCZOS)
+    img = _open_image(image_path).convert("RGB")
+    img = img.resize((canvas_size, canvas_size), Image.Resampling.LANCZOS)
     rgb = np.array(img)
 
     all_sampled = []
@@ -82,13 +102,17 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
         py = min(int(cy), canvas_size - 1)
         all_sampled.append(rgb[py, px])
 
-    # Step 2: Quantize only the sampled colors
+    # Step 2: Quantize only the sampled colors.
+    # MEDIANCUT is deterministic within a Pillow version but the palette it picks
+    # can shift across versions — that's why Pillow is pinned in requirements.txt
+    # (an unpinned bump would change the generated resume.html byte-for-byte).
     sample_img = Image.new("RGB", (len(all_sampled), 1))
     for k, c in enumerate(all_sampled):
         sample_img.putpixel((k, 0), (int(c[0]), int(c[1]), int(c[2])))
     quantized_sample = sample_img.quantize(colors=palette_size, method=Image.Quantize.MEDIANCUT)
 
     pal_data = quantized_sample.getpalette()
+    assert pal_data is not None  # a quantized ('P'-mode) image always has a palette
     # Always pad to full palette_size so JS decoder reads correct offset
     palette = np.array(pal_data[: palette_size * 3], dtype=np.uint8).reshape(palette_size, 3)
     nc = palette_size
@@ -116,14 +140,14 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
     return encoded
 
 
-def export_photo(image_path, size=432, quality=88):
+def export_photo(image_path: str | Path, size: int = 432, quality: int = 88) -> str:
     """Embed the real avatar photo as a square base64 JPEG.
 
     This is the layer revealed pixel-by-pixel when the hex mosaic lifts on hover,
     so it is sized for crispness (default 3x the 144px avatar), not for byte count.
     Stretched to a square the same way the mosaic samples it, so the two align.
     """
-    img = Image.open(image_path).convert("RGB").resize((size, size), Image.LANCZOS)
+    img = _open_image(image_path).convert("RGB").resize((size, size), Image.Resampling.LANCZOS)
     out = io.BytesIO()
     img.save(out, format="JPEG", quality=quality, optimize=True)
     data = out.getvalue()

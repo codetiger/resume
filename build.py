@@ -12,7 +12,7 @@ import zlib
 from datetime import datetime
 from pathlib import Path
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 ROOT = Path(__file__).resolve().parent
 ASSETS = ROOT / "assets"  # single source of truth for static assets (= Vite publicDir)
@@ -29,7 +29,7 @@ PHOTO_SIZE = 432  # 3× the 144px avatar, so the revealed photo is crisp on reti
 PHOTO_QUALITY = 88
 
 
-def format_date(value):
+def format_date(value: str | None) -> str:
     """'2023-11-02' → 'Nov 2023', None/empty → 'Present'."""
     if not value:
         return "Present"
@@ -40,7 +40,7 @@ def format_date(value):
         return value
 
 
-def format_year(value):
+def format_year(value: str | None) -> str:
     """'2000-05-04' → '2000', None/empty → 'Present'."""
     if not value:
         return "Present"
@@ -50,7 +50,7 @@ def format_year(value):
         return value
 
 
-def strip_url(url):
+def strip_url(url: str | None) -> str | None:
     """Strip protocol prefix from URL. Renderer prepends https:// on the client."""
     if not url:
         return url
@@ -60,7 +60,7 @@ def strip_url(url):
     return url
 
 
-def prebake_data(resume):
+def prebake_data(resume: dict) -> str:
     """Pack resume data into a compact text blob, compress, and base64 encode.
 
     Format: tab-separated fields, newline-separated rows, blank lines between sections.
@@ -87,7 +87,8 @@ def prebake_data(resume):
     # Phone is deliberately NOT rendered here — it's unlocked by playing the game.
     # (The raw number is also obfuscated in resume.json so it can't be scraped.)
     ct_parts.append(
-        '<span class="d">&middot;</span><span><a href="./">Play the game for my number &#8594;</a></span>'
+        '<span class="d">&middot;</span>'
+        '<span><a href="./">Play the game for my number &#8594;</a></span>'
     )
     lines.append("".join(ct_parts))
 
@@ -155,7 +156,7 @@ def prebake_data(resume):
     return b64
 
 
-def build_avatar_assets(image_path):
+def build_avatar_assets(image_path: Path | None) -> tuple[str | None, str | None]:
     """Generate the avatar's two layers: the hex mosaic (the hidden state) and the
     full-resolution photo (revealed pixel-by-pixel on hover)."""
     if not image_path or not image_path.exists():
@@ -168,7 +169,7 @@ def build_avatar_assets(image_path):
     return mesh, photo
 
 
-def inline_css_vars(css):
+def inline_css_vars(css: str) -> str:
     """Inline CSS custom properties, removing the :root block.
 
     Keeps variables where inlining would increase size (value longer than
@@ -197,7 +198,7 @@ def inline_css_vars(css):
     return css
 
 
-def minify_css(css):
+def minify_css(css: str) -> str:
     """Strip comments, collapse whitespace, remove redundant chars from CSS."""
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)  # block comments
     css = re.sub(r"\s+", " ", css)  # collapse whitespace
@@ -208,8 +209,14 @@ def minify_css(css):
     return css.strip()
 
 
-def minify_js(js):
-    """Strip comments, collapse whitespace in JS. Preserves string literals."""
+def minify_js(js: str) -> str:
+    """Strip comments, collapse whitespace in JS. Preserves string literals.
+
+    String literals are swapped out for a NUL-delimited `\\x00STR{n}\\x00` sentinel
+    before whitespace/comment stripping, then restored. NUL never appears in our
+    hand-written template scripts, so the sentinel is collision-free here; this is
+    not a general-purpose JS minifier and would break on source containing NULs.
+    """
     # Extract string literals to protect them from mangling
     strings = []
 
@@ -232,7 +239,7 @@ def minify_js(js):
     return js.strip()
 
 
-def minify_html(html):
+def minify_html(html: str) -> str:
     """Minify the final HTML by processing CSS, JS, and HTML separately."""
 
     # Minify inline <style> blocks
@@ -253,8 +260,13 @@ def minify_html(html):
     return html.strip()
 
 
-def build():
-    resume = json.loads(RESUME_PATH.read_text(encoding="utf-8"))
+def build() -> None:
+    try:
+        resume = json.loads(RESUME_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError as e:
+        raise SystemExit(f"error: résumé content not found at {RESUME_PATH}") from e
+    except json.JSONDecodeError as e:
+        raise SystemExit(f"error: {RESUME_PATH} is not valid JSON: {e}") from e
     picture = resume.get("basics", {}).get("picture", "")
     # picture is relative to the assets dir (where resume.json lives).
     avatar_path = ASSETS / picture if picture else None
@@ -271,7 +283,10 @@ def build():
 
     resume_data_b64 = prebake_data(resume)
 
-    template = env.get_template(TEMPLATE_NAME)
+    try:
+        template = env.get_template(TEMPLATE_NAME)
+    except TemplateNotFound as e:
+        raise SystemExit(f"error: template '{TEMPLATE_NAME}' not found in {ROOT}") from e
     html = template.render(
         avatar_mesh_b64=avatar_mesh_b64,
         avatar_photo_b64=avatar_photo_b64,
