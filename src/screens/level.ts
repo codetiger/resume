@@ -302,13 +302,13 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     opts.onComplete();
     const hasNext = index + 1 < total;
     if (winSub) winSub.textContent = hasNext
-      ? `Level ${pad3(def.number)} cleared — ${def.name}.`
-      : `That's the last level — you've seen the whole story.`;
+      ? `Level ${pad3(def.number)} cleared. ${def.name}.`
+      : `That's the final level. You've seen the whole story.`;
     if (winNext) winNext.style.display = hasNext ? '' : 'none';
     // Finishing the final level unlocks the phone number — the reward for playing.
     if (winUnlock) {
       const phone = !hasNext ? decodePhone(contact.phone) : '';
-      winUnlock.textContent = phone ? `Unlocked — call me: ${phone}` : '';
+      winUnlock.textContent = phone ? `Unlocked! Call me: ${phone}` : '';
       winUnlock.style.display = phone ? '' : 'none';
     }
     showOverlay(winOverlay);

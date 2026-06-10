@@ -2,7 +2,7 @@
   "levels": [
     {
       "number": 0,
-      "name": "Who am I",
+      "name": "Player One",
       "layout": [
         "....",
         "....",
@@ -31,7 +31,7 @@
     },
     {
       "number": 1,
-      "name": "Work · 2005",
+      "name": "First Build · 2005",
       "layout": [
         "....",
         "nrbi",
@@ -55,7 +55,7 @@
     },
     {
       "number": 2,
-      "name": "Founder · 2006",
+      "name": "Indie Studio · 2006",
       "layout": [
         "...nn",
         "...ni",
@@ -84,7 +84,7 @@
     },
     {
       "number": 3,
-      "name": "Consultant · 2014",
+      "name": "Hired Gun · 2014",
       "layout": [
         "n...",
         "bxi.",
@@ -111,7 +111,7 @@
     },
     {
       "number": 4,
-      "name": "Work · 2016",
+      "name": "The Architect · 2016",
       "layout": [
         "....",
         "....",
@@ -139,7 +139,7 @@
     },
     {
       "number": 5,
-      "name": "Work · 2017",
+      "name": "Squad Lead · 2017",
       "layout": [
         "....",
         "....",
@@ -167,7 +167,7 @@
     },
     {
       "number": 6,
-      "name": "Work · 2019",
+      "name": "Director's Cut · 2019",
       "layout": [
         ".i..",
         "nxn.",
@@ -195,7 +195,7 @@
     },
     {
       "number": 7,
-      "name": "Work · 2023",
+      "name": "Current Run · 2023",
       "layout": [
         ".....",
         "nn...",
@@ -223,7 +223,7 @@
     },
     {
       "number": 8,
-      "name": "Awards - IoT",
+      "name": "Achievement · IoT",
       "layout": [
         ".....",
         ".....",
@@ -251,7 +251,7 @@
     },
     {
       "number": 9,
-      "name": "Awards - 2011",
+      "name": "Achievement · 2011",
       "layout": [
         "nn...",
         "cbn..",
@@ -280,7 +280,7 @@
     },
     {
       "number": 10,
-      "name": "Awards - 2013",
+      "name": "Achievement · 2013",
       "layout": [
         ".....",
         ".....",
@@ -309,7 +309,7 @@
     },
     {
       "number": 11,
-      "name": "Education",
+      "name": "Skill Tree",
       "layout": [
         ".....",
         "....n",
@@ -331,7 +331,7 @@
     },
     {
       "number": 12,
-      "name": "GitHub",
+      "name": "Code Vault",
       "layout": [
         ".....",
         "...nn",
@@ -350,7 +350,7 @@
     },
     {
       "number": 13,
-      "name": "LinkedIn",
+      "name": "The Network",
       "layout": [
         "ni..",
         "cb..",
@@ -368,7 +368,7 @@
     },
     {
       "number": 14,
-      "name": "Blog",
+      "name": "Field Notes",
       "layout": [
         "n...",
         "bc..",
@@ -386,7 +386,7 @@
     },
     {
       "number": 15,
-      "name": "Contact",
+      "name": "Final Boss",
       "layout": [
         ".....",
         ".....",
