@@ -372,10 +372,10 @@ mod tests {
         // 0 -> {1, 2}; lower h wins. Make state 1 the win with the lowest h.
         let adj = mk_adj(vec![vec![('>', 1u32), ('v', 2u32)], vec![], vec![]]);
         let is_win = vec![false, true, false];
-        let h = vec![2.0, 0.0, 5.0];
+        let h = [2.0, 0.0, 5.0];
         assert!(greedy_solves(&adj, |i| h[i], &is_win, 0));
         // If the greedy heuristic points at the dead branch instead, greedy fails.
-        let h2 = vec![2.0, 5.0, 0.0];
+        let h2 = [2.0, 5.0, 0.0];
         assert!(!greedy_solves(&adj, |i| h2[i], &is_win, 0));
     }
 

@@ -127,7 +127,8 @@ enum Cmd {
 }
 
 /// Parse a duration string (`60m`, `1h`, `3600s`, or bare seconds) into seconds.
-fn parse_duration(s: &str) -> u64 {
+/// Rejects non-numeric and zero durations rather than silently running for 0s.
+fn parse_duration(s: &str) -> Result<u64, String> {
     let s = s.trim();
     let (num, mult) = if let Some(n) = s.strip_suffix('h') {
         (n, 3600)
@@ -138,7 +139,13 @@ fn parse_duration(s: &str) -> u64 {
     } else {
         (s, 1)
     };
-    num.trim().parse::<u64>().unwrap_or(0).saturating_mul(mult)
+    let n: u64 = num.trim().parse().map_err(|_| {
+        format!("invalid duration '{s}': expected a number optionally suffixed h/m/s")
+    })?;
+    if n == 0 {
+        return Err(format!("invalid duration '{s}': must be greater than zero"));
+    }
+    Ok(n.saturating_mul(mult))
 }
 
 /// DEMO_LAYOUT from `src/game/grid.ts` (the lone arrow is overridden to slide "back").
@@ -448,6 +455,9 @@ fn generate_record(
     Some(LevelRecord { name, ..rec })
 }
 
+// Args mirror the `gen` CLI subcommand one-to-one; bundling them into a struct
+// would just duplicate the clap definition.
+#[allow(clippy::too_many_arguments)]
 fn cmd_gen(
     cols: usize,
     rows: usize,
@@ -592,6 +602,8 @@ fn cmd_curate(
     }
 }
 
+// Args mirror the `campaign` CLI subcommand one-to-one.
+#[allow(clippy::too_many_arguments)]
 fn cmd_campaign(
     name: &str,
     root: &str,
@@ -604,10 +616,17 @@ fn cmd_campaign(
     max_random: f64,
     resume: bool,
 ) {
+    let duration_secs = match parse_duration(duration) {
+        Ok(secs) => secs,
+        Err(e) => {
+            eprintln!("error: {e}");
+            std::process::exit(2);
+        }
+    };
     let cfg = CampaignCfg {
         name: name.to_string(),
         dir: format!("{}/{}", root, name),
-        duration_secs: parse_duration(duration),
+        duration_secs,
         topk,
         iters,
         tut_iters: 120,
@@ -806,5 +825,28 @@ fn main() {
             out,
             per_bucket,
         } => cmd_rank(&name, &root, &out, per_bucket),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_duration;
+
+    #[test]
+    fn parses_units_and_bare_seconds() {
+        assert_eq!(parse_duration("3600s"), Ok(3600));
+        assert_eq!(parse_duration("60m"), Ok(3600));
+        assert_eq!(parse_duration("1h"), Ok(3600));
+        assert_eq!(parse_duration("90"), Ok(90));
+        assert_eq!(parse_duration("  2h "), Ok(7200));
+    }
+
+    #[test]
+    fn rejects_garbage_and_zero() {
+        assert!(parse_duration("abc").is_err());
+        assert!(parse_duration("").is_err());
+        assert!(parse_duration("0").is_err());
+        assert!(parse_duration("0m").is_err());
+        assert!(parse_duration("1.5h").is_err());
     }
 }

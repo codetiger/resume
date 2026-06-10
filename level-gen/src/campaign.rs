@@ -69,6 +69,33 @@ impl Default for CampaignCfg {
     }
 }
 
+impl CampaignCfg {
+    /// Reject self-contradictory configs before doing any work — e.g. an
+    /// acceptance rate outside [0, 1] (which could never admit, or never reject,
+    /// a board) or a zero duration/budget that would run forever-or-never.
+    pub fn validate(&self) -> Result<(), String> {
+        if !(0.0..=1.0).contains(&self.max_random) {
+            return Err(format!(
+                "max_random must be in [0, 1], got {}",
+                self.max_random
+            ));
+        }
+        if self.duration_secs == 0 {
+            return Err("duration_secs must be greater than zero".into());
+        }
+        if self.topk == 0 {
+            return Err("topk must be greater than zero".into());
+        }
+        if self.iters == 0 {
+            return Err("iters must be greater than zero".into());
+        }
+        if self.screen_trials == 0 {
+            return Err("screen_trials must be greater than zero".into());
+        }
+        Ok(())
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Manifest {
@@ -217,6 +244,13 @@ fn max_specials(level: &Level) -> u32 {
     (level.tile_count() * 30 / 100).max(2)
 }
 
+/// A combined board must expose at least this many reachable states; below it the
+/// puzzle is too small to demand a plan. The cheap screen pre-checks this bar and
+/// the deep solve confirms it, so both call sites share the constant.
+const MIN_REACHABLE_STATES: u32 = 150;
+/// ...and its shortest solution must run at least this many moves.
+const MIN_SOLUTION_LEN: u32 = 5;
+
 /// Does this annealed board clear the acceptance bar for its tier?
 fn passes_gate(tier: Tier, rec: &LevelRecord, cfg: &CampaignCfg) -> bool {
     match tier {
@@ -227,8 +261,8 @@ fn passes_gate(tier: Tier, rec: &LevelRecord, cfg: &CampaignCfg) -> bool {
             let rsp = rec.random_solve_prob.unwrap_or(1.0);
             !greedy
                 && rsp <= cfg.max_random
-                && rec.reachable_states >= 150
-                && rec.solutions.first().map(|s| s.len()).unwrap_or(0) >= 5
+                && rec.reachable_states >= MIN_REACHABLE_STATES
+                && rec.solutions.first().map(|s| s.len()).unwrap_or(0) >= MIN_SOLUTION_LEN as usize
         }
     }
 }
@@ -281,7 +315,14 @@ fn try_seed(
                 return None;
             }
             // Tier 1: cheap screen — rejects trivial / unsolvable / too-small boards without a deep solve.
-            screen::screen(&level, cfg.screen_trials, cfg.max_random, 150, 5, &mut rng)?;
+            screen::screen(
+                &level,
+                cfg.screen_trials,
+                cfg.max_random,
+                MIN_REACHABLE_STATES,
+                MIN_SOLUTION_LEN,
+                &mut rng,
+            )?;
             // Tier 2: full solve + quality, only for survivors.
             let res = solve(&level, scfg);
             // Only keep boards we fully analysed — otherwise dead_tiles / quality aren't trustworthy
@@ -333,6 +374,10 @@ fn fmt_hms(secs: u64) -> String {
 
 /// Run (or resume) a campaign until its duration elapses or Ctrl-C is pressed.
 pub fn run(mut cfg: CampaignCfg, resume: bool) {
+    if let Err(e) = cfg.validate() {
+        eprintln!("error: invalid campaign config: {e}");
+        std::process::exit(2);
+    }
     std::fs::create_dir_all(&cfg.dir).expect("create campaign dir");
 
     // Resume: pick up the seed cursor + the already-kept pool.
@@ -517,5 +562,53 @@ pub fn status(dir: &str) {
             print_top_buckets(&topk);
         }
         None => eprintln!("No manifest found in {}", dir),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_config_is_valid() {
+        assert!(CampaignCfg::default().validate().is_ok());
+    }
+
+    #[test]
+    fn rejects_out_of_range_max_random() {
+        let bad = CampaignCfg {
+            max_random: 1.5,
+            ..CampaignCfg::default()
+        };
+        assert!(bad.validate().is_err());
+        let neg = CampaignCfg {
+            max_random: -0.1,
+            ..CampaignCfg::default()
+        };
+        assert!(neg.validate().is_err());
+    }
+
+    #[test]
+    fn rejects_zero_budgets() {
+        for cfg in [
+            CampaignCfg {
+                duration_secs: 0,
+                ..CampaignCfg::default()
+            },
+            CampaignCfg {
+                topk: 0,
+                ..CampaignCfg::default()
+            },
+            CampaignCfg {
+                iters: 0,
+                ..CampaignCfg::default()
+            },
+            CampaignCfg {
+                screen_trials: 0,
+                ..CampaignCfg::default()
+            },
+        ] {
+            assert!(cfg.validate().is_err());
+        }
     }
 }

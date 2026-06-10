@@ -209,10 +209,9 @@ impl Level {
                     }
                 }
                 Some(TileKind::Explosive) => {
-                    let has = Direction::ALL.iter().any(|&d| {
-                        self.neighbor(i, d)
-                            .map_or(false, |nb| self.is_clearable(nb))
-                    });
+                    let has = Direction::ALL
+                        .iter()
+                        .any(|&d| self.neighbor(i, d).is_some_and(|nb| self.is_clearable(nb)));
                     if !has {
                         count += 1;
                     }

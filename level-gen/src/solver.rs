@@ -646,7 +646,7 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
         }
     }
 
-    let solvable = can_win.get(0).copied().unwrap_or(false);
+    let solvable = can_win.first().copied().unwrap_or(false);
     let shortest_path = win_indices.iter().map(|&w| dist[w as usize]).min();
     let dead_end_states = (n - can_win.iter().filter(|b| **b).count()) as u32;
 

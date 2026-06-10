@@ -95,7 +95,7 @@ fn assign_info(layout: &[String]) -> Vec<String> {
         for (c, ch) in row.chars().enumerate() {
             if ch == 'n' {
                 let d = (c as i64 - base.0 as i64).abs() + (r as i64 - base.1 as i64).abs();
-                if best.map_or(true, |(_, _, bd)| d > bd) {
+                if best.is_none_or(|(_, _, bd)| d > bd) {
                     best = Some((c, r, d));
                 }
             }
@@ -350,7 +350,7 @@ pub fn visual_complexity(rec: &LevelRecord) -> f64 {
             if ch != '.' {
                 tiles += 1;
             }
-            if matches!(category(ch), 3 | 4 | 5 | 6) {
+            if matches!(category(ch), 3..=6) {
                 specials += 1;
             }
         }
@@ -376,7 +376,7 @@ fn special_fraction(layout: &[String]) -> f64 {
             if ch != '.' {
                 tiles += 1;
             }
-            if matches!(category(ch), 3 | 4 | 5 | 6) {
+            if matches!(category(ch), 3..=6) {
                 specials += 1;
             }
         }

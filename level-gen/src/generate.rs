@@ -185,6 +185,9 @@ fn build_loop(
     max_len: usize,
     rng: &mut ChaCha8Rng,
 ) -> Option<Vec<usize>> {
+    // Tight recursive walk; threading a context struct through every frame would
+    // only add indirection to a hot inner loop.
+    #[allow(clippy::too_many_arguments)]
     fn dfs(
         cols: usize,
         rows: usize,
@@ -202,7 +205,7 @@ fn build_loop(
         *budget -= 1;
         let cur = *path.last().unwrap();
         let len = path.len();
-        let can_close = len >= min && len % 2 == 0 && adjacent(cols, rows, cur, base);
+        let can_close = len >= min && len.is_multiple_of(2) && adjacent(cols, rows, cur, base);
         if can_close && (len >= max || rng.gen::<f64>() < 0.25) {
             return true;
         }
@@ -247,7 +250,7 @@ fn build_loop(
 }
 
 fn round_even(x: usize) -> usize {
-    if x % 2 == 0 {
+    if x.is_multiple_of(2) {
         x
     } else {
         x + 1
@@ -612,8 +615,10 @@ mod tests {
     #[test]
     fn generate_is_deterministic() {
         let dcfg = DifficultyConfig::default();
-        let mut scfg = SolveConfig::default();
-        scfg.max_states = 60_000;
+        let scfg = SolveConfig {
+            max_states: 60_000,
+            ..SolveConfig::default()
+        };
         let spec = GenSpec {
             iters: 120,
             ..GenSpec::new(5, 5, 0.3, AllowSet::all(), 7)
