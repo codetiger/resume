@@ -64,7 +64,7 @@ enum Cmd {
         /// Cap the ladder length (tutorial block + an evenly difficulty-spaced ramp).
         #[arg(long)]
         count: Option<usize>,
-        /// Selection profile: `ramp` (default even-spaced), `initial32`, or `initial64` (6 tutorial + steep ramp).
+        /// Selection profile: `ramp` (default even-spaced), or `initial32`/`initial64`/`initial128` (6 tutorial + steep ramp).
         #[arg(long, default_value = "ramp")]
         profile: String,
         /// Read the pool from a campaign (`<root>/<name>/pool.json`) instead of `dir`.
@@ -516,6 +516,7 @@ fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str, from_ca
     let ladder = match profile {
         "initial32" => curate::curate_initial(&pool),
         "initial64" => curate::curate_initial_n(&pool, 64),
+        "initial128" => curate::curate_initial_n(&pool, 128),
         _ => curate::curate(&pool, count),
     };
     let json = serde_json::to_string_pretty(&ladder).unwrap();

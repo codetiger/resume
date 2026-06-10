@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Wire the curated 64-level ladder into the game's src/game/levels.json.
+"""Wire the curated 128-level ladder into the game's src/game/levels.json.
 
-- Layouts come from levels/ladder64.json (the level-gen `initial64` curation).
+- Layouts come from levels/ladder128.json (the level-gen `initial128` curation).
 - The existing résumé content (the 16 hand-written content blocks) is carried onto
   ladder levels 0-15, each with one `i` (content marker) placed on a random green tile.
-- Levels 16-63 become pure-puzzle "Bonus" levels with no `i` (no content reveal).
+- Levels 16-127 become pure-puzzle "Bonus" levels with no `i` (no content reveal).
 
 Run from anywhere:  python3 level-gen/wire_ladder.py
 Re-runnable: it reads the résumé content from the current levels.json entries 0-15,
@@ -22,7 +22,7 @@ import tempfile
 TUTORIAL_COUNT = 6
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
-LADDER = os.path.join(ROOT, "levels", "ladder64.json")
+LADDER = os.path.join(ROOT, "levels", "ladder128.json")
 LEVELS = os.path.join(ROOT, "src", "game", "levels.json")
 SOLVER = os.path.join(ROOT, "level-gen", "target", "release", "level-gen")
 

@@ -1,0 +1,2322 @@
+{
+  "levels": [
+    {
+      "number": 0,
+      "name": "gen-4x4-easy-s2",
+      "layout": [
+        "....",
+        "....",
+        "..i.",
+        ".nbn"
+      ],
+      "difficulty": 0.4432373046875,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-easy-s2",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 1,
+      "name": "gen-4x4-easy-s32470914",
+      "layout": [
+        "....",
+        "nrbn",
+        "irnn",
+        "...."
+      ],
+      "difficulty": 0.6409008335537381,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-easy-s32470914",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 2,
+      "name": "gen-5x5-easy-s13120411",
+      "layout": [
+        "...in",
+        "...nn",
+        "...nb",
+        "...cc",
+        "...nn"
+      ],
+      "difficulty": 0.6468775836208409,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-easy-s13120411",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 3,
+      "name": "gen-4x4-easy-s44239501",
+      "layout": [
+        "n...",
+        "bxi.",
+        ".n..",
+        "...."
+      ],
+      "difficulty": 0.6252873901098901,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-easy-s44239501",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 4,
+      "name": "gen-4x5-easy-s15391001",
+      "layout": [
+        "....",
+        "....",
+        "....",
+        "b2n2",
+        "n..i"
+      ],
+      "difficulty": 0.6301413681100589,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-easy-s15391001",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 5,
+      "name": "gen-4x5-easy-s314313",
+      "layout": [
+        "....",
+        "....",
+        "....",
+        ".>i.",
+        ".nbn"
+      ],
+      "difficulty": 0.5206218927556817,
+      "band": "easy",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-easy-s314313",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 6,
+      "name": "gen-4x4-medium-s17817844",
+      "layout": [
+        ".i..",
+        "nxn.",
+        "nbr.",
+        "...."
+      ],
+      "difficulty": 0.613243696403793,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s17817844",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 7,
+      "name": "gen-5x5-medium-s6284493",
+      "layout": [
+        ".....",
+        "in...",
+        "xcn..",
+        "nbn..",
+        "cn..."
+      ],
+      "difficulty": 0.6176319257884992,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s6284493",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 8,
+      "name": "gen-5x5-medium-s48512382",
+      "layout": [
+        ".....",
+        ".....",
+        "..inn",
+        ".nxbc",
+        "...nn"
+      ],
+      "difficulty": 0.6219598120778749,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s48512382",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 9,
+      "name": "gen-5x5-medium-s34566594",
+      "layout": [
+        "nn...",
+        "cbn..",
+        "nxn..",
+        "nrni.",
+        "....."
+      ],
+      "difficulty": 0.6414730651335192,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s34566594",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 10,
+      "name": "gen-5x5-medium-s46525726",
+      "layout": [
+        ".....",
+        ".....",
+        ".....",
+        ".inn.",
+        "nxbc."
+      ],
+      "difficulty": 0.6537226559346374,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s46525726",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 11,
+      "name": "gen-5x6-medium-s34133241",
+      "layout": [
+        ".....",
+        "....n",
+        ".nxbc",
+        "..nn.",
+        "....i",
+        "....."
+      ],
+      "difficulty": 0.6554280051519431,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-medium-s34133241",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 12,
+      "name": "gen-5x5-medium-s19401972",
+      "layout": [
+        ".....",
+        "...ni",
+        "...xn",
+        "...bc",
+        "...nn"
+      ],
+      "difficulty": 0.6574680707537197,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s19401972",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 13,
+      "name": "gen-4x4-medium-s16721131",
+      "layout": [
+        "nn..",
+        "cb..",
+        "nxn.",
+        "in.."
+      ],
+      "difficulty": 0.658038201726157,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s16721131",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 14,
+      "name": "gen-4x4-medium-s16613367",
+      "layout": [
+        "n...",
+        "bc..",
+        "xn..",
+        "ni.."
+      ],
+      "difficulty": 0.6585679407083324,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s16613367",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 15,
+      "name": "gen-5x5-medium-s15010754",
+      "layout": [
+        ".....",
+        ".....",
+        "n1i..",
+        "bnxn.",
+        "1nn.."
+      ],
+      "difficulty": 0.6608672627030645,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s15010754",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 16,
+      "name": "gen-5x5-medium-s15503717",
+      "layout": [
+        "..n..",
+        "..xbn",
+        "..nnn",
+        ".ixxn",
+        "....."
+      ],
+      "difficulty": 0.6617232322528126,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s15503717",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 17,
+      "name": "gen-4x4-medium-s45789739",
+      "layout": [
+        ".ni.",
+        "nbn.",
+        "nx1.",
+        "1n.."
+      ],
+      "difficulty": 0.667500201746209,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s45789739",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 18,
+      "name": "gen-4x5-medium-s37052105",
+      "layout": [
+        "ixn.",
+        ".xn.",
+        "nbx.",
+        "nnn.",
+        "...."
+      ],
+      "difficulty": 0.6763040241652925,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-medium-s37052105",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 19,
+      "name": "gen-4x4-medium-s22205760",
+      "layout": [
+        "..ni",
+        ".nbn",
+        "1nxn",
+        "..n1"
+      ],
+      "difficulty": 0.6860506115036307,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s22205760",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 20,
+      "name": "gen-4x5-medium-s31472101",
+      "layout": [
+        "nnn.",
+        "nbxn",
+        "nxn.",
+        "ixn.",
+        "...."
+      ],
+      "difficulty": 0.6902401370956194,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x5-medium-s31472101",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 21,
+      "name": "gen-4x4-medium-s8184040",
+      "layout": [
+        "....",
+        "1inn",
+        "nxbn",
+        ".n1."
+      ],
+      "difficulty": 0.7073039217540241,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s8184040",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 22,
+      "name": "gen-5x5-medium-s7398733",
+      "layout": [
+        ".inn.",
+        ".nbx.",
+        "..rn.",
+        ".....",
+        "....."
+      ],
+      "difficulty": 0.7358595976322088,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-medium-s7398733",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 23,
+      "name": "gen-4x4-medium-s12422330",
+      "layout": [
+        "....",
+        "..ri",
+        ".nbx",
+        ".nnn"
+      ],
+      "difficulty": 0.7358595976322088,
+      "band": "medium",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-medium-s12422330",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 24,
+      "name": "gen-5x5-hard-s11755877",
+      "layout": [
+        "...n.",
+        ".inxn",
+        "xnrbn",
+        "...n.",
+        "....."
+      ],
+      "difficulty": 0.7678832962210557,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s11755877",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 25,
+      "name": "gen-5x5-hard-s18089664",
+      "layout": [
+        "..nnn",
+        "..nbn",
+        "..xxn",
+        "..i..",
+        "....."
+      ],
+      "difficulty": 0.7679304563901896,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s18089664",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 26,
+      "name": "gen-4x4-hard-s46566383",
+      "layout": [
+        ".i1n",
+        ".xn.",
+        "nnnn",
+        "n1bn"
+      ],
+      "difficulty": 0.7686598083616707,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s46566383",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 27,
+      "name": "gen-4x4-hard-s32902199",
+      "layout": [
+        "i11n",
+        "nnnb",
+        ".nxn",
+        "..n."
+      ],
+      "difficulty": 0.7693365066104979,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s32902199",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 28,
+      "name": "gen-5x5-hard-s18044594",
+      "layout": [
+        ".....",
+        ".....",
+        "..nni",
+        ".nxn1",
+        "..b1n"
+      ],
+      "difficulty": 0.7693912480950502,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s18044594",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 29,
+      "name": "gen-5x5-hard-s18003852",
+      "layout": [
+        ".....",
+        ".....",
+        "..i..",
+        ".n1nn",
+        "nxn1b"
+      ],
+      "difficulty": 0.7694587393815334,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s18003852",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 30,
+      "name": "gen-4x4-hard-s35349677",
+      "layout": [
+        "innn",
+        "1xn1",
+        ".nnb",
+        "..nn"
+      ],
+      "difficulty": 0.7695261629362402,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s35349677",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 31,
+      "name": "gen-4x4-hard-s18426140",
+      "layout": [
+        "..n.",
+        ".b1n",
+        ".1nx",
+        ".nni"
+      ],
+      "difficulty": 0.7696149501980444,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s18426140",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 32,
+      "name": "gen-6x6-hard-s40665293",
+      "layout": [
+        "nn2...",
+        "nbn...",
+        "2nn...",
+        "nnxi..",
+        "..c...",
+        "......"
+      ],
+      "difficulty": 0.7701332602347293,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-hard-s40665293",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 33,
+      "name": "gen-4x4-hard-s18056527",
+      "layout": [
+        "n11.",
+        "bnnn",
+        "nxnn",
+        ".nni"
+      ],
+      "difficulty": 0.7706230634823932,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s18056527",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 34,
+      "name": "gen-5x5-hard-s18684789",
+      "layout": [
+        "...n.",
+        "..1xn",
+        "..2nn",
+        "nnnbn",
+        "i12nn"
+      ],
+      "difficulty": 0.7706247867208943,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s18684789",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 35,
+      "name": "gen-6x6-hard-s3374130",
+      "layout": [
+        "...1bn",
+        "...nnn",
+        "....1.",
+        "...ixn",
+        "......",
+        "......"
+      ],
+      "difficulty": 0.7709124764071027,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-hard-s3374130",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 36,
+      "name": "gen-6x6-hard-s25716231",
+      "layout": [
+        "......",
+        "....1i",
+        "...nrn",
+        "...nnn",
+        "...nbn",
+        "...nx1"
+      ],
+      "difficulty": 0.7709873551940893,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-hard-s25716231",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 37,
+      "name": "gen-6x5-hard-s41492335",
+      "layout": [
+        "....ni",
+        "...n1n",
+        "..1nnn",
+        "..nbrn",
+        "...cn."
+      ],
+      "difficulty": 0.7711725196156229,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-hard-s41492335",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 38,
+      "name": "gen-5x5-hard-s48483777",
+      "layout": [
+        "..nnn",
+        ".nxb1",
+        ".inn1",
+        ".....",
+        "....."
+      ],
+      "difficulty": 0.7712393670543611,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s48483777",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 39,
+      "name": "gen-4x4-hard-s35190197",
+      "layout": [
+        "....",
+        "nnn.",
+        "1bxn",
+        "1nni"
+      ],
+      "difficulty": 0.7712393670543611,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s35190197",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 40,
+      "name": "gen-4x4-hard-s14950118",
+      "layout": [
+        "nni.",
+        "b1n.",
+        "nn..",
+        "nx1."
+      ],
+      "difficulty": 0.771354798080611,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s14950118",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 41,
+      "name": "gen-4x4-hard-s24828130",
+      "layout": [
+        "....",
+        ".n1n",
+        "nxbn",
+        "in1."
+      ],
+      "difficulty": 0.7716918904300852,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s24828130",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 42,
+      "name": "gen-6x5-hard-s32676937",
+      "layout": [
+        "......",
+        "...in.",
+        "...nnn",
+        "...xb1",
+        "...1nn"
+      ],
+      "difficulty": 0.7722302365001763,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-hard-s32676937",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 43,
+      "name": "gen-4x4-hard-s51610958",
+      "layout": [
+        "inxn",
+        "nnbn",
+        ".n11",
+        "...."
+      ],
+      "difficulty": 0.7723089871551393,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s51610958",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 44,
+      "name": "gen-4x4-hard-s52131235",
+      "layout": [
+        "1nn.",
+        "nnbn",
+        "ixnn",
+        ".n1n"
+      ],
+      "difficulty": 0.7723900615912875,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s52131235",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 45,
+      "name": "gen-4x4-hard-s37812541",
+      "layout": [
+        "n11.",
+        "nbnn",
+        ".nnn",
+        ".nxi"
+      ],
+      "difficulty": 0.773032688665029,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s37812541",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 46,
+      "name": "gen-6x5-hard-s16246257",
+      "layout": [
+        "......",
+        "......",
+        ".nnn..",
+        "n1b1n.",
+        "inn..."
+      ],
+      "difficulty": 0.7737679104223801,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-hard-s16246257",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 47,
+      "name": "gen-6x5-hard-s34561273",
+      "layout": [
+        "......",
+        "....nn",
+        "...nxb",
+        "...nnc",
+        "...inn"
+      ],
+      "difficulty": 0.7739314102630134,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-hard-s34561273",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 48,
+      "name": "gen-5x6-hard-s50568379",
+      "layout": [
+        "..nn.",
+        "x2bn.",
+        "i.2n.",
+        "..n..",
+        ".....",
+        "....."
+      ],
+      "difficulty": 0.7752178294403187,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-hard-s50568379",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 49,
+      "name": "gen-4x4-hard-s15339550",
+      "layout": [
+        ".11i",
+        "n2n2",
+        "nbnn",
+        ".nnn"
+      ],
+      "difficulty": 0.7753417061607861,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s15339550",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 50,
+      "name": "gen-4x4-hard-s16976333",
+      "layout": [
+        "....",
+        ".nn.",
+        "nbxn",
+        "ncni"
+      ],
+      "difficulty": 0.7754180093351685,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s16976333",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 51,
+      "name": "gen-4x4-hard-s44942741",
+      "layout": [
+        "..nn",
+        "inn1",
+        "nnnc",
+        "n1cb"
+      ],
+      "difficulty": 0.7756246908026763,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s44942741",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 52,
+      "name": "gen-4x4-hard-s35148342",
+      "layout": [
+        "innn",
+        "nnbr",
+        "nxn1",
+        ".n1."
+      ],
+      "difficulty": 0.7760636983396092,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s35148342",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 53,
+      "name": "gen-5x5-hard-s16199884",
+      "layout": [
+        "bn.nn",
+        "2nnx2",
+        "...i.",
+        ".....",
+        "....."
+      ],
+      "difficulty": 0.7765693695604012,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s16199884",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 54,
+      "name": "gen-4x4-hard-s2824821",
+      "layout": [
+        "....",
+        "ixn.",
+        "n1nb",
+        "nnn1"
+      ],
+      "difficulty": 0.77669380128334,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s2824821",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 55,
+      "name": "gen-4x4-hard-s13396919",
+      "layout": [
+        "12bn",
+        "nnnn",
+        "12nn",
+        "in.."
+      ],
+      "difficulty": 0.7768875055567073,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s13396919",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 56,
+      "name": "gen-5x5-hard-s36819363",
+      "layout": [
+        ".i...",
+        "n1n..",
+        "n1xn.",
+        "nn...",
+        "bn..."
+      ],
+      "difficulty": 0.7773349825959097,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s36819363",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 57,
+      "name": "gen-5x5-hard-s17918087",
+      "layout": [
+        "..i..",
+        ".1xn.",
+        "n1n..",
+        "bn...",
+        "nn..."
+      ],
+      "difficulty": 0.7774077416045382,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s17918087",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 58,
+      "name": "gen-4x4-hard-s26747687",
+      "layout": [
+        "in..",
+        "xn..",
+        "1b1n",
+        "nnn."
+      ],
+      "difficulty": 0.7777771395716273,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s26747687",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 59,
+      "name": "gen-7x7-hard-s25508697",
+      "layout": [
+        ".......",
+        ".......",
+        ".......",
+        "...inrn",
+        "...nnxn",
+        "...n.n1",
+        "...nnb1"
+      ],
+      "difficulty": 0.7777891525109757,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x7-hard-s25508697",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 60,
+      "name": "gen-5x6-hard-s7845449",
+      "layout": [
+        ".nxni",
+        ".nbnn",
+        ".11n.",
+        ".....",
+        ".....",
+        "....."
+      ],
+      "difficulty": 0.7786023174722831,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-hard-s7845449",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 61,
+      "name": "gen-4x4-hard-s9620668",
+      "layout": [
+        ".ic.",
+        ".nxn",
+        "nrbn",
+        "..n."
+      ],
+      "difficulty": 0.7793434381242386,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s9620668",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 62,
+      "name": "gen-5x5-hard-s24804048",
+      "layout": [
+        ".....",
+        "....n",
+        ".nnb1",
+        ".innn",
+        ".1xn."
+      ],
+      "difficulty": 0.7801424432582724,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s24804048",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 63,
+      "name": "gen-4x4-hard-s22258538",
+      "layout": [
+        ".1bn",
+        ".n1n",
+        ".nn.",
+        ".ixn"
+      ],
+      "difficulty": 0.7802837623335457,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s22258538",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 64,
+      "name": "gen-4x4-hard-s17707828",
+      "layout": [
+        ".inn",
+        "c1n1",
+        "^nnn",
+        "nnbn"
+      ],
+      "difficulty": 0.7824320506698159,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s17707828",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 65,
+      "name": "gen-7x6-hard-s27514972",
+      "layout": [
+        "......i",
+        ".....n1",
+        "....>nn",
+        "....nnn",
+        "...nnnn",
+        "...n1bc"
+      ],
+      "difficulty": 0.7833621030431679,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x6-hard-s27514972",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 66,
+      "name": "gen-4x4-hard-s51511977",
+      "layout": [
+        ".1xi",
+        ".nn.",
+        "nn..",
+        "b1n."
+      ],
+      "difficulty": 0.7836739022129277,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s51511977",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 67,
+      "name": "gen-4x4-hard-s12383820",
+      "layout": [
+        ".n.n",
+        ".xxb",
+        ".nnc",
+        ".inn"
+      ],
+      "difficulty": 0.7849144461665217,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s12383820",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 68,
+      "name": "gen-5x5-hard-s19955236",
+      "layout": [
+        "i1xn.",
+        "nnn..",
+        "nn...",
+        "1nb..",
+        "cnn.."
+      ],
+      "difficulty": 0.7884410264962526,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-hard-s19955236",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 69,
+      "name": "gen-4x4-hard-s5622169",
+      "layout": [
+        "nb1n",
+        "nn1.",
+        "xnn.",
+        "inn."
+      ],
+      "difficulty": 0.7886395024529783,
+      "band": "hard",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-hard-s5622169",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 70,
+      "name": "gen-6x5-expert-s14708441",
+      "layout": [
+        "nn.nb1",
+        "innnnn",
+        "12..nn",
+        "..n.nr",
+        "..2nn."
+      ],
+      "difficulty": 0.8076967890398378,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s14708441",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 71,
+      "name": "gen-5x5-expert-s35008794",
+      "layout": [
+        "nbn..",
+        "n2nn.",
+        "n11n.",
+        "rnni.",
+        "n2..."
+      ],
+      "difficulty": 0.8077559894802366,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s35008794",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 72,
+      "name": "gen-5x5-expert-s1182694",
+      "layout": [
+        "..xin",
+        "..xnn",
+        "..1nb",
+        "..n.n",
+        "..1nn"
+      ],
+      "difficulty": 0.8078317602334922,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s1182694",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 73,
+      "name": "gen-6x6-expert-s47863679",
+      "layout": [
+        "n2nrn.",
+        "21.nn.",
+        "n.brn.",
+        "nnnn..",
+        ".nnn..",
+        "i1nn.."
+      ],
+      "difficulty": 0.807841682390931,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s47863679",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 74,
+      "name": "gen-6x5-expert-s51281242",
+      "layout": [
+        ".inn..",
+        ".nn...",
+        ".1ncnn",
+        ".nnrnn",
+        "..1bnn"
+      ],
+      "difficulty": 0.8078497322398046,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s51281242",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 75,
+      "name": "gen-6x7-expert-s32297680",
+      "layout": [
+        "nnn.ni",
+        "b21nnn",
+        "nn.n21",
+        "......",
+        "......",
+        "......",
+        "......"
+      ],
+      "difficulty": 0.8082098517696965,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x7-expert-s32297680",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 76,
+      "name": "gen-7x6-expert-s10066747",
+      "layout": [
+        "nnbrnn.",
+        "nnnn1n.",
+        "21nn...",
+        "2n.....",
+        "i......",
+        "......."
+      ],
+      "difficulty": 0.8082601408448263,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x6-expert-s10066747",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 77,
+      "name": "gen-6x6-expert-s3457752",
+      "layout": [
+        "......",
+        "......",
+        "1n....",
+        "bcnn..",
+        "n.nn..",
+        "rnn1i."
+      ],
+      "difficulty": 0.8083375174660563,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s3457752",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 78,
+      "name": "gen-5x6-expert-s29285521",
+      "layout": [
+        "2ni..",
+        ".21n.",
+        ".n.rn",
+        "n<..n",
+        "nnnnn",
+        "b1n.."
+      ],
+      "difficulty": 0.8085112438688611,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s29285521",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 79,
+      "name": "gen-6x5-expert-s27103265",
+      "layout": [
+        "..vnbn",
+        "..nn1n",
+        "nnnn.2",
+        "n.nn2n",
+        "inr1n."
+      ],
+      "difficulty": 0.8085654626999412,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s27103265",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 80,
+      "name": "gen-5x6-expert-s12014443",
+      "layout": [
+        ".nnni",
+        "1.1nn",
+        "b.2n2",
+        "n...n",
+        "rcnnn",
+        "n...."
+      ],
+      "difficulty": 0.8086283651173355,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s12014443",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 81,
+      "name": "gen-5x6-expert-s6852145",
+      "layout": [
+        ".n>i.",
+        ".n.n1",
+        "rn..c",
+        ".bnnn",
+        "n1nn.",
+        "....."
+      ],
+      "difficulty": 0.8087759194499244,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s6852145",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 82,
+      "name": "gen-4x4-expert-s46499253",
+      "layout": [
+        ".nnn",
+        ".b.1",
+        ".1nx",
+        ".nni"
+      ],
+      "difficulty": 0.8088870777051262,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-expert-s46499253",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 83,
+      "name": "gen-5x6-expert-s32160995",
+      "layout": [
+        "..3n.",
+        ".inn.",
+        ".1.3n",
+        "n2n.n",
+        "n.nnn",
+        "nn1b2"
+      ],
+      "difficulty": 0.8088940153521427,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s32160995",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 84,
+      "name": "gen-5x6-expert-s18956552",
+      "layout": [
+        "..nbn",
+        ".nn1n",
+        "n1.n.",
+        "cn.nn",
+        "cnnnn",
+        "in..."
+      ],
+      "difficulty": 0.8092040953699752,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s18956552",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 85,
+      "name": "gen-5x5-expert-s24455375",
+      "layout": [
+        ".xnni",
+        "n1rnn",
+        ".1bn.",
+        ".nn..",
+        ".nn.."
+      ],
+      "difficulty": 0.8093061865650855,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s24455375",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 86,
+      "name": "gen-5x5-expert-s47855664",
+      "layout": [
+        ".nbnn",
+        ".nn1<",
+        "22..n",
+        ".nnni",
+        ".n1n."
+      ],
+      "difficulty": 0.8095240733461238,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s47855664",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 87,
+      "name": "gen-4x4-expert-s28718892",
+      "layout": [
+        ".1bn",
+        "nxnn",
+        "1rnn",
+        "i.nn"
+      ],
+      "difficulty": 0.8096447540467322,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-expert-s28718892",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 88,
+      "name": "gen-7x6-expert-s18233130",
+      "layout": [
+        "in.....",
+        "1nnn...",
+        "2nnnn2n",
+        "n.1.nb.",
+        "..n....",
+        "......."
+      ],
+      "difficulty": 0.8097794547225308,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x6-expert-s18233130",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 89,
+      "name": "gen-5x6-expert-s19832163",
+      "layout": [
+        ".....",
+        ".in..",
+        ".21nn",
+        "nn..n",
+        "^nn2b",
+        "nn.n1"
+      ],
+      "difficulty": 0.8101292467075609,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s19832163",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 90,
+      "name": "gen-7x8-expert-s10663179",
+      "layout": [
+        "cin....",
+        "nc1....",
+        "nnn....",
+        "nnn1...",
+        "nn<b...",
+        "nn.....",
+        ".n.....",
+        ".n....."
+      ],
+      "difficulty": 0.8101778656505398,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x8-expert-s10663179",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 91,
+      "name": "gen-5x5-expert-s18004931",
+      "layout": [
+        ".nnnn",
+        "b1nn1",
+        "nncnr",
+        "..nni",
+        "....."
+      ],
+      "difficulty": 0.8103923329179289,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s18004931",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 92,
+      "name": "gen-6x6-expert-s8059090",
+      "layout": [
+        "..nnb2",
+        ".nn.nn",
+        ".nnn..",
+        "..21..",
+        ".n1n..",
+        ".inn.."
+      ],
+      "difficulty": 0.8105376527604118,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s8059090",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 93,
+      "name": "gen-6x5-expert-s921091",
+      "layout": [
+        ".nnnnb",
+        "nnnnn1",
+        "n.n..n",
+        "nc1...",
+        "in...."
+      ],
+      "difficulty": 0.8105384366039091,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s921091",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 94,
+      "name": "gen-7x7-expert-s36813355",
+      "layout": [
+        ".......",
+        ".......",
+        "....i..",
+        "....1..",
+        "..n21n.",
+        "2nnnnn.",
+        "n.nbnn."
+      ],
+      "difficulty": 0.8106394491963343,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x7-expert-s36813355",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 95,
+      "name": "gen-4x4-expert-s19729667",
+      "layout": [
+        "1cnc",
+        "innn",
+        "nnnn",
+        "n1bn"
+      ],
+      "difficulty": 0.8107793089665852,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-expert-s19729667",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 96,
+      "name": "gen-7x7-expert-s27092676",
+      "layout": [
+        "n.1bnn.",
+        "n....n.",
+        "nnn..rn",
+        "ccn..nn",
+        ".1nn.n.",
+        "nnnnnn.",
+        "innnn.."
+      ],
+      "difficulty": 0.8109209053037613,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x7-expert-s27092676",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 97,
+      "name": "gen-6x7-expert-s28967949",
+      "layout": [
+        ".nbnn.",
+        "..n.3n",
+        "..n.cn",
+        "..31..",
+        ".n>n..",
+        ".n.n1i",
+        ".nnnn."
+      ],
+      "difficulty": 0.8112991458237511,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x7-expert-s28967949",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 98,
+      "name": "gen-6x6-expert-s3907620",
+      "layout": [
+        "......",
+        "......",
+        "......",
+        "rinnnn",
+        "n1.1nn",
+        "nn.bcn"
+      ],
+      "difficulty": 0.8114846568342758,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s3907620",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 99,
+      "name": "gen-6x7-expert-s45011473",
+      "layout": [
+        "......",
+        "......",
+        "......",
+        "nnn...",
+        "1nrn..",
+        "rnn1ri",
+        "nbnn.."
+      ],
+      "difficulty": 0.8117569081169471,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x7-expert-s45011473",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 100,
+      "name": "gen-6x5-expert-s3778857",
+      "layout": [
+        "rbnnnn",
+        "nnn.1i",
+        "1nnnn.",
+        "......",
+        "......"
+      ],
+      "difficulty": 0.8121253042902943,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s3778857",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 101,
+      "name": "gen-5x6-expert-s13458791",
+      "layout": [
+        "inn..",
+        "22nn.",
+        ".1.n.",
+        ".nnb.",
+        "..nn.",
+        ".n1n."
+      ],
+      "difficulty": 0.8122109630446497,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s13458791",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 102,
+      "name": "gen-5x6-expert-s38351753",
+      "layout": [
+        "1nnni",
+        "n.nnn",
+        "..cnc",
+        "..bn1",
+        "..n..",
+        "..n.."
+      ],
+      "difficulty": 0.812440261770071,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s38351753",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 103,
+      "name": "gen-6x5-expert-s44923260",
+      "layout": [
+        "....ni",
+        "....11",
+        "n2.n2n",
+        "nnvnnn",
+        "bnncn."
+      ],
+      "difficulty": 0.8124940366297202,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s44923260",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 104,
+      "name": "gen-6x5-expert-s956227",
+      "layout": [
+        "i21...",
+        "nnn...",
+        ".n.2n.",
+        "nnnb1.",
+        "nnnnn."
+      ],
+      "difficulty": 0.8129161146779782,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s956227",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 105,
+      "name": "gen-5x5-expert-s28709036",
+      "layout": [
+        ".....",
+        "i....",
+        "x1n..",
+        "n.nn.",
+        "nn1b."
+      ],
+      "difficulty": 0.8129293272307889,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s28709036",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 106,
+      "name": "gen-5x6-expert-s6062372",
+      "layout": [
+        "..cnb",
+        "nnn1n",
+        "in<n.",
+        "..n2n",
+        "..n2n",
+        "...1n"
+      ],
+      "difficulty": 0.8129609961766149,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s6062372",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 107,
+      "name": "gen-6x6-expert-s26180421",
+      "layout": [
+        "......",
+        "...inn",
+        "...1rn",
+        ".nnnnn",
+        ".n..n2",
+        ".12n.b"
+      ],
+      "difficulty": 0.813179097952325,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s26180421",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 108,
+      "name": "gen-6x6-expert-s24674",
+      "layout": [
+        "......",
+        ".....n",
+        "....n2",
+        "i3rnnn",
+        "n..n.n",
+        "nnn3b2"
+      ],
+      "difficulty": 0.8132597338059004,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s24674",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 109,
+      "name": "gen-5x5-expert-s7759584",
+      "layout": [
+        "bn1..",
+        "2.nn.",
+        "nnn2n",
+        ".rnni",
+        "n1nn."
+      ],
+      "difficulty": 0.8137942425140511,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s7759584",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 110,
+      "name": "gen-6x6-expert-s22247981",
+      "layout": [
+        "..n...",
+        ".2nc1.",
+        ".nnbn.",
+        ".n.n2.",
+        "incnn.",
+        "1nnn.."
+      ],
+      "difficulty": 0.8144096614197829,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s22247981",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 111,
+      "name": "gen-5x6-expert-s417139",
+      "layout": [
+        "bnn..",
+        "1.22.",
+        "nnnnn",
+        "cnn1i",
+        "n....",
+        "....."
+      ],
+      "difficulty": 0.8144264310691416,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s417139",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 112,
+      "name": "gen-4x4-expert-s34040657",
+      "layout": [
+        "in..",
+        "rnnc",
+        "nb1n",
+        "n1nn"
+      ],
+      "difficulty": 0.8145450506373967,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-4x4-expert-s34040657",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 113,
+      "name": "gen-5x6-expert-s13756892",
+      "layout": [
+        ".....",
+        "i....",
+        "1n...",
+        "nc.nn",
+        "nnnnb",
+        "nnnn1"
+      ],
+      "difficulty": 0.814606575833645,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s13756892",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 114,
+      "name": "gen-8x7-expert-s8423620",
+      "layout": [
+        "...bnn..",
+        "...1.n..",
+        ".n.n.nn.",
+        ".2<...nn",
+        "..n.n2.n",
+        "..nnn1ni",
+        "...nnnn."
+      ],
+      "difficulty": 0.8148585901535328,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-8x7-expert-s8423620",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 115,
+      "name": "gen-5x6-expert-s3866789",
+      "layout": [
+        "n1i..",
+        "ncn..",
+        "cn.n.",
+        "bnn1n",
+        ".nnnn",
+        "n...."
+      ],
+      "difficulty": 0.815413362802175,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x6-expert-s3866789",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 116,
+      "name": "gen-6x5-expert-s40006224",
+      "layout": [
+        "i1c.1n",
+        "nnrnbn",
+        "..nn..",
+        "..n...",
+        "..n..."
+      ],
+      "difficulty": 0.8154335564924257,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s40006224",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 117,
+      "name": "gen-6x5-expert-s39031678",
+      "layout": [
+        "......",
+        "......",
+        "i1rn2n",
+        "nnnnn1",
+        "n2nn.b"
+      ],
+      "difficulty": 0.8157108825033227,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s39031678",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 118,
+      "name": "gen-6x5-expert-s8006123",
+      "layout": [
+        ".1nn..",
+        "nn.nc.",
+        "2n.bn.",
+        "nnnn.n",
+        "i1n.n2"
+      ],
+      "difficulty": 0.8159419900517687,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s8006123",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 119,
+      "name": "gen-6x5-expert-s42014862",
+      "layout": [
+        "...rnn",
+        ".1in.n",
+        "21nnnn",
+        "nnnnnn",
+        "....2b"
+      ],
+      "difficulty": 0.8160296171954072,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s42014862",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 120,
+      "name": "gen-8x7-expert-s15213948",
+      "layout": [
+        ".......i",
+        ".......2",
+        ".....nn1",
+        ".....n.1",
+        "...rnnnn",
+        "...n2bnn",
+        ".....nn."
+      ],
+      "difficulty": 0.8164316330032031,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-8x7-expert-s15213948",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 121,
+      "name": "gen-7x8-expert-s22829194",
+      "layout": [
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        ".i...nn",
+        ".1nrnnn",
+        ".n.nnnb",
+        ".nnn.n1"
+      ],
+      "difficulty": 0.8178760568276059,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x8-expert-s22829194",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 122,
+      "name": "gen-5x5-expert-s37037151",
+      "layout": [
+        "..c1i",
+        "..n.n",
+        ".nn.n",
+        "1xbnn",
+        "nnn.."
+      ],
+      "difficulty": 0.8182444352857263,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s37037151",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 123,
+      "name": "gen-5x5-expert-s22798726",
+      "layout": [
+        "nnbnx",
+        "12.n1",
+        ".2nnn",
+        ".n.ni",
+        ".nnn."
+      ],
+      "difficulty": 0.8183266008928813,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s22798726",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 124,
+      "name": "gen-6x5-expert-s2437921",
+      "layout": [
+        "...nn.",
+        ".bnn1n",
+        "n2n..i",
+        "..nc21",
+        "..nn.."
+      ],
+      "difficulty": 0.8202185928597743,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x5-expert-s2437921",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 125,
+      "name": "gen-6x6-expert-s29283551",
+      "layout": [
+        ".i1cnc",
+        "..nnnn",
+        "..r.1n",
+        "..nnrn",
+        "...bnn",
+        "...nnn"
+      ],
+      "difficulty": 0.8215355288377133,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-6x6-expert-s29283551",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 126,
+      "name": "gen-7x6-expert-s38004583",
+      "layout": [
+        "in..n..",
+        "rnnn2nn",
+        "n..b1..",
+        "nrn.n..",
+        "nn2n1..",
+        ".cn.n.."
+      ],
+      "difficulty": 0.8230208728766795,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-7x6-expert-s38004583",
+        "tag": "bonus"
+      }
+    },
+    {
+      "number": 127,
+      "name": "gen-5x5-expert-s26467288",
+      "layout": [
+        "nn2b.",
+        "nxnn.",
+        "nnnn.",
+        ".nc..",
+        "i2n.."
+      ],
+      "difficulty": 0.8271327884534471,
+      "band": "expert",
+      "content": {
+        "bullets": [],
+        "heading": "gen-5x5-expert-s26467288",
+        "tag": "bonus"
+      }
+    }
+  ]
+}
