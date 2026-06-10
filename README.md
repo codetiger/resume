@@ -7,9 +7,9 @@ Demo — [Game](https://codetiger.github.io/resume/) · [Static résumé](https:
 
 ## Two stacks
 
-| Stack | Entry | Purpose |
-|-------|-------|---------|
-| **Game** (primary) | `index.html` + `src/` | Three.js + TypeScript puzzle résumé, built with Vite. |
+| Stack               | Entry                            | Purpose                                                                                              |
+| ------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Game** (primary)  | `index.html` + `src/`            | Three.js + TypeScript puzzle résumé, built with Vite.                                                |
 | **Static fallback** | `assets/resume.html` (generated) | Generated from `assets/resume.json` by the Python builder; what recruiters land on without WebGL/JS. |
 
 `assets/resume.json` is the single source of truth: the game's `src/game/levels.json`

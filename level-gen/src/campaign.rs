@@ -128,10 +128,22 @@ fn spec_for_seed(seed: u64, cfg: &CampaignCfg) -> (GenSpec, Tier) {
     let bucket = seed % 100;
     if bucket < 18 {
         // Tutorial: tiny board, single mechanic required, low quality target (stays learnable).
-        let line = AllowSet { line: true, ..AllowSet::none() };
-        let explosive = AllowSet { explosive: true, ..AllowSet::none() };
-        let shift = AllowSet { shift: true, ..AllowSet::none() };
-        let arrow = AllowSet { arrow: true, ..AllowSet::none() };
+        let line = AllowSet {
+            line: true,
+            ..AllowSet::none()
+        };
+        let explosive = AllowSet {
+            explosive: true,
+            ..AllowSet::none()
+        };
+        let shift = AllowSet {
+            shift: true,
+            ..AllowSet::none()
+        };
+        let arrow = AllowSet {
+            arrow: true,
+            ..AllowSet::none()
+        };
         let kinds: [(AllowSet, AllowSet, Option<Sweep>); 6] = [
             (AllowSet::none(), AllowSet::none(), None),
             (line, line, Some(Sweep::Row)),
@@ -227,7 +239,12 @@ fn passes_gate(tier: Tier, rec: &LevelRecord, cfg: &CampaignCfg) -> bool {
 /// mechanic in, and tiny boards are cheap). Combined seeds use the fast **two-tier** path — build a
 /// random board, kill it cheaply at the screen (`screen.rs`) if a thoughtless player cracks it, and
 /// only pay for a full deep solve on survivors. That's what makes hundreds of thousands/hour viable.
-fn try_seed(seed: u64, cfg: &CampaignCfg, dcfg: &DifficultyConfig, scfg: &SolveConfig) -> Option<LevelRecord> {
+fn try_seed(
+    seed: u64,
+    cfg: &CampaignCfg,
+    dcfg: &DifficultyConfig,
+    scfg: &SolveConfig,
+) -> Option<LevelRecord> {
     let (spec, tier) = spec_for_seed(seed, cfg);
     match tier {
         Tier::Tutorial => {
@@ -306,7 +323,12 @@ fn flush(dir: &str, topk: &TopK, manifest: &Manifest) {
 }
 
 fn fmt_hms(secs: u64) -> String {
-    format!("{:02}:{:02}:{:02}", secs / 3600, (secs % 3600) / 60, secs % 60)
+    format!(
+        "{:02}:{:02}:{:02}",
+        secs / 3600,
+        (secs % 3600) / 60,
+        secs % 60
+    )
 }
 
 /// Run (or resume) a campaign until its duration elapses or Ctrl-C is pressed.
@@ -322,7 +344,11 @@ pub fn run(mut cfg: CampaignCfg, resume: bool) {
                     m.name, m.next_seed, m.kept, m.generated
                 );
                 cfg.topk = m.topk;
-                (m.next_seed, m.generated, TopK::from_records(load_pool(&cfg.dir), m.topk))
+                (
+                    m.next_seed,
+                    m.generated,
+                    TopK::from_records(load_pool(&cfg.dir), m.topk),
+                )
             }
             None => {
                 eprintln!("--resume: no manifest in {} — starting fresh.", cfg.dir);
@@ -421,8 +447,16 @@ pub fn run(mut cfg: CampaignCfg, resume: bool) {
         if last_flush.elapsed().as_secs() >= cfg.flush_secs {
             let gen_total = prior_generated + generated.load(Ordering::Relaxed);
             let next_seed = counter.load(Ordering::Relaxed);
-            flush(&cfg.dir, &topk, &mk(next_seed, gen_total, topk.len() as u64));
-            let rate = if elapsed > 0 { gen_total as f64 / elapsed as f64 } else { 0.0 };
+            flush(
+                &cfg.dir,
+                &topk,
+                &mk(next_seed, gen_total, topk.len() as u64),
+            );
+            let rate = if elapsed > 0 {
+                gen_total as f64 / elapsed as f64
+            } else {
+                0.0
+            };
             println!(
                 "[t={}] generated {} ({:.0}/s) · kept {} · buckets {}",
                 fmt_hms(elapsed),
@@ -442,7 +476,11 @@ pub fn run(mut cfg: CampaignCfg, resume: bool) {
     // Final flush with the true cursor.
     let gen_total = prior_generated + generated.load(Ordering::Relaxed);
     let next_seed = counter.load(Ordering::Relaxed);
-    flush(&cfg.dir, &topk, &mk(next_seed, gen_total, topk.len() as u64));
+    flush(
+        &cfg.dir,
+        &topk,
+        &mk(next_seed, gen_total, topk.len() as u64),
+    );
 
     println!(
         "\nCampaign '{}' done: generated {}, kept {} → {}",

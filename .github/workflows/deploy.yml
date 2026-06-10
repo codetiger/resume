@@ -31,7 +31,7 @@ jobs:
       # build then copies into dist/ along with the rest of assets/.
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python3 build.py
 
@@ -39,7 +39,7 @@ jobs:
       # resume.json, resume.html — into dist/).
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - run: npm ci
       - run: npm run build

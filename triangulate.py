@@ -8,11 +8,11 @@ then deflate-compressed and base64-encoded for inline use.
 Used by build.py via: from triangulate import export_hex_mosaic
 """
 
+import base64
 import io
 import math
 import struct
 import zlib
-import base64
 
 import numpy as np
 from PIL import Image
@@ -64,7 +64,7 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
         for col in range(int(canvas_size / dx) + 2):
             cx = col * dx + (dx / 2 if row % 2 else 0)
             cy = row * dy
-            dist = math.sqrt((cx - cr)**2 + (cy - cr)**2)
+            dist = math.sqrt((cx - cr) ** 2 + (cy - cr) ** 2)
             if dist + hex_radius * 0.8 <= cr:
                 cells.append((cx, cy))
 
@@ -90,7 +90,7 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
 
     pal_data = quantized_sample.getpalette()
     # Always pad to full palette_size so JS decoder reads correct offset
-    palette = np.array(pal_data[:palette_size * 3], dtype=np.uint8).reshape(palette_size, 3)
+    palette = np.array(pal_data[: palette_size * 3], dtype=np.uint8).reshape(palette_size, 3)
     nc = palette_size
 
     # Step 3: Map each cell to nearest palette entry (0-based)
@@ -102,14 +102,14 @@ def export_hex_mosaic(image_path, hex_radius=2, canvas_size=144, index_bits=5, c
 
     # Pack binary: header + palette + bit-packed indices
     buf = struct.pack(
-        '<BBBH', round(hex_radius * 10), round(coarse_radius * 10), index_bits, n_cells
+        "<BBBH", round(hex_radius * 10), round(coarse_radius * 10), index_bits, n_cells
     )
     buf += palette.tobytes()
     buf += _pack_bits(labels, index_bits)
 
     raw_size = len(buf)
     compressed = zlib.compress(buf, 9)
-    encoded = base64.b64encode(compressed).decode('ascii')
+    encoded = base64.b64encode(compressed).decode("ascii")
 
     print(f"Palette: {nc} colors")
     print(f"Binary: {raw_size:,} bytes → deflate: {len(compressed):,} → base64: {len(encoded):,}")
@@ -127,6 +127,6 @@ def export_photo(image_path, size=432, quality=88):
     out = io.BytesIO()
     img.save(out, format="JPEG", quality=quality, optimize=True)
     data = out.getvalue()
-    encoded = base64.b64encode(data).decode('ascii')
+    encoded = base64.b64encode(data).decode("ascii")
     print(f"Photo: {size}x{size} JPEG {len(data):,} bytes → base64: {len(encoded):,}")
     return encoded

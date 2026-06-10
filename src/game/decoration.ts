@@ -16,8 +16,8 @@ const FRAME_DURATION = 0.5;
 // Cubes sit RISE_HEIGHT above BASE_Y when fully "up", giving visible travel
 // before they sink back below the platform surface.
 const RISE_HEIGHT = 0.03;
-const TOP_Y = BASE_Y + RISE_HEIGHT;     // fully raised
-const BOTTOM_Y = BASE_Y - 0.04;         // hidden under the platform
+const TOP_Y = BASE_Y + RISE_HEIGHT; // fully raised
+const BOTTOM_Y = BASE_Y - 0.04; // hidden under the platform
 
 // Fraction of each frame spent rising/sinking; the rest is a dwell at the target
 // height. The dwell stops a cube lit for a single frame from instantly reversing.
@@ -58,10 +58,10 @@ const ALL_FRAMES: Record<Direction, Frame[]> = {
 };
 
 function cubeY(inPrev: boolean, inCur: boolean, t: number): number {
-  if (inPrev && inCur) return TOP_Y;                          // stable
+  if (inPrev && inCur) return TOP_Y; // stable
   if (inPrev && !inCur) return TOP_Y + (BOTTOM_Y - TOP_Y) * t; // sinking
   if (!inPrev && inCur) return BOTTOM_Y + (TOP_Y - BOTTOM_Y) * t; // rising
-  return BOTTOM_Y;                                            // fully sunk
+  return BOTTOM_Y; // fully sunk
 }
 
 /** Build the shared 8×8 cube grid into `group`, returning the meshes by [row][col]. */
@@ -116,7 +116,7 @@ function makeDecoration(frames: Frame[], color: number): Decoration {
         curFrameIdx = fi;
         settled = false;
       }
-      if (settled) return;   // nothing moving this frame — leave the cubes as they are
+      if (settled) return; // nothing moving this frame — leave the cubes as they are
 
       const cur = frames[curFrameIdx];
       const prev = frames[prevFrameIdx];
@@ -502,7 +502,7 @@ export function createInfoDecoration(color: number): Decoration {
   // The swirl: a handful of cubes set on a tilted ring around the stem, tapering
   // comet-like. Spinning the ring on Y sweeps them around the "i".
   const swirl = new THREE.Group();
-  swirl.rotation.z = 0.35;                       // tilt the orbit so it reads in 3D
+  swirl.rotation.z = 0.35; // tilt the orbit so it reads in 3D
   swirl.position.y = BASE_Y + STEM_H * 0.55;
   group.add(swirl);
 
@@ -510,7 +510,7 @@ export function createInfoDecoration(color: number): Decoration {
   const ORBIT_R = 0.12;
   for (let i = 0; i < SWIRL_COUNT; i++) {
     const t = i / SWIRL_COUNT;
-    const s = 0.026 * (1 - t) + 0.006;           // trailing cubes shrink
+    const s = 0.026 * (1 - t) + 0.006; // trailing cubes shrink
     const cube = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), material);
     const a = t * Math.PI * 2;
     cube.position.set(Math.cos(a) * ORBIT_R, (t - 0.5) * 0.09, Math.sin(a) * ORBIT_R);
@@ -533,11 +533,11 @@ export function createInfoDecoration(color: number): Decoration {
 // home-page level grid. Each digit is its own 8×8 cell; changed digits roll
 // vertically like a mechanical counter. Designed to fit a single 1.0 tile.
 
-const NUM_STEP = 0.028;                       // cube spacing within a digit cell
-const NUM_CUBE = 0.022;                       // small cube size
-const NUM_DIGIT_PITCH = 0.255;                // X distance between digit centres
-const NUM_BOTTOM_Y = BASE_Y - 0.03;           // hidden under the surface
-const NUM_TOP_Y = BASE_Y + 0.02;              // raised
+const NUM_STEP = 0.028; // cube spacing within a digit cell
+const NUM_CUBE = 0.022; // small cube size
+const NUM_DIGIT_PITCH = 0.255; // X distance between digit centres
+const NUM_BOTTOM_Y = BASE_Y - 0.03; // hidden under the surface
+const NUM_TOP_Y = BASE_Y + 0.02; // raised
 
 // One geometry shared by every odometer cube across every display — the level
 // grid can show a dozen displays at once, so per-cube allocation is avoided.
@@ -587,7 +587,11 @@ export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay
       Array.from({ length: GRID }, (_, c) => {
         const mesh = new THREE.Mesh(NUMBER_CUBE_GEO, material);
         // No shadows: many displays render at once and they read fine lit.
-        mesh.position.set((c - (GRID - 1) / 2) * NUM_STEP, NUM_BOTTOM_Y, (r - (GRID - 1) / 2) * NUM_STEP);
+        mesh.position.set(
+          (c - (GRID - 1) / 2) * NUM_STEP,
+          NUM_BOTTOM_Y,
+          (r - (GRID - 1) / 2) * NUM_STEP,
+        );
         mesh.visible = false;
         cellGroup.add(mesh);
         return mesh;
@@ -613,7 +617,7 @@ export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay
     group,
     set(n: number) {
       const clamped = Math.max(0, Math.min(Math.round(n), 10 ** maxDigits - 1));
-      const str = String(clamped);               // significant digits, no padding
+      const str = String(clamped); // significant digits, no padding
       const len = str.length;
       cells.forEach((cell, i) => {
         if (i < len) {
@@ -629,7 +633,7 @@ export function createNumberDisplay(color: number, maxDigits = 3): NumberDisplay
     lock() {
       cells.forEach((cell, i) => {
         if (i === 0) {
-          cell.group.position.x = 0;            // single centred glyph
+          cell.group.position.x = 0; // single centred glyph
           cell.group.visible = true;
           renderFrame(cell, LOCK_FRAME);
         } else {

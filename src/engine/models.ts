@@ -77,7 +77,12 @@ export async function loadPlayerModel(cubeSize: number): Promise<THREE.Group> {
     const mats = Array.isArray(child.material) ? child.material : [child.material];
     const upgraded = mats.map((mat) =>
       mat.name === 'White'
-        ? new THREE.MeshStandardMaterial({ name: 'White', color: neonCyan, roughness: 0.35, metalness: 0.3 })
+        ? new THREE.MeshStandardMaterial({
+            name: 'White',
+            color: neonCyan,
+            roughness: 0.35,
+            metalness: 0.3,
+          })
         : new THREE.MeshStandardMaterial({
             name: mat.name,
             color: (mat as THREE.MeshPhongMaterial).color ?? new THREE.Color(PALETTE.player.dark),

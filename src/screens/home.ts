@@ -12,13 +12,13 @@ import type { Screen } from '../game/app';
 // entering drops in from the opposite edge (the reverse fall). Column count and
 // platform size adapt to the viewport so the screen is fully used on any device.
 const VISIBLE_ROWS = 3;
-const DROP = 2.6;          // how far an off-band row floats above / sinks below
-const SPIN = 1.5;          // tumble (radians) at the edge of the band
-const FALL_VANISH = 0.8;   // off-band distance (rows) at which a falling row is hidden
-const EASE = 0.18;         // scroll easing per frame
-const WHEEL_STEP = 90;     // wheel delta needed to page one row
-const FOCUS_LIFT = 0.32;   // how high the selected tile rises above its row
-const FOCUS_SCALE = 1.32;  // and how much bigger it swells
+const DROP = 2.6; // how far an off-band row floats above / sinks below
+const SPIN = 1.5; // tumble (radians) at the edge of the band
+const FALL_VANISH = 0.8; // off-band distance (rows) at which a falling row is hidden
+const EASE = 0.18; // scroll easing per frame
+const WHEEL_STEP = 90; // wheel delta needed to page one row
+const FOCUS_LIFT = 0.32; // how high the selected tile rises above its row
+const FOCUS_SCALE = 1.32; // and how much bigger it swells
 
 const columnsForWidth = (w: number) => clamp(Math.round(w / 180), 2, 8);
 
@@ -44,8 +44,8 @@ interface Tile {
 // (the lift + scale do the rest of the "selected" signalling). One per material role.
 type TileRole = 'body' | 'trim' | 'digits';
 const SELECTED: Record<TileRole, { color: number; emissive: number; intensity: number }> = {
-  body:   { color: 0x00ccff, emissive: 0x00ccff, intensity: 0.55 }, // cyan-vivid, glowing but not clipped
-  trim:   { color: 0x0f1d2e, emissive: 0x0891b2, intensity: 0.35 }, // raised-card dark with a cyan-shift rim
+  body: { color: 0x00ccff, emissive: 0x00ccff, intensity: 0.55 }, // cyan-vivid, glowing but not clipped
+  trim: { color: 0x0f1d2e, emissive: 0x0891b2, intensity: 0.35 }, // raised-card dark with a cyan-shift rim
   digits: { color: 0xe8f3ff, emissive: 0x8cdcff, intensity: 0.45 }, // ice-white (tx-0) with a soft cyan halo
 };
 interface Row {
@@ -74,9 +74,11 @@ const LABEL_FONTS_READY: Promise<unknown> = document.fonts?.load
   : Promise.resolve();
 
 function createNameLabel(name: string, year: string): THREE.Mesh {
-  const W = 512, H = 200;
+  const W = 512,
+    H = 200;
   const canvas = document.createElement('canvas');
-  canvas.width = W; canvas.height = H;
+  canvas.width = W;
+  canvas.height = H;
   const ctx = canvas.getContext('2d')!;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -84,7 +86,11 @@ function createNameLabel(name: string, year: string): THREE.Mesh {
   const maxW = W - 40;
   const fit = (text: string, weight: number, font: string, start: number) => {
     let px = start;
-    do { ctx.font = `${weight} ${px}px ${font}`; if (ctx.measureText(text).width <= maxW) break; px -= 2; } while (px > 18);
+    do {
+      ctx.font = `${weight} ${px}px ${font}`;
+      if (ctx.measureText(text).width <= maxW) break;
+      px -= 2;
+    } while (px > 18);
     return px;
   };
 
@@ -109,12 +115,20 @@ function createNameLabel(name: string, year: string): THREE.Mesh {
   tex.anisotropy = 4;
   tex.colorSpace = THREE.SRGBColorSpace;
   // Repaint with the real brand fonts the moment they're available.
-  LABEL_FONTS_READY.then(() => { draw(); tex.needsUpdate = true; });
+  LABEL_FONTS_READY.then(() => {
+    draw();
+    tex.needsUpdate = true;
+  });
 
-  const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+  const mat = new THREE.MeshBasicMaterial({
+    map: tex,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.36), mat);
-  mesh.rotation.x = -Math.PI / 2;       // lie flat on the platform, readable from above
-  mesh.position.set(0, 0.1, 0.30);      // hover just over the surface, in front of the number
+  mesh.rotation.x = -Math.PI / 2; // lie flat on the platform, readable from above
+  mesh.position.set(0, 0.1, 0.3); // hover just over the surface, in front of the number
   mesh.renderOrder = 2;
   return mesh;
 }
@@ -126,7 +140,9 @@ function createNameLabel(name: string, year: string): THREE.Mesh {
 // resize, since the font size shifts at the mobile breakpoint.
 function syncRollerWidths(): void {
   const roller = document.querySelector<HTMLElement>('#home-hud .roller');
-  const words = roller ? Array.from(roller.querySelectorAll<HTMLElement>('.roller-track > span')) : [];
+  const words = roller
+    ? Array.from(roller.querySelectorAll<HTMLElement>('.roller-track > span'))
+    : [];
   if (!roller || !words.length) return;
 
   const cs = getComputedStyle(words[0]);
@@ -159,7 +175,9 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   // The first level — and any already-completed level — is always open.
   const isUnlocked = (i: number): boolean =>
     i === 0 || completed.has(levels[i].number) || completed.has(levels[i - 1].number);
-  const select = (i: number): void => { if (isUnlocked(i)) onSelect(i); };
+  const select = (i: number): void => {
+    if (isUnlocked(i)) onSelect(i);
+  };
 
   // When the visitor prefers reduced motion, page instantly and drop the row
   // tumble (the CSS roller/pulse are already stilled by a media query).
@@ -181,7 +199,7 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   // On tall (portrait) screens the same world depth projects lower, so raise and
   // tighten the rows to keep all three on-screen and fill the space.
   const portrait = aspect < 0.85;
-  const Z_TOP = portrait ? -0.3 : 0.4;   // smaller = higher on screen
+  const Z_TOP = portrait ? -0.3 : 0.4; // smaller = higher on screen
   const ROW_GAP = portrait ? 1.35 : 1.5; // Z pitch between rows before tightening
   const ROW_DZ = SCALE + (ROW_GAP - SCALE) * 0.75; // tighten the row gap to 3/4 too
 
@@ -204,7 +222,10 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       wrapper.scale.setScalar(SCALE);
       wrapper.userData.levelIndex = i;
 
-      const tile = createTile({ kind: completed.has(def.number) ? 'info' : 'base', template: assets.template });
+      const tile = createTile({
+        kind: completed.has(def.number) ? 'info' : 'base',
+        template: assets.template,
+      });
       wrapper.add(tile);
 
       const number = createNumberDisplay(PALETTE.decoration.shift);
@@ -227,7 +248,13 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
         }
       });
       const seen = new Set<THREE.Material>();
-      const mats: { m: THREE.MeshStandardMaterial; color: number; emissive: number; intensity: number; sel: typeof SELECTED[TileRole] }[] = [];
+      const mats: {
+        m: THREE.MeshStandardMaterial;
+        color: number;
+        emissive: number;
+        intensity: number;
+        sel: (typeof SELECTED)[TileRole];
+      }[] = [];
       wrapper.traverse((o) => {
         if (!(o instanceof THREE.Mesh)) return;
         const list = Array.isArray(o.material) ? o.material : [o.material];
@@ -236,7 +263,9 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
           seen.add(m);
           const role: TileRole = numberMats.has(m)
             ? 'digits'
-            : m.emissive.getHex() === 0 ? 'trim' : 'body';
+            : m.emissive.getHex() === 0
+              ? 'trim'
+              : 'body';
           mats.push({
             m,
             color: m.color.getHex(),
@@ -283,7 +312,8 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
     // Keep keyboard focus within the visible rows so Enter launches a level you see.
     const fr = Math.floor(focus / COLS);
     if (fr < targetTop) focus = clamp(targetTop * COLS, 0, levels.length - 1);
-    else if (fr > targetTop + VISIBLE_ROWS - 1) focus = clamp((targetTop + VISIBLE_ROWS - 1) * COLS, 0, levels.length - 1);
+    else if (fr > targetTop + VISIBLE_ROWS - 1)
+      focus = clamp((targetTop + VISIBLE_ROWS - 1) * COLS, 0, levels.length - 1);
   };
 
   const ensureFocusVisible = () => {
@@ -301,15 +331,27 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
   const onWheel = (e: WheelEvent) => {
     e.preventDefault();
     wheelAccum += e.deltaY;
-    while (wheelAccum >= WHEEL_STEP) { scrollBy(1); wheelAccum -= WHEEL_STEP; }
-    while (wheelAccum <= -WHEEL_STEP) { scrollBy(-1); wheelAccum += WHEEL_STEP; }
+    while (wheelAccum >= WHEEL_STEP) {
+      scrollBy(1);
+      wheelAccum -= WHEEL_STEP;
+    }
+    while (wheelAccum <= -WHEEL_STEP) {
+      scrollBy(-1);
+      wheelAccum += WHEEL_STEP;
+    }
   };
   let touchY = 0;
-  const onTouchStart = (e: TouchEvent) => { touchY = e.touches[0]?.clientY ?? 0; };
+  const onTouchStart = (e: TouchEvent) => {
+    touchY = e.touches[0]?.clientY ?? 0;
+  };
   const onTouchMove = (e: TouchEvent) => {
     const y = e.touches[0]?.clientY ?? touchY;
     const dy = y - touchY;
-    if (Math.abs(dy) > 55) { scrollBy(dy < 0 ? 1 : -1); touchY = y; e.preventDefault(); }
+    if (Math.abs(dy) > 55) {
+      scrollBy(dy < 0 ? 1 : -1);
+      touchY = y;
+      e.preventDefault();
+    }
   };
   window.addEventListener('wheel', onWheel, { passive: false });
   window.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -341,7 +383,10 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       for (const hit of hits) {
         let o: THREE.Object3D | null = hit.object;
         while (o && o.userData.levelIndex === undefined) o = o.parent;
-        if (o) { select(o.userData.levelIndex as number); return; }
+        if (o) {
+          select(o.userData.levelIndex as number);
+          return;
+        }
       }
     },
 
@@ -398,19 +443,21 @@ export function createHomeScreen(opts: HomeScreenOptions): Screen {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('resize', syncRollerWidths);
-      rows.forEach((row) => row.tiles.forEach((t) => {
-        t.wrapper.traverse((obj) => {
-          if (obj instanceof THREE.Mesh) {
-            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-            for (const m of mats) {
-              // Name plates own a CanvasTexture; free it along with the material.
-              const map = (m as THREE.MeshBasicMaterial | undefined)?.map;
-              map?.dispose?.();
-              m?.dispose?.();
+      rows.forEach((row) =>
+        row.tiles.forEach((t) => {
+          t.wrapper.traverse((obj) => {
+            if (obj instanceof THREE.Mesh) {
+              const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+              for (const m of mats) {
+                // Name plates own a CanvasTexture; free it along with the material.
+                const map = (m as THREE.MeshBasicMaterial | undefined)?.map;
+                map?.dispose?.();
+                m?.dispose?.();
+              }
             }
-          }
-        });
-      }));
+          });
+        }),
+      );
     },
   };
 }

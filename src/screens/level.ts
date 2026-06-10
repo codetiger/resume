@@ -20,10 +20,14 @@ function decodePhone(encoded: string): string {
 }
 
 const KEY_MAP: Record<string, Direction> = {
-  ArrowRight: 'right', KeyD: 'right',
-  ArrowLeft: 'left', KeyA: 'left',
-  ArrowDown: 'forward', KeyS: 'forward',
-  ArrowUp: 'back', KeyW: 'back',
+  ArrowRight: 'right',
+  KeyD: 'right',
+  ArrowLeft: 'left',
+  KeyA: 'left',
+  ArrowDown: 'forward',
+  KeyS: 'forward',
+  ArrowUp: 'back',
+  KeyW: 'back',
 };
 
 export interface LevelScreenOptions {
@@ -42,7 +46,11 @@ export interface LevelScreenOptions {
 const pad3 = (n: number) => String(n).padStart(3, '0');
 const pad2 = (n: number) => String(n).padStart(2, '0');
 /** Strip protocol / www / trailing slash to a bare host for link labels. */
-const hostOf = (u: string) => u.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+const hostOf = (u: string) =>
+  u
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/$/, '');
 
 export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const { assets, player, def, index, total } = opts;
@@ -53,20 +61,26 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const SWIRL_Y = assets.tileHeight / 2 + CUBE_SIZE / 2;
 
   const state = {
-    playerCol: 0, playerRow: 0,
-    prevCol: 0, prevRow: 0,
+    playerCol: 0,
+    playerRow: 0,
+    prevCol: 0,
+    prevRow: 0,
     // A move is in flight whose landing hasn't been resolved yet. Driven by the
     // physics, not a frame-boundary edge, so the landing can never be skipped by
     // a new move queued in the gap between the roll finishing and the next tick.
     arrivalPending: false,
-    won: false, gameOver: false,
-    paused: false,     // info card open
-    pauseMenu: false,  // Esc pause menu open
+    won: false,
+    gameOver: false,
+    paused: false, // info card open
+    pauseMenu: false, // Esc pause menu open
   };
 
   // A blast that reaches the cube's tile destroys the ground under it: the cube
   // drops, and that drop owes a landing (resolved into a game-over).
-  level.setOnPlayerLost(() => { player.drop(); state.arrivalPending = true; });
+  level.setOnPlayerLost(() => {
+    player.drop();
+    state.arrivalPending = true;
+  });
 
   // Place the player on the base tile.
   const baseEntry = [...level.tiles.entries()].find(([, t]) => t.userData.kind === 'base');
@@ -117,18 +131,26 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   const pauseHome = $('pause-home');
 
   if (levelNameEl) levelNameEl.textContent = `${pad3(def.number)} · ${def.name}`;
-  const updateRemaining = () => { if (remainingEl) remainingEl.textContent = String(level.remaining()); };
+  const updateRemaining = () => {
+    if (remainingEl) remainingEl.textContent = String(level.remaining());
+  };
   updateRemaining();
 
-  const hideOverlay = (el: HTMLElement | null) => { if (el) el.style.display = 'none'; };
-  const showOverlay = (el: HTMLElement | null) => { if (el) el.style.display = 'flex'; };
+  const hideOverlay = (el: HTMLElement | null) => {
+    if (el) el.style.display = 'none';
+  };
+  const showOverlay = (el: HTMLElement | null) => {
+    if (el) el.style.display = 'flex';
+  };
 
   // Accessibility: when a dialog opens, move focus to its first visible button so
   // keyboard / screen-reader users land inside it; when it closes, release focus so
   // it never lingers on a now-hidden control.
   const focusFirst = (...buttons: (HTMLElement | null)[]) =>
     buttons.find((b) => b && b.style.display !== 'none')?.focus();
-  const releaseFocus = () => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); };
+  const releaseFocus = () => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  };
 
   function showInfo(): void {
     const c = def.content;
@@ -139,7 +161,8 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     if (infoCard) infoCard.className = `info-card ${variant}`;
     if (infoNum) infoNum.textContent = pad3(def.number);
     // Chapter label + progress rail: one segment per level, filled up to here.
-    if (infoChapterLabel) infoChapterLabel.textContent = `Chapter ${pad2(index + 1)} / ${pad2(total)}`;
+    if (infoChapterLabel)
+      infoChapterLabel.textContent = `Chapter ${pad2(index + 1)} / ${pad2(total)}`;
     if (infoRail) {
       infoRail.innerHTML = '';
       for (let i = 0; i < total; i++) {
@@ -150,9 +173,18 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       }
     }
     if (infoHeading) infoHeading.textContent = c.heading;
-    if (infoSub) { infoSub.textContent = c.subheading ?? ''; infoSub.style.display = c.subheading ? '' : 'none'; }
-    if (infoPeriod) { infoPeriod.textContent = c.period ?? ''; infoPeriod.style.display = c.period ? '' : 'none'; }
-    if (infoSummary) { infoSummary.textContent = c.summary ?? ''; infoSummary.style.display = c.summary ? '' : 'none'; }
+    if (infoSub) {
+      infoSub.textContent = c.subheading ?? '';
+      infoSub.style.display = c.subheading ? '' : 'none';
+    }
+    if (infoPeriod) {
+      infoPeriod.textContent = c.period ?? '';
+      infoPeriod.style.display = c.period ? '' : 'none';
+    }
+    if (infoSummary) {
+      infoSummary.textContent = c.summary ?? '';
+      infoSummary.style.display = c.summary ? '' : 'none';
+    }
     if (infoBullets) {
       infoBullets.innerHTML = '';
       infoBullets.style.display = c.bullets.length ? '' : 'none';
@@ -301,9 +333,10 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
     state.won = true;
     opts.onComplete();
     const hasNext = index + 1 < total;
-    if (winSub) winSub.textContent = hasNext
-      ? `Level ${pad3(def.number)} cleared. ${def.name}.`
-      : `That's the final level. You've seen the whole story.`;
+    if (winSub)
+      winSub.textContent = hasNext
+        ? `Level ${pad3(def.number)} cleared. ${def.name}.`
+        : `That's the final level. You've seen the whole story.`;
     if (winNext) winNext.style.display = hasNext ? '' : 'none';
     // Finishing the final level unlocks the phone number — the reward for playing.
     if (winUnlock) {
@@ -341,7 +374,11 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // Each overlay button binds a click and one or more keys to the SAME action, so
   // mouse and keyboard always stay in parity and no button can be left half-wired.
   // onKey() dispatches a press against the active overlay's button set (below).
-  interface OverlayButton { el: HTMLElement | null; action: () => void; keys: string[]; }
+  interface OverlayButton {
+    el: HTMLElement | null;
+    action: () => void;
+    keys: string[];
+  }
   const infoButtons: OverlayButton[] = [
     { el: infoContinue, action: dismissInfo, keys: ['Enter', 'Space', 'Escape'] },
   ];
@@ -366,15 +403,24 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // Also dismiss the info card by clicking the dimmed backdrop outside it, as a
   // fallback if the button is ever awkward to hit. Win/game-over keep no backdrop
   // action — their two choices have no single obvious default.
-  if (infoOverlay) infoOverlay.onclick = (e) => { if (e.target === infoOverlay) dismissInfo(); };
+  if (infoOverlay)
+    infoOverlay.onclick = (e) => {
+      if (e.target === infoOverlay) dismissInfo();
+    };
   // Clicking the dimmed backdrop outside the pause card resumes play.
-  if (pauseOverlay) pauseOverlay.onclick = (e) => { if (e.target === pauseOverlay) resume(); };
+  if (pauseOverlay)
+    pauseOverlay.onclick = (e) => {
+      if (e.target === pauseOverlay) resume();
+    };
 
   // Run the first visible button whose key set contains the press.
   const dispatchKey = (buttons: OverlayButton[], code: string): void => {
     for (const b of buttons) {
       if (!b.el || b.el.style.display === 'none') continue;
-      if (b.keys.includes(code)) { b.action(); return; }
+      if (b.keys.includes(code)) {
+        b.action();
+        return;
+      }
     }
   };
 
@@ -390,7 +436,6 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       state.playerCol = action.toCol;
       state.playerRow = action.toRow;
       player.move(action.dir);
-
     } else if (action.type === 'teleport') {
       state.prevCol = state.playerCol;
       state.prevRow = state.playerRow;
@@ -402,9 +447,12 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
       toW.y = SWIRL_Y;
       const swirlColor = PALETTE.effect.teleportSwirl;
       level.effects.spawnSwirl({ pos: fromW, color: swirlColor, startTime: elapsed });
-      level.effects.spawnSwirl({ pos: toW, color: swirlColor, startTime: elapsed + TELEPORT_SHRINK });
+      level.effects.spawnSwirl({
+        pos: toW,
+        color: swirlColor,
+        startTime: elapsed + TELEPORT_SHRINK,
+      });
       player.teleport(level.cellToWorld(state.playerCol, state.playerRow));
-
     } else if (action.type === 'info') {
       showInfo();
     }
@@ -418,8 +466,18 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
   // landed-on tile's effect, then check win. A slide/teleport started here owes a
   // further landing, so arrivalPending tracks whatever motion is now in flight.
   function processLanding(elapsed: number): void {
-    if (player.hasFallen()) { state.arrivalPending = false; showGameOver(); return; }
-    const action = level.onPlayerLand(state.playerCol, state.playerRow, state.prevCol, state.prevRow, elapsed);
+    if (player.hasFallen()) {
+      state.arrivalPending = false;
+      showGameOver();
+      return;
+    }
+    const action = level.onPlayerLand(
+      state.playerCol,
+      state.playerRow,
+      state.prevCol,
+      state.prevRow,
+      elapsed,
+    );
     applyAction(action, elapsed);
     updateRemaining();
     state.arrivalPending = player.isMoving();
@@ -459,16 +517,32 @@ export function createLevelScreen(opts: LevelScreenOptions): Screen {
 
     onKey(code: string) {
       // An open overlay captures keys (confirm/navigation); movement is ignored.
-      if (state.paused) { dispatchKey(infoButtons, code); return; }
+      if (state.paused) {
+        dispatchKey(infoButtons, code);
+        return;
+      }
       if (state.pauseMenu) {
-        if (code === 'Escape') resume();   // Esc toggles the pause menu back off
+        if (code === 'Escape')
+          resume(); // Esc toggles the pause menu back off
         else dispatchKey(pauseButtons, code);
         return;
       }
-      if (state.won) { dispatchKey(winButtons, code); return; }
-      if (state.gameOver) { dispatchKey(gameOverButtons, code); return; }
-      if (code === 'Escape') { openPause(); return; }
-      if (code === 'KeyR') { opts.onRetry(); return; }  // quick restart mid-play
+      if (state.won) {
+        dispatchKey(winButtons, code);
+        return;
+      }
+      if (state.gameOver) {
+        dispatchKey(gameOverButtons, code);
+        return;
+      }
+      if (code === 'Escape') {
+        openPause();
+        return;
+      }
+      if (code === 'KeyR') {
+        opts.onRetry();
+        return;
+      } // quick restart mid-play
       const dir = KEY_MAP[code];
       if (dir) tryMove(dir);
     },

@@ -134,13 +134,13 @@ level-gen gen --batch 1500 --profile spread --seed 9000 --out ../levels
 
 One char per cell (same as `src/game/levels.json`, with a small extension):
 
-| char | tile | char | tile |
-|------|------|------|------|
-| `.` | hole | `>` `<` `^` `v` | arrow → right / left / back (up a row) / forward (down a row) |
-| `b` | base (start = finish) | `t` | teleport, default pair |
-| `n` | green (clear to win) | `1`–`9` | teleport endpoint, pair = the digit (two per id) |
-| `x` | explosive (landmine) | `r` `c` | disappear-line, row / col sweep |
-| `i` | green + content marker (placed at wiring) | `a` | legacy alias for `>` |
+| char | tile                                      | char            | tile                                                          |
+| ---- | ----------------------------------------- | --------------- | ------------------------------------------------------------- |
+| `.`  | hole                                      | `>` `<` `^` `v` | arrow → right / left / back (up a row) / forward (down a row) |
+| `b`  | base (start = finish)                     | `t`             | teleport, default pair                                        |
+| `n`  | green (clear to win)                      | `1`–`9`         | teleport endpoint, pair = the digit (two per id)              |
+| `x`  | explosive (landmine)                      | `r` `c`         | disappear-line, row / col sweep                               |
+| `i`  | green + content marker (placed at wiring) | `a`             | legacy alias for `>`                                          |
 
 `i` behaves exactly like a green for destruction (cleared by step-off, blast, or line) and counts
 toward the win the same way; it additionally reveals its résumé content when the cube lands on it.
@@ -154,7 +154,12 @@ Campaign pool entries / `gen-*.json` records (`src/io.rs`):
   "name": "gen-6x6-expert-s5093",
   "seed": 5093,
   "layout": ["nnrn..", "nnn.c.", "..nnn.", "nnnxnb", "ncnnnn", "nn..nn"],
-  "request": { "targetDifficulty": 0.77, "allow": ["n","arrow","shift","line","explosive"], "cols": 6, "rows": 6 },
+  "request": {
+    "targetDifficulty": 0.77,
+    "allow": ["n", "arrow", "shift", "line", "explosive"],
+    "cols": 6,
+    "rows": 6
+  },
   "solutions": ["vv<>>v<<^^<<^<<><vv>^^v>"],
   "solutionCount": 1,
   "reachableStates": 39815,
@@ -182,19 +187,22 @@ consumes (`number, name, layout, content`) with extra `difficulty`/`band` metada
 
 ## Project layout
 
-| file | role |
-|------|------|
-| `src/model.rs` | board primitives + validity checks (paired shifts, useless specials, …) |
-| `src/io.rs` | layout encode/decode + JSON records (quality scalars) |
-| `src/solver.rs` | exhaustive timed solver → raw data, reachability, dead-tiles, lands-on-info |
-| `src/metrics.rs` | player-behaviour quality metrics over the state graph |
-| `src/difficulty.rs` | metrics → composite quality score + gate-based band (pure function) |
-| `src/screen.rs` | cheap Tier-1 screen: simulated greedy/random players + capped BFS |
-| `src/generate.rs` | constructive backbone + green-biased mutation operators + anneal |
-| `src/anneal.rs` | simulated-annealing primitives |
-| `src/topk.rs` | bounded per-bucket top-K reservoir + persistence |
-| `src/campaign.rs` | streaming, resumable generation campaign (orchestrator) |
-| `src/curate.rs` | pool → tutorial-first, steeply-ramping, cleaned ladder |
-| `src/main.rs` | CLI (`solve` / `selftest` / `gen` / `curate` / `campaign` / `campaign-status` / `rank`) |
-| `wire_ladder.py` | merge `ladder32.json` + résumé content → `../src/game/levels.json` |
+| file                | role                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `src/model.rs`      | board primitives + validity checks (paired shifts, useless specials, …)                 |
+| `src/io.rs`         | layout encode/decode + JSON records (quality scalars)                                   |
+| `src/solver.rs`     | exhaustive timed solver → raw data, reachability, dead-tiles, lands-on-info             |
+| `src/metrics.rs`    | player-behaviour quality metrics over the state graph                                   |
+| `src/difficulty.rs` | metrics → composite quality score + gate-based band (pure function)                     |
+| `src/screen.rs`     | cheap Tier-1 screen: simulated greedy/random players + capped BFS                       |
+| `src/generate.rs`   | constructive backbone + green-biased mutation operators + anneal                        |
+| `src/anneal.rs`     | simulated-annealing primitives                                                          |
+| `src/topk.rs`       | bounded per-bucket top-K reservoir + persistence                                        |
+| `src/campaign.rs`   | streaming, resumable generation campaign (orchestrator)                                 |
+| `src/curate.rs`     | pool → tutorial-first, steeply-ramping, cleaned ladder                                  |
+| `src/main.rs`       | CLI (`solve` / `selftest` / `gen` / `curate` / `campaign` / `campaign-status` / `rank`) |
+| `wire_ladder.py`    | merge `ladder32.json` + résumé content → `../src/game/levels.json`                      |
+
+```
+
 ```

@@ -3,7 +3,7 @@
 A standalone Rust tool that reasons about the rolling-cube puzzle (the Three.js game in `../src`) to:
 
 - **(A) Solve** a board exhaustively and emit the **raw solution data** it would take to beat it;
-- **(B) Generate** boards at a requested *difficulty*, *size*, and *allowed tile set*, where difficulty
+- **(B) Generate** boards at a requested _difficulty_, _size_, and _allowed tile set_, where difficulty
   is computed from that raw data;
 - **(C) Curate** — the real goal — by generating **hundreds** of boards and ordering them into a
   tutorial-first, gradually-harder ladder (`levels/ladder.json`) ready to seed the game's
@@ -19,7 +19,7 @@ This document records the design and the decisions behind it. For how to run it,
   `v` forward/down-a-row). The rolling animation is **cosmetic** — orientation never affects rules — so
   a puzzle state is just `(position, tile-states)`.
 - **Objective:** be on the **base** with **every green cleared**. Base is start = finish. Greens crumble
-  when you *step off* them, so each green is visited at most once — a *cover-and-return* puzzle.
+  when you _step off_ them, so each green is visited at most once — a _cover-and-return_ puzzle.
 - **`i` ≡ `n`:** `info` is mechanically a green tile carrying cosmetic content. The solver models it as a
   plain green; the generator emits only `n`; the in-game `i` marker is assigned during curation.
 - **Tiles & chains** (all mirrored exactly in `solver.rs`):
@@ -32,7 +32,7 @@ This document records the design and the decisions behind it. For how to run it,
     (`grid.ts:468`), clearing its 4 neighbours (everything except base/info), chaining explosives and
     lines. Detonating on/under the cube is a loss.
 
-The explosive/line timing is the one mechanic that forces a *timed* solver (below).
+The explosive/line timing is the one mechanic that forces a _timed_ solver (below).
 
 ---
 
@@ -44,11 +44,11 @@ burning, which bounds the space). Each move resolves step-off effects, forced sl
 advances time one tick — burning fuses and resolving any detonation cascade **atomically**.
 
 **Timing is discretised** (fuse = 5 ticks; sphere travel instant; cascades atomic). Data is exact for
-time-free boards and *approximate near timing edges* for explosive/line boards — flagged via `exact`.
+time-free boards and _approximate near timing edges_ for explosive/line boards — flagged via `exact`.
 
 The solver emits **raw** data, not pre-digested metrics:
 
-- **`solutions`** — winning move strings (e.g. `">>vv<<^^"`), **deduped** so no exact duplicate *and* no
+- **`solutions`** — winning move strings (e.g. `">>vv<<^^"`), **deduped** so no exact duplicate _and_ no
   exact-reverse pair survives (the mirror reverses order and inverts each heading). Enumerated over
   can-win states as simple paths; `solvable`, `shortestPath` and the shortest-solution count derive from
   this list.
@@ -76,7 +76,7 @@ trap     = T / S                     # unforgiving (many dead ends) ⇒ harder
 difficulty = clamp01( 0.45·needle + 0.25·depth + 0.30·trap )            # in [0,1]
 ```
 
-The **needle** term deliberately requires *both* a large reachable space *and* few solutions — a tiny
+The **needle** term deliberately requires _both_ a large reachable space _and_ few solutions — a tiny
 constrained board with one solution is easy, not hard (this corrects the naive sparsity metric, which
 rewards small boards). Bands: `easy <0.20`, `medium <0.45`, `hard <0.70`, `expert` above.
 
@@ -88,7 +88,7 @@ sanity-checked against the 16 shipped boards (all land easy→low-medium) and `D
 ## 4. Generator (`generate.rs` + `anneal.rs`) — hybrid
 
 **Phase A — constructive solvable backbone.** A backtracking random self-avoiding **loop** through the
-base; its cells become greens, so walking the loop *is* a guaranteed solution. (Grid graphs are
+base; its cells become greens, so walking the loop _is_ a guaranteed solution. (Grid graphs are
 bipartite, so loops have an even cell count — enforced at close.)
 
 **Phase B — special tiles are the difficulty lever.** Simulated annealing adds/removes/relocates/retypes
@@ -119,9 +119,10 @@ The output is in the shape `src/game/levels.ts` consumes (`number, name, layout,
 Line-col → Explosive → Shift → Arrow), then three **percentile bands** of the pool (early/mid/hard).
 Within each band, boards are chosen by **interest = max(uniqueness, deceptive)** and **spread** across
 the band's difficulty range so the curve rises smoothly, with a diversity gate dropping near-duplicates:
-- *visual_complexity* — how busy a board looks (size, special density, type variety, hole shape);
-- *uniqueness* — structural symmetry (h/v/180°/transpose), weighted down for uniform fields;
-- *deceptive* — `difficulty × (1 − visual_complexity)`: hard but simple-looking.
+
+- _visual_complexity_ — how busy a board looks (size, special density, type variety, hole shape);
+- _uniqueness_ — structural symmetry (h/v/180°/transpose), weighted down for uniform fields;
+- _deceptive_ — `difficulty × (1 − visual_complexity)`: hard but simple-looking.
 
 The matching `gen --profile spread` produces a large parallel pool (rayon) with dedicated tutorial,
 mid and very-hard sub-pools so every band is populated. Bands are **relative** (percentiles of the

@@ -197,7 +197,8 @@ impl<'a> Sim<'a> {
 
     fn find_active_partner(&self, idx: usize, pid: u8) -> Option<usize> {
         for (j, cell) in self.level.cells.iter().enumerate() {
-            if j != idx && matches!(cell, Some(TileKind::Shift(p)) if *p == pid) && self.present(j) {
+            if j != idx && matches!(cell, Some(TileKind::Shift(p)) if *p == pid) && self.present(j)
+            {
                 return Some(j);
             }
         }
@@ -372,7 +373,11 @@ impl<'a> Sim<'a> {
 
 /// Apply one action (`Some(dir)` move, or `None` wait) to a state. Returns the next state and the
 /// visual events fired while resolving it, or `None` if the cube is lost (fall or destroyed).
-fn apply_action(level: &Level, state: &State, action: Option<Direction>) -> Option<(State, ActEvents, u128)> {
+fn apply_action(
+    level: &Level,
+    state: &State,
+    action: Option<Direction>,
+) -> Option<(State, ActEvents, u128)> {
     let mut sim = Sim::from_state(level, state);
     if let Some(dir) = action {
         let from = sim.pos;
@@ -514,7 +519,8 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     // `reserve_rehash` alone). Most boards stay well under a couple thousand states, so a modest
     // hint (capped at `max_states`) covers the common case without over-allocating the rare giants.
     let cap = cfg.max_states.min(2048);
-    let mut index: FxHashMap<State, u32> = FxHashMap::with_capacity_and_hasher(cap, Default::default());
+    let mut index: FxHashMap<State, u32> =
+        FxHashMap::with_capacity_and_hasher(cap, Default::default());
     let mut states: Vec<State> = Vec::with_capacity(cap);
     let mut adj: Vec<metrics::AdjRow> = Vec::with_capacity(cap);
     let mut is_win: Vec<bool> = Vec::with_capacity(cap);
@@ -646,7 +652,10 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
 
     // Can the cube actually land on the info tile on a winning line of play? (So its content can be
     // revealed.) True when there's a can-win state resting on the info cell; N/A → true.
-    let info_cell = level.cells.iter().position(|c| matches!(c, Some(TileKind::Info)));
+    let info_cell = level
+        .cells
+        .iter()
+        .position(|c| matches!(c, Some(TileKind::Info)));
     let lands_on_info = match info_cell {
         Some(ic) => (0..n).any(|i| can_win[i] && states[i].pos as usize == ic),
         None => true,
@@ -656,29 +665,30 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let rests_on_green = (0..n).any(|i| can_win[i] && (green_mask >> states[i].pos) & 1 == 1);
 
     // Enumerate solutions through can-win states only (no repeated state per path).
-    let (mut solutions, solution_count, truncated) = if cfg.enumerate && solvable && shortest_path != Some(0) {
-        let mut en = Enumerator {
-            adj: &adj,
-            is_win: &is_win,
-            can_win: &can_win,
-            on_path: vec![false; n],
-            path: String::new(),
-            canon: FxHashSet::default(),
-            stored: Vec::new(),
-            count: 0,
-            visits: 0,
-            truncated: false,
-            cfg: cfg.clone(),
+    let (mut solutions, solution_count, truncated) =
+        if cfg.enumerate && solvable && shortest_path != Some(0) {
+            let mut en = Enumerator {
+                adj: &adj,
+                is_win: &is_win,
+                can_win: &can_win,
+                on_path: vec![false; n],
+                path: String::new(),
+                canon: FxHashSet::default(),
+                stored: Vec::new(),
+                count: 0,
+                visits: 0,
+                truncated: false,
+                cfg: cfg.clone(),
+            };
+            en.on_path[0] = true;
+            en.dfs(0);
+            (en.stored, en.count, en.truncated)
+        } else if shortest_path == Some(0) {
+            // Degenerate: no greens, already won.
+            (vec![String::new()], 1, false)
+        } else {
+            (Vec::new(), 0, false)
         };
-        en.on_path[0] = true;
-        en.dfs(0);
-        (en.stored, en.count, en.truncated)
-    } else if shortest_path == Some(0) {
-        // Degenerate: no greens, already won.
-        (vec![String::new()], 1, false)
-    } else {
-        (Vec::new(), 0, false)
-    };
 
     // Keep the shortest representatives.
     solutions.sort_by_key(|s| (s.len(), s.clone()));
@@ -688,17 +698,33 @@ pub fn solve(level: &Level, cfg: &SolveConfig) -> SolveResult {
     let quality = if cfg.enumerate && solvable {
         let sp = shortest_path.unwrap_or(0);
         let (commitment, max_doom_delay) = metrics::commitment_and_delay(
-            &adj, &death_moves, &can_win, &dist_to_win, &is_win, 0, DELAY_CAP,
+            &adj,
+            &death_moves,
+            &can_win,
+            &dist_to_win,
+            &is_win,
+            0,
+            DELAY_CAP,
         );
         let (decision, forced_fraction) = metrics::decision_branching(&adj, &can_win, &is_win);
         let (spectacle, spectacle_required) = spectacle_of(level, &solutions);
         Some(QualityRaw {
             random_solve_prob: metrics::random_solve_prob(&adj, &death_moves, &is_win, 0),
             // Heuristic evaluated lazily per state the greedy walk visits (was an O(N) Vec).
-            greedy_solves: metrics::greedy_solves(&adj, |i| greedy_heuristic(level, &states[i]), &is_win, 0),
+            greedy_solves: metrics::greedy_solves(
+                &adj,
+                |i| greedy_heuristic(level, &states[i]),
+                &is_win,
+                0,
+            ),
             commitment,
             max_doom_delay,
-            optimal_path_fraction: metrics::optimal_path_fraction(&dist, &dist_to_win, &can_win, sp),
+            optimal_path_fraction: metrics::optimal_path_fraction(
+                &dist,
+                &dist_to_win,
+                &can_win,
+                sp,
+            ),
             decision,
             forced_fraction,
             spectacle,
@@ -733,7 +759,11 @@ fn replay_events(level: &Level, sol: &str) -> ActEvents {
     let mut state = start_state(level);
     let mut total = ActEvents::default();
     for ch in sol.chars() {
-        let action = if ch == '-' { None } else { Direction::from_glyph(ch) };
+        let action = if ch == '-' {
+            None
+        } else {
+            Direction::from_glyph(ch)
+        };
         match apply_action(level, &state, action) {
             Some((ns, ev, _)) => {
                 state = ns;

@@ -55,7 +55,11 @@ function saveCompleted(set: Set<number>): void {
 export function createApp(engine: Engine, assets: LoadedAssets): App {
   const { scene, render } = engine;
 
-  const player = createPlayer({ model: assets.playerModel, tileHeight: assets.tileHeight, cubeSize: CUBE_SIZE });
+  const player = createPlayer({
+    model: assets.playerModel,
+    tileHeight: assets.tileHeight,
+    cubeSize: CUBE_SIZE,
+  });
   scene.add(player.group);
   player.group.visible = false;
 
@@ -82,32 +86,42 @@ export function createApp(engine: Engine, assets: LoadedAssets): App {
       document.body.classList.remove('screen-level');
       document.body.classList.add('screen-home');
       player.group.visible = false;
-      mount(() => createHomeScreen({
-        engine,
-        assets,
-        levels: LEVELS,
-        completed,
-        onSelect: (i) => app.goLevel(i),
-      }));
+      mount(() =>
+        createHomeScreen({
+          engine,
+          assets,
+          levels: LEVELS,
+          completed,
+          onSelect: (i) => app.goLevel(i),
+        }),
+      );
     },
 
     goLevel(index) {
-      if (index < 0 || index >= LEVELS.length) { app.goHome(); return; }
+      if (index < 0 || index >= LEVELS.length) {
+        app.goHome();
+        return;
+      }
       document.body.classList.remove('screen-home');
       document.body.classList.add('screen-level');
       player.group.visible = true;
-      mount(() => createLevelScreen({
-        engine,
-        assets,
-        player,
-        def: LEVELS[index],
-        index,
-        total: LEVELS.length,
-        onComplete: () => { completed.add(LEVELS[index].number); saveCompleted(completed); },
-        onNext: () => app.goLevel(index + 1),
-        onHome: () => app.goHome(),
-        onRetry: () => app.goLevel(index),
-      }));
+      mount(() =>
+        createLevelScreen({
+          engine,
+          assets,
+          player,
+          def: LEVELS[index],
+          index,
+          total: LEVELS.length,
+          onComplete: () => {
+            completed.add(LEVELS[index].number);
+            saveCompleted(completed);
+          },
+          onNext: () => app.goLevel(index + 1),
+          onHome: () => app.goHome(),
+          onRetry: () => app.goLevel(index),
+        }),
+      );
     },
 
     start() {
@@ -132,31 +146,48 @@ export function createApp(engine: Engine, assets: LoadedAssets): App {
       // swipe-to-scroll keeps working. #stage sets touch-action:none so the
       // browser won't pan/zoom while playing.
       const canvas = engine.renderer.domElement;
-      const SWIPE_MIN = 30;       // px of travel for a gesture to count as a swipe
-      const SWIPE_MAX_MS = 600;   // slower drags aren't treated as swipes
-      let sx = 0, sy = 0, st = 0, tracking = false;
-      canvas.addEventListener('touchstart', (e) => {
-        const t = e.touches[0];
-        if (!t) return;
-        sx = t.clientX; sy = t.clientY; st = performance.now(); tracking = true;
-      }, { passive: true });
-      canvas.addEventListener('touchend', (e) => {
-        if (!tracking || !current?.onSwipe) return;
+      const SWIPE_MIN = 30; // px of travel for a gesture to count as a swipe
+      const SWIPE_MAX_MS = 600; // slower drags aren't treated as swipes
+      let sx = 0,
+        sy = 0,
+        st = 0,
         tracking = false;
-        const t = e.changedTouches[0];
-        if (!t || performance.now() - st > SWIPE_MAX_MS) return;
-        const dx = t.clientX - sx, dy = t.clientY - sy;
-        if (Math.abs(dx) < SWIPE_MIN && Math.abs(dy) < SWIPE_MIN) return;
-        const dir: Direction = Math.abs(dx) > Math.abs(dy)
-          ? (dx > 0 ? 'right' : 'left')
-          : (dy > 0 ? 'forward' : 'back');   // screen-down (dy>0) rolls "forward", matching ArrowDown
-        current.onSwipe(dir);
-      }, { passive: true });
+      canvas.addEventListener(
+        'touchstart',
+        (e) => {
+          const t = e.touches[0];
+          if (!t) return;
+          sx = t.clientX;
+          sy = t.clientY;
+          st = performance.now();
+          tracking = true;
+        },
+        { passive: true },
+      );
+      canvas.addEventListener(
+        'touchend',
+        (e) => {
+          if (!tracking || !current?.onSwipe) return;
+          tracking = false;
+          const t = e.changedTouches[0];
+          if (!t || performance.now() - st > SWIPE_MAX_MS) return;
+          const dx = t.clientX - sx,
+            dy = t.clientY - sy;
+          if (Math.abs(dx) < SWIPE_MIN && Math.abs(dy) < SWIPE_MIN) return;
+          const dir: Direction =
+            Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'forward' : 'back'; // screen-down (dy>0) rolls "forward", matching ArrowDown
+          current.onSwipe(dir);
+        },
+        { passive: true },
+      );
 
       // On-screen d-pad (shown only on coarse-pointer devices via CSS). Each pad
       // button drives the same onSwipe path as a gesture.
       const DPAD: Record<string, Direction> = {
-        'dpad-up': 'back', 'dpad-down': 'forward', 'dpad-left': 'left', 'dpad-right': 'right',
+        'dpad-up': 'back',
+        'dpad-down': 'forward',
+        'dpad-left': 'left',
+        'dpad-right': 'right',
       };
       for (const [id, dir] of Object.entries(DPAD)) {
         document.getElementById(id)?.addEventListener('click', () => current?.onSwipe?.(dir));

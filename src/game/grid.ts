@@ -21,13 +21,13 @@ export const CUBE_SIZE = 0.7;
 export const TILE_GAP = CUBE_SIZE * 2 - TILE_SIZE; // = 0.4
 
 // A removed tile drops away under gravity (tumbling) instead of squashing in place.
-const TILE_FALL_GRAVITY = 26;   // world units / s² downward acceleration
-const TILE_FALL_FLOOR = -6;     // world Y at which the tile is gone from view
+const TILE_FALL_GRAVITY = 26; // world units / s² downward acceleration
+const TILE_FALL_FLOOR = -6; // world Y at which the tile is gone from view
 
 // Blast countdown: a triggered blast counts BLAST_COUNT_FROM…1 before detonating.
 // Tune these to change the countdown — e.g. a faster fuse or more steps.
-export const BLAST_COUNT_FROM = 3;        // numbers shown before it blows (3,2,1)
-export const BLAST_COUNT_INTERVAL = 0.6;  // seconds each number stays on screen
+export const BLAST_COUNT_FROM = 3; // numbers shown before it blows (3,2,1)
+export const BLAST_COUNT_INTERVAL = 0.6; // seconds each number stays on screen
 
 export interface CellDef {
   kind: TileKind;
@@ -45,7 +45,7 @@ export type TileAction =
   | { type: 'none' }
   | { type: 'slide'; dir: Direction; toCol: number; toRow: number }
   | { type: 'teleport'; toCol: number; toRow: number }
-  | { type: 'info' };   // cube settled on the highlighted goal tile — reveal content
+  | { type: 'info' }; // cube settled on the highlighted goal tile — reveal content
 
 type TileState = 'active' | 'gone';
 
@@ -92,15 +92,25 @@ export interface Level {
 /** The free-running cube-grid decoration for a tile kind (blast handled separately). */
 function makeDecorationForKind(cell: CellDef): Decoration | null {
   switch (cell.kind) {
-    case 'arrow':            return cell.dir ? createArrowDecoration(cell.dir, PALETTE.decoration.arrow) : null;
-    case 'base':             return createBaseDecoration(PALETTE.decoration.base);
-    case 'disappear-normal': return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
-    case 'disappear-line':   return createDisappearLineDecoration(cell.sweepDir ?? 'row', PALETTE.decoration['disappear-line']);
-    case 'shift':            return createShiftDecoration(PALETTE.decoration.shift);
+    case 'arrow':
+      return cell.dir ? createArrowDecoration(cell.dir, PALETTE.decoration.arrow) : null;
+    case 'base':
+      return createBaseDecoration(PALETTE.decoration.base);
+    case 'disappear-normal':
+      return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
+    case 'disappear-line':
+      return createDisappearLineDecoration(
+        cell.sweepDir ?? 'row',
+        PALETTE.decoration['disappear-line'],
+      );
+    case 'shift':
+      return createShiftDecoration(PALETTE.decoration.shift);
     // Info tiles look like a plain green tile (same radar pulse); the 3D "i"
     // beacon is added separately on top in the build loop.
-    case 'info':             return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
-    default:                 return null;
+    case 'info':
+      return createDisappearNormalDecoration(PALETTE.decoration['disappear-normal']);
+    default:
+      return null;
   }
 }
 
@@ -226,10 +236,10 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   // Light a blast's fuse: starts the 3-2-1 countdown driven in update(). Called
   // when the cube steps OFF a blast (landmine) or when a chain reaches one.
   function igniteBlast(key: string, elapsed: number): void {
-    if (tileStates.get(key) !== 'active') return;   // already gone
-    if (blastTimers.has(key)) return;               // already counting down
+    if (tileStates.get(key) !== 'active') return; // already gone
+    if (blastTimers.has(key)) return; // already counting down
     const vis = explosiveVisuals.get(key);
-    if (vis) vis.normal.visible = false;            // swap the pulse for the digits
+    if (vis) vis.normal.visible = false; // swap the pulse for the digits
     blastTimers.set(key, { startTime: elapsed });
   }
 
@@ -249,7 +259,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   }
 
   function activateLine(startKey: string, elapsed: number): void {
-    if (triggeredLines.has(startKey)) return;   // the line tile persists; it fires once
+    if (triggeredLines.has(startKey)) return; // the line tile persists; it fires once
     triggeredLines.add(startKey);
     const def = cellDefs.get(startKey);
     if (!def) return;
@@ -260,7 +270,16 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     // Two orange spheres fly out from the trigger, one each way along the line,
     // clearing every tile they pass. Recursion into another line tile spawns its
     // own perpendicular spheres, so chains still cascade across the board.
-    const sides: [number, number][] = sweepDir === 'row' ? [[1, 0], [-1, 0]] : [[0, 1], [0, -1]];
+    const sides: [number, number][] =
+      sweepDir === 'row'
+        ? [
+            [1, 0],
+            [-1, 0],
+          ]
+        : [
+            [0, 1],
+            [0, -1],
+          ];
     for (const [dc, dr] of sides) {
       const targets: ReachTarget[] = [];
       let c = col + dc;
@@ -271,7 +290,13 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
         c += dc;
         r += dr;
       }
-      if (targets.length) effects.spawnProjectile({ origin, color: PALETTE.effect.lineSphere, targets, startTime: elapsed });
+      if (targets.length)
+        effects.spawnProjectile({
+          origin,
+          color: PALETTE.effect.lineSphere,
+          targets,
+          startTime: elapsed,
+        });
     }
   }
 
@@ -290,7 +315,10 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   function blastHit(key: string): void {
     const def = cellDefs.get(key);
     if (!def || def.kind === 'base') return;
-    if (def.kind === 'explosive') { igniteBlast(key, frameElapsed); return; }
+    if (def.kind === 'explosive') {
+      igniteBlast(key, frameElapsed);
+      return;
+    }
     if (def.kind === 'disappear-line') activateLine(key, frameElapsed);
     removeTile(key, frameElapsed);
     losePlayerIfOn(key);
@@ -299,14 +327,19 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
   function detonateBlast(key: string, elapsed: number): void {
     blastTimers.delete(key);
     explosiveVisuals.get(key)?.countdown.hide();
-    removeTile(key, elapsed);             // the blast falls itself
-    losePlayerIfOn(key);                  // armed and still stood on: cube drops with it
+    removeTile(key, elapsed); // the blast falls itself
+    losePlayerIfOn(key); // armed and still stood on: cube drops with it
 
     // A red sphere flies to each of the four neighbours, destroying whatever tile
     // it finds and lighting any neighbouring fuse / line as it arrives.
     const [col, row] = parseCellKey(key);
     const origin = sphereOrigin(col, row);
-    const neighbours: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    const neighbours: [number, number][] = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
     for (const [dc, dr] of neighbours) {
       const c = col + dc;
       const r = row + dr;
@@ -381,7 +414,6 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
     if (!toDef) return { type: 'none' };
 
     switch (toDef.kind) {
-
       // Landing on a blast only arms it (like pressing a landmine); the fuse is
       // lit when the cube steps off — handled in the step-off block above.
 
@@ -406,7 +438,12 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
         if (toDef.shiftId === undefined) break;
         let partnerKey: string | null = null;
         cellDefs.forEach((def, key) => {
-          if (!partnerKey && key !== toKey && def.kind === 'shift' && def.shiftId === toDef.shiftId) {
+          if (
+            !partnerKey &&
+            key !== toKey &&
+            def.kind === 'shift' &&
+            def.shiftId === toDef.shiftId
+          ) {
             if (tileStates.get(key) === 'active') partnerKey = key;
           }
         });
@@ -452,9 +489,7 @@ export function buildLevel(layout: LevelLayout, template: THREE.Group, tileHeigh
       bobs.forEach((b, key) => {
         if (tileStates.get(key) === 'gone') return;
         b.group.position.y =
-          key === activeKey
-            ? b.baseY
-            : b.baseY + Math.sin(elapsed * b.freq + b.phase) * b.amp;
+          key === activeKey ? b.baseY : b.baseY + Math.sin(elapsed * b.freq + b.phase) * b.amp;
       });
 
       for (let i = anims.length - 1; i >= 0; i--) {
@@ -529,12 +564,6 @@ export function parseLayout(rows: string[]): LevelLayout {
 //  row 2: n  b  n  n  a   ← arrow forced to 'back'
 //  row 3: n  n  t  n  n
 //  row 4: n  r  n  c  n
-export const DEMO_LAYOUT: LevelLayout = parseLayout([
-  'nrxnn',
-  'nctnn',
-  'nbnna',
-  'nntnn',
-  'nrncn',
-]);
+export const DEMO_LAYOUT: LevelLayout = parseLayout(['nrxnn', 'nctnn', 'nbnna', 'nntnn', 'nrncn']);
 // The lone arrow slides the cube back toward base rather than the parser default.
 DEMO_LAYOUT[2][4]!.dir = 'back';

@@ -32,17 +32,30 @@ function setupExplorePopup(): void {
   };
   openBtn?.addEventListener('click', open);
   closeBtn?.addEventListener('click', close);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
   window.addEventListener('keydown', (e) => {
-    if (isOpen && e.key === 'Escape') { e.stopPropagation(); close(); }
+    if (isOpen && e.key === 'Escape') {
+      e.stopPropagation();
+      close();
+    }
   });
   // First visit: show it once, then remember. If storage is unavailable
   // (private mode), just show it — better than silently skipping the intro.
   let seen = false;
-  try { seen = localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch { /* keep the default: show the intro */ }
+  try {
+    seen = localStorage.getItem(INTRO_SEEN_KEY) === '1';
+  } catch {
+    /* keep the default: show the intro */
+  }
   if (!seen) {
     open();
-    try { localStorage.setItem(INTRO_SEEN_KEY, '1'); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(INTRO_SEEN_KEY, '1');
+    } catch {
+      /* ignore */
+    }
   }
 }
 setupExplorePopup();

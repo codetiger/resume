@@ -7,14 +7,14 @@
 //!
 //! See `PROPOSAL.md` for the full design.
 
-pub mod model;
-pub mod io;
-pub mod solver;
-pub mod metrics;
+pub mod anneal;
+pub mod campaign;
+pub mod curate;
 pub mod difficulty;
 pub mod generate;
-pub mod anneal;
-pub mod curate;
+pub mod io;
+pub mod metrics;
+pub mod model;
 pub mod screen;
+pub mod solver;
 pub mod topk;
-pub mod campaign;

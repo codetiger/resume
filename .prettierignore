@@ -19,3 +19,6 @@ index.html
 
 # Jinja2 template — Prettier doesn't understand {% %}/{{ }} and would mangle it.
 template.html
+
+# Vendored design references — not code we maintain.
+References/

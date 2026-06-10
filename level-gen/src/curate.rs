@@ -158,7 +158,10 @@ pub fn curate(pool: &[LevelRecord], max_levels: Option<usize>) -> Ladder {
     });
 
     // 1) Movement-only intro: the easiest board with no specials.
-    if let Some(&i) = order.iter().find(|&&i| mechanics_of(&pool[i].layout).is_empty()) {
+    if let Some(&i) = order
+        .iter()
+        .find(|&&i| mechanics_of(&pool[i].layout).is_empty())
+    {
         used.insert(i);
         seen.insert(fingerprint(&pool[i]));
         tutorial.push(&pool[i]);
@@ -167,9 +170,10 @@ pub fn curate(pool: &[LevelRecord], max_levels: Option<usize>) -> Ladder {
     // 2) One new mechanic at a time: easiest single-mechanic board for each.
     for m in TEACHING_ORDER {
         let want: HashSet<Mechanic> = [m].into_iter().collect();
-        if let Some(&i) = order.iter().find(|&&i| {
-            !used.contains(&i) && mechanics_of(&pool[i].layout) == want
-        }) {
+        if let Some(&i) = order
+            .iter()
+            .find(|&&i| !used.contains(&i) && mechanics_of(&pool[i].layout) == want)
+        {
             used.insert(i);
             seen.insert(fingerprint(&pool[i]));
             tutorial.push(&pool[i]);
@@ -329,7 +333,10 @@ pub fn symmetry(layout: &[String]) -> f64 {
 }
 
 fn dims(layout: &[String]) -> (usize, usize) {
-    (layout.len(), layout.first().map(|r| r.chars().count()).unwrap_or(0))
+    (
+        layout.len(),
+        layout.first().map(|r| r.chars().count()).unwrap_or(0),
+    )
 }
 
 /// How "busy" a board looks, in [0,1]: size, special density, type variety, hole irregularity.
@@ -437,7 +444,11 @@ fn select_quality_diverse(
             .difficulty
             .partial_cmp(&sorted[a].difficulty)
             .unwrap_or(std::cmp::Ordering::Equal)
-            .then_with(|| interest(sorted[b]).partial_cmp(&interest(sorted[a])).unwrap_or(std::cmp::Ordering::Equal))
+            .then_with(|| {
+                interest(sorted[b])
+                    .partial_cmp(&interest(sorted[a]))
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
     });
     let mut picked: Vec<usize> = Vec::new();
     for &idx in &by_q {
@@ -475,8 +486,10 @@ pub fn curate_initial(pool: &[LevelRecord]) -> Ladder {
 /// Picks the highest-quality, diverse board per band, then orders the ramp by rising difficulty.
 /// Band quotas scale with `target` (for 32 they are exactly the original 4 medium / 10 hard / 12 expert).
 pub fn curate_initial_n(pool: &[LevelRecord], target: usize) -> Ladder {
-    let mut sorted: Vec<&LevelRecord> =
-        pool.iter().filter(|r| r.difficulty.is_some() && is_clean(r)).collect();
+    let mut sorted: Vec<&LevelRecord> = pool
+        .iter()
+        .filter(|r| r.difficulty.is_some() && is_clean(r))
+        .collect();
     sorted.sort_by(|a, b| {
         a.difficulty
             .partial_cmp(&b.difficulty)
@@ -522,7 +535,9 @@ pub fn curate_initial_n(pool: &[LevelRecord], target: usize) -> Ladder {
     let expert_k = ramp_total.saturating_sub(medium_k + hard_k);
     let mut rest: Vec<usize> = Vec::new();
     for (band, k) in [("medium", medium_k), ("hard", hard_k), ("expert", expert_k)] {
-        let cands: Vec<usize> = (0..n).filter(|&i| !used[i] && sorted[i].band == band).collect();
+        let cands: Vec<usize> = (0..n)
+            .filter(|&i| !used[i] && sorted[i].band == band)
+            .collect();
         let already: Vec<usize> = tutorial.iter().chain(rest.iter()).copied().collect();
         for idx in select_quality_diverse(&sorted, &cands, k, &already) {
             used[idx] = true;
@@ -595,7 +610,13 @@ mod tests {
         let out = assign_info(&["bn".to_string(), "nn".to_string()]);
         // farthest green from base (0,0) is (1,1) → becomes 'i'
         assert_eq!(out[1].chars().nth(1).unwrap(), 'i');
-        assert_eq!(out.iter().flat_map(|r| r.chars()).filter(|&c| c == 'i').count(), 1);
+        assert_eq!(
+            out.iter()
+                .flat_map(|r| r.chars())
+                .filter(|&c| c == 'i')
+                .count(),
+            1
+        );
     }
 
     fn rec(layout: &[&str], difficulty: f64) -> LevelRecord {
@@ -620,12 +641,30 @@ mod tests {
 
     #[test]
     fn tutorial_types_pure_vs_mixed() {
-        assert_eq!(tutorial_type_of(&["bnn".to_string()]), Some(TutorialType::Movement));
-        assert_eq!(tutorial_type_of(&["brn".to_string()]), Some(TutorialType::LineRow));
-        assert_eq!(tutorial_type_of(&["bcn".to_string()]), Some(TutorialType::LineCol));
-        assert_eq!(tutorial_type_of(&["bxn".to_string()]), Some(TutorialType::Explosive));
-        assert_eq!(tutorial_type_of(&["b1n1".to_string()]), Some(TutorialType::Shift));
-        assert_eq!(tutorial_type_of(&["b>n".to_string()]), Some(TutorialType::Arrow));
+        assert_eq!(
+            tutorial_type_of(&["bnn".to_string()]),
+            Some(TutorialType::Movement)
+        );
+        assert_eq!(
+            tutorial_type_of(&["brn".to_string()]),
+            Some(TutorialType::LineRow)
+        );
+        assert_eq!(
+            tutorial_type_of(&["bcn".to_string()]),
+            Some(TutorialType::LineCol)
+        );
+        assert_eq!(
+            tutorial_type_of(&["bxn".to_string()]),
+            Some(TutorialType::Explosive)
+        );
+        assert_eq!(
+            tutorial_type_of(&["b1n1".to_string()]),
+            Some(TutorialType::Shift)
+        );
+        assert_eq!(
+            tutorial_type_of(&["b>n".to_string()]),
+            Some(TutorialType::Arrow)
+        );
         assert_eq!(tutorial_type_of(&["brxn".to_string()]), None); // mixed
     }
 

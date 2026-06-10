@@ -88,7 +88,12 @@ pub fn random_rate<R: Rng>(level: &Level, trials: u32, rng: &mut R) -> f64 {
 /// verdict is sealed: once wins exceed the reject count it can only stay rejected, and once even
 /// every remaining trial winning couldn't reach it the board has already passed. Saves rollouts on
 /// the common easy boards (reject fast) and on the hard boards that proceed (accept fast).
-fn random_player_wins_too_often<R: Rng>(level: &Level, trials: u32, max_rate: f64, rng: &mut R) -> bool {
+fn random_player_wins_too_often<R: Rng>(
+    level: &Level,
+    trials: u32,
+    max_rate: f64,
+    rng: &mut R,
+) -> bool {
     if trials == 0 {
         return false; // matches random_rate == 0.0, which is never > max_rate (≥ 0)
     }
@@ -138,7 +143,10 @@ pub fn screen<R: Rng>(
     if !r.solvable || r.reachable_states < min_states || r.shortest_path.unwrap_or(0) < min_path {
         return None;
     }
-    Some(ScreenStats { reachable: r.reachable_states, shortest: r.shortest_path.unwrap_or(0) })
+    Some(ScreenStats {
+        reachable: r.reachable_states,
+        shortest: r.shortest_path.unwrap_or(0),
+    })
 }
 
 #[cfg(test)]
@@ -168,7 +176,9 @@ mod tests {
     #[test]
     fn random_early_exit_matches_full_rate() {
         for seed in 0..400u64 {
-            let Some(level) = sample_board(seed) else { continue };
+            let Some(level) = sample_board(seed) else {
+                continue;
+            };
             for &trials in &[12u32, 48, 100] {
                 for &maxr in &[0.05f64, 0.15, 0.5] {
                     let mut r1 = ChaCha8Rng::seed_from_u64(seed * 1_000_003 + 17);
@@ -180,5 +190,4 @@ mod tests {
             }
         }
     }
-
 }

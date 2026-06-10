@@ -10,6 +10,7 @@ Run from anywhere:  python3 level-gen/wire_ladder.py
 Re-runnable: it reads the résumé content from the current levels.json entries 0-15,
 which keep their content across runs.
 """
+
 import json
 import os
 import random
@@ -39,12 +40,7 @@ def normalize(layout):
 
 
 def green_cells(layout):
-    return [
-        (r, c)
-        for r, row in enumerate(layout)
-        for c, ch in enumerate(row)
-        if ch == "n"
-    ]
+    return [(r, c) for r, row in enumerate(layout) for c, ch in enumerate(row) if ch == "n"]
 
 
 def put(layout, r, c, ch):
@@ -75,7 +71,7 @@ def place_info(layout, rng, minimize=False):
     back to any solvable spot, then the first green, if nothing better exists."""
     greens = green_cells(layout)
     rng.shuffle(greens)  # randomised tie-break / scan order
-    best_landable = None   # (difficulty, layout) — solvable AND landable
+    best_landable = None  # (difficulty, layout) — solvable AND landable
     first_solvable = None  # (layout) — solvable but maybe not landable
     for r, c in greens:
         cand = list(layout)

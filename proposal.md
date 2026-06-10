@@ -2,13 +2,13 @@
 
 ## 1. Vision
 
-Replace the static HTML resume with an interactive, scroll-driven web experience where the resume content is revealed *by playing a game*. Each life chapter — work, education, awards, skills, OSS projects, personal — is a level in a 3D puzzle modelled after **CrazyCubes** (the reference at `References/CrazyCubes/`). The visitor "plays" their way through the candidate's career.
+Replace the static HTML resume with an interactive, scroll-driven web experience where the resume content is revealed _by playing a game_. Each life chapter — work, education, awards, skills, OSS projects, personal — is a level in a 3D puzzle modelled after **CrazyCubes** (the reference at `References/CrazyCubes/`). The visitor "plays" their way through the candidate's career.
 
 The page must still serve a recruiter who wants the facts in 30 seconds — gamification adds a second, more memorable layer on top, never on top of accessibility. A "Skip & read" toggle is a first-class feature.
 
 ## 2. Concept Walkthrough
 
-A visitor lands on a hero page with a glowing isometric scene: a small grid of tiles is arranged so the *tiles themselves spell out* a four-line message —
+A visitor lands on a hero page with a glowing isometric scene: a small grid of tiles is arranged so the _tiles themselves spell out_ a four-line message —
 
 ```
 THIS IS A
@@ -19,7 +19,7 @@ INTRO
 
 — each glyph built out of base/green tiles, lit from above, drifting gently. The candidate's name and a single-line summary float beside it. The prompt reads **scroll, or press → to begin.**
 
-When the visitor scrolls or presses a direction, the typographic tiles dissolve in a wave (rolling left-to-right) and reform into the **first puzzle level** in the same camera frame — a deliberate "the words become the game" moment. The cube spawns on the base block, the visitor takes control, and as the cube *steps onto* tiles, content cards fade in beside the grid.
+When the visitor scrolls or presses a direction, the typographic tiles dissolve in a wave (rolling left-to-right) and reform into the **first puzzle level** in the same camera frame — a deliberate "the words become the game" moment. The cube spawns on the base block, the visitor takes control, and as the cube _steps onto_ tiles, content cards fade in beside the grid.
 
 **Reveal model — no completion required.** Every block has a content fragment bound to it. Stepping onto a block reveals that fragment immediately. The visitor does not need to clear the level, return to base, or "win" anything to read the resume. Cards stay revealed once shown.
 
@@ -35,31 +35,31 @@ Levels are split into two arcs: **content levels** (0–6) which carry résumé 
 
 ### Content levels
 
-| # | Level Name | Source (`resume.json`) | New mechanic introduced | Reveal-on-touch behaviour |
-|---|------------|------------------------|-------------------------|----------------------------|
-| 0 | **Intro** | `basics` | Movement only (Base + green Disappear) | Scene opens with tiles spelling "**THIS IS A / GAME / RESUME / ABOUT ME / INTRO**". On first input, the letters dissolve into a 1-D corridor of 5–7 tiles. Stepping on any tile fades in one card: name, label, location, summary, profile links. |
-| 1 | **Work** | `work[]` (7 entries) | Disappear-entire-row | Timeline-shaped path. Each tile is one company; stepping on it fades in `{startDate – endDate, position @ company, summary}`. Stepping on a row-clear tile reveals all `highlights` for that company at once. |
-| 2 | **Education** | `education[]` | Disappear-similar-in-row | Small grid; tiles reveal institution / degree / years. |
-| 3 | **Recognitions** | `awards[]` (3 items) | Explosive | Stepping onto an Explosive tile detonates it and reveals one award card with a particle burst. |
-| 4 | **Skills** | `skills[]` (3 groups) | Disappear-similar-in-level | Three clusters of same-coloured tiles; stepping onto one reveals the group name, and *all* sibling tiles light up showing each keyword in the group simultaneously — a visual metaphor for leverage. |
-| 5 | **Projects (OSS)** | new section in `resume.json` (Iyan 3D, robot-vacuum Rust firmware, AI contest agent, …) | Shift (teleport) | Each Shift tile is paired to another. Stepping in teleports the cube and reveals one project's card. |
-| 6 | **Personal** | new section | Arrow (rail-push) | Arrow tiles send the cube sliding through scenic vignettes. Each tile the cube stops on reveals a personal card (blog, hobbies, interests). |
+| #   | Level Name         | Source (`resume.json`)                                                                  | New mechanic introduced                | Reveal-on-touch behaviour                                                                                                                                                                                                                         |
+| --- | ------------------ | --------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0   | **Intro**          | `basics`                                                                                | Movement only (Base + green Disappear) | Scene opens with tiles spelling "**THIS IS A / GAME / RESUME / ABOUT ME / INTRO**". On first input, the letters dissolve into a 1-D corridor of 5–7 tiles. Stepping on any tile fades in one card: name, label, location, summary, profile links. |
+| 1   | **Work**           | `work[]` (7 entries)                                                                    | Disappear-entire-row                   | Timeline-shaped path. Each tile is one company; stepping on it fades in `{startDate – endDate, position @ company, summary}`. Stepping on a row-clear tile reveals all `highlights` for that company at once.                                     |
+| 2   | **Education**      | `education[]`                                                                           | Disappear-similar-in-row               | Small grid; tiles reveal institution / degree / years.                                                                                                                                                                                            |
+| 3   | **Recognitions**   | `awards[]` (3 items)                                                                    | Explosive                              | Stepping onto an Explosive tile detonates it and reveals one award card with a particle burst.                                                                                                                                                    |
+| 4   | **Skills**         | `skills[]` (3 groups)                                                                   | Disappear-similar-in-level             | Three clusters of same-coloured tiles; stepping onto one reveals the group name, and _all_ sibling tiles light up showing each keyword in the group simultaneously — a visual metaphor for leverage.                                              |
+| 5   | **Projects (OSS)** | new section in `resume.json` (Iyan 3D, robot-vacuum Rust firmware, AI contest agent, …) | Shift (teleport)                       | Each Shift tile is paired to another. Stepping in teleports the cube and reveals one project's card.                                                                                                                                              |
+| 6   | **Personal**       | new section                                                                             | Arrow (rail-push)                      | Arrow tiles send the cube sliding through scenic vignettes. Each tile the cube stops on reveals a personal card (blog, hobbies, interests).                                                                                                       |
 
 ### Bonus levels (endless)
 
 Levels 7+ have no résumé content — pure CrazyCubes puzzles. The grid grows, par-moves tighten, and block types combine. Generated procedurally from a small set of hand-curated seed puzzles plus algorithmic variants. A "You've reached the résumé's end — keep playing?" overlay greets the visitor at the boundary, with a clear "or jump to contact" link.
 
-Bonus levels *do* have a win condition (clear all non-base tiles, return to base) and award an optional move-count score. This is where the game stops being a delivery vehicle for content and starts being a game.
+Bonus levels _do_ have a win condition (clear all non-base tiles, return to base) and award an optional move-count score. This is where the game stops being a delivery vehicle for content and starts being a game.
 
 ### Difficulty curve
 
-| Tier | Levels | New mechanic | Grid | Par moves |
-|------|--------|--------------|------|-----------|
-| Tutorial | 0 | Movement | 1×5 corridor | n/a |
-| Easy | 1–2 | + row-clear, + similar-in-row | 5×5, 4×4 | generous |
-| Medium | 3–4 | + Explosive, + similar-in-level | 5×5, 6×6 | moderate |
-| Harder | 5–6 | + Shift, + Arrow | 6×6 with gaps | tight |
-| Bonus 7+ | endless | Combinations | 6×6 → 8×8 | tight |
+| Tier     | Levels  | New mechanic                    | Grid          | Par moves |
+| -------- | ------- | ------------------------------- | ------------- | --------- |
+| Tutorial | 0       | Movement                        | 1×5 corridor  | n/a       |
+| Easy     | 1–2     | + row-clear, + similar-in-row   | 5×5, 4×4      | generous  |
+| Medium   | 3–4     | + Explosive, + similar-in-level | 5×5, 6×6      | moderate  |
+| Harder   | 5–6     | + Shift, + Arrow                | 6×6 with gaps | tight     |
+| Bonus 7+ | endless | Combinations                    | 6×6 → 8×8     | tight     |
 
 A visitor can scroll past any level without engaging it. Levels do not block each other.
 
@@ -67,18 +67,18 @@ A visitor can scroll past any level without engaging it. Levels do not block eac
 
 The block taxonomy is taken directly from `References/CrazyCubes/all blocks.png`:
 
-| Block | Behaviour | Reuse in resume context |
-|-------|-----------|--------------------------|
-| **Base** (white) | Start & end tile. | Level entry/exit. Always one per level. |
-| **Disappear — normal** (green) | Vanishes after the cube steps off. | Default tile. Reveals one resume bullet. |
-| **Disappear — entire row** (orange/striped) | Stepping on it clears the entire row. | Used to reveal a *group* of bullets at once (e.g. all highlights of a company). |
-| **Disappear — similar in row** (orange) | Clears all matching tiles in the same row. | Used in Skills to clear a keyword cluster. |
-| **Disappear — similar in level** (orange/light) | Clears all same-type tiles on the board. | Skills level finale. |
-| **Arrow** (yellow, chevrons) | Forces the cube to slide in the arrow's direction until it hits a non-arrow tile. | Used in **Personal** for guided rails. |
-| **Shift** (cyan) | Teleports the cube to a paired Shift tile. | Used in **Projects** to jump between projects. |
-| **Explosive** (red, ✕) | Detonates on step, removing itself + 4 neighbours. | Used in **Recognitions** for the burst effect. |
+| Block                                           | Behaviour                                                                         | Reuse in resume context                                                         |
+| ----------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Base** (white)                                | Start & end tile.                                                                 | Level entry/exit. Always one per level.                                         |
+| **Disappear — normal** (green)                  | Vanishes after the cube steps off.                                                | Default tile. Reveals one resume bullet.                                        |
+| **Disappear — entire row** (orange/striped)     | Stepping on it clears the entire row.                                             | Used to reveal a _group_ of bullets at once (e.g. all highlights of a company). |
+| **Disappear — similar in row** (orange)         | Clears all matching tiles in the same row.                                        | Used in Skills to clear a keyword cluster.                                      |
+| **Disappear — similar in level** (orange/light) | Clears all same-type tiles on the board.                                          | Skills level finale.                                                            |
+| **Arrow** (yellow, chevrons)                    | Forces the cube to slide in the arrow's direction until it hits a non-arrow tile. | Used in **Personal** for guided rails.                                          |
+| **Shift** (cyan)                                | Teleports the cube to a paired Shift tile.                                        | Used in **Projects** to jump between projects.                                  |
+| **Explosive** (red, ✕)                          | Detonates on step, removing itself + 4 neighbours.                                | Used in **Recognitions** for the burst effect.                                  |
 
-**Reveal trigger:** stepping the cube onto a tile *immediately* reveals that tile's bound content card. No "clear the level to read it." Cards persist once shown, even if the visitor scrolls away and back.
+**Reveal trigger:** stepping the cube onto a tile _immediately_ reveals that tile's bound content card. No "clear the level to read it." Cards persist once shown, even if the visitor scrolls away and back.
 
 **Win condition (optional, content levels):** all non-Base tiles cleared and cube returned to Base awards a small "Level Mastered ✓" badge in the mini-map. It is purely cosmetic — the visitor does not need it to read anything or to advance.
 
@@ -131,7 +131,7 @@ A **"Lite mode"** automatically activates on low-end devices (battery saver, <60
 
 - **Scroll is always free.** Scroll up/down jumps between levels at any time, regardless of progress in the current level. The active level pauses (state preserved) and the next docks into the camera.
 - **Input separation:** vertical scroll = navigate levels. Arrow keys / WASD / on-grid swipes = move the cube. There is no scroll-lock or input-capture; the canvas only consumes directional input that originates inside its bounds.
-- A persistent left-edge **mini-map** lists all levels (content + bonus, with the bonus tail rendered as "∞"). Each node shows three states: *unvisited*, *visited* (any tile stepped on), *mastered* (completed). Clicking jumps to that level.
+- A persistent left-edge **mini-map** lists all levels (content + bonus, with the bonus tail rendered as "∞"). Each node shows three states: _unvisited_, _visited_ (any tile stepped on), _mastered_ (completed). Clicking jumps to that level.
 - A persistent top-right **toolbar**: `Skip & read` (full static resume in a sidebar), `Mute`, `Lite mode`, `Restart level`, `Jump to contact`, `Download PDF`.
 - A persistent bottom-right **"Read all"** affordance on every level — opens the level's bound content as a list, regardless of which tiles have been touched. Recruiter escape hatch.
 
@@ -216,8 +216,8 @@ Total rough estimate: **~2.5 weeks** of focused work for a polished v1.
 
 ## 11. Open Questions
 
-- **OSS Projects & Personal sections** don't yet exist in `resume.json` — should I extend the schema, or store these only in `levels.json`? *Recommend: extend `resume.json`, keep it the single source of truth.*
-- **Difficulty:** should levels be solvable on the first try (puzzles tuned for flow), or genuinely challenging? *Recommend: trivially solvable, with optional "par moves" for engaged visitors.*
+- **OSS Projects & Personal sections** don't yet exist in `resume.json` — should I extend the schema, or store these only in `levels.json`? _Recommend: extend `resume.json`, keep it the single source of truth._
+- **Difficulty:** should levels be solvable on the first try (puzzles tuned for flow), or genuinely challenging? _Recommend: trivially solvable, with optional "par moves" for engaged visitors._
 - **Audio:** ambient pad + tile clicks + reveal chimes — yes/no? Default-muted with a clear unmute affordance.
 - **Analytics:** track level-completion funnels to see if recruiters actually play, or skip? Privacy-respecting (Plausible / self-hosted) only.
 - **PDF export:** keep generating one from `resume.json` for the "download PDF" button — useful as the recruiter-friendly artefact.
@@ -227,7 +227,7 @@ Total rough estimate: **~2.5 weeks** of focused work for a polished v1.
 - **Recruiter friction.** Mitigated by `Skip & read` being prominent and the static HTML fallback being fully functional.
 - **Performance on low-end devices.** Mitigated by Lite mode + auto-detection.
 - **Bundle size.** Three.js is ~150 KB gz; budget is tight but fine. Avoid heavy GLTFs; generate geometry in code.
-- **Maintenance.** Adding a new role to `resume.json` should *not* require editing `levels.json` for the Work level — the level reads the array generically and lays out the grid procedurally. Only structural levels (Intro, Personal) hand-author their grids.
+- **Maintenance.** Adding a new role to `resume.json` should _not_ require editing `levels.json` for the Work level — the level reads the array generically and lays out the grid procedurally. Only structural levels (Intro, Personal) hand-author their grids.
 - **SEO.** Static fallback is the canonical SEO content; the game shell adds nothing. `resume.json` → static HTML keeps Google happy.
 
 ## 13. Success Criteria

@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 const CAMERA_FOV = 38;
 const CAMERA_DISTANCE = 10;
@@ -78,14 +78,14 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
   key.shadow.mapSize.setScalar(mobile ? 1024 : 2048);
   key.shadow.camera.near = 0.5;
   key.shadow.camera.far = 40;
-  key.shadow.camera.left   = -8;
-  key.shadow.camera.right  =  8;
-  key.shadow.camera.top    =  8;
+  key.shadow.camera.left = -8;
+  key.shadow.camera.right = 8;
+  key.shadow.camera.top = 8;
   key.shadow.camera.bottom = -8;
-  key.shadow.camera.updateProjectionMatrix();   // must call after changing ortho bounds
+  key.shadow.camera.updateProjectionMatrix(); // must call after changing ortho bounds
   key.shadow.bias = -0.001;
   scene.add(key);
-  scene.add(key.target);   // target must be in the scene for shadow camera to orient correctly
+  scene.add(key.target); // target must be in the scene for shadow camera to orient correctly
 
   // Soft fill from the opposite side — prevents pure-black shadow faces.
   const fill = new THREE.DirectionalLight(0xaad4ff, 0.35);
@@ -100,7 +100,7 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
     renderer.setSize(w, h, false);
   };
   onResize();
-  window.addEventListener("resize", onResize);
+  window.addEventListener('resize', onResize);
 
   return {
     scene,
@@ -111,7 +111,7 @@ export function createEngine(canvas: HTMLCanvasElement): Engine {
     cameraBasePosition,
     frameBoard,
     dispose: () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
       renderer.dispose();
     },
   };

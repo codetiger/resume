@@ -49,12 +49,7 @@ pub struct QualityRaw {
 /// Model: at each non-win state the player presses one of `legal_keys(s) = adj[s].len() +
 /// death_moves[s]` keys uniformly. Surviving keys advance along `adj`; the rest are absorbing
 /// death (contribute 0). Solve `P[s] = (1/keys)·Σ P[t]` (P[win]=1) by Gauss-Seidel value iteration.
-pub fn random_solve_prob(
-    adj: &[AdjRow],
-    death_moves: &[u8],
-    is_win: &[bool],
-    start: usize,
-) -> f64 {
+pub fn random_solve_prob(adj: &[AdjRow], death_moves: &[u8], is_win: &[bool], start: usize) -> f64 {
     let n = adj.len();
     if n == 0 {
         return 0.0;
@@ -141,12 +136,7 @@ pub fn greedy_solves<H: Fn(usize) -> f64>(
 }
 
 /// Reconstruct one shortest solution path (state indices) by following decreasing `dist_to_win`.
-fn optimal_path(
-    adj: &[AdjRow],
-    dist_to_win: &[u32],
-    is_win: &[bool],
-    start: usize,
-) -> Vec<usize> {
+fn optimal_path(adj: &[AdjRow], dist_to_win: &[u32], is_win: &[bool], start: usize) -> Vec<usize> {
     let mut path = vec![start];
     let mut s = start;
     let guard = adj.len() + 2;
@@ -303,11 +293,7 @@ pub fn optimal_path_fraction(
 /// Decision quality over can-win states. `decision`: at points with ≥2 surviving moves, the mean
 /// fraction of those plausible moves that are actually traps ("looks like a choice, but it's
 /// wrong"). `forced_fraction`: share of can-win states with exactly one safe move (a corridor).
-pub fn decision_branching(
-    adj: &[AdjRow],
-    can_win: &[bool],
-    is_win: &[bool],
-) -> (f64, f64) {
+pub fn decision_branching(adj: &[AdjRow], can_win: &[bool], is_win: &[bool]) -> (f64, f64) {
     let mut dec_sum = 0.0;
     let mut dec_n = 0u32;
     let mut forced = 0u32;
@@ -320,10 +306,7 @@ pub fn decision_branching(
         if surviving == 0 {
             continue;
         }
-        let safe = adj[s]
-            .iter()
-            .filter(|&&(_, t)| can_win[t as usize])
-            .count();
+        let safe = adj[s].iter().filter(|&&(_, t)| can_win[t as usize]).count();
         total += 1;
         if safe == 1 {
             forced += 1;
@@ -399,7 +382,11 @@ mod tests {
     #[test]
     fn doom_depths_cap_cycles() {
         // 1 and 2 form a doomed cycle; 0 (also doomed) feeds it. can_win all false.
-        let adj = mk_adj(vec![vec![('>', 1u32)], vec![('>', 2u32)], vec![('>', 1u32)]]);
+        let adj = mk_adj(vec![
+            vec![('>', 1u32)],
+            vec![('>', 2u32)],
+            vec![('>', 1u32)],
+        ]);
         let can_win = vec![false, false, false];
         let d = doom_survive_depths(&adj, &can_win, 50);
         assert_eq!(d[1], 50);

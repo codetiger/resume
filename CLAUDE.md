@@ -18,15 +18,18 @@ renders it into the static page, and the game pulls selected fields at build tim
 ## Commands
 
 Game:
+
 - **Dev server:** `npm run dev` (Vite, http://localhost:5173)
 - **Build:** `npm run build` (`tsc --noEmit` then `vite build` → `dist/`)
 
 Static fallback:
+
 - **Render résumé:** `python3 build.py` — renders `assets/resume.json` + `template.html` → `assets/resume.html`
 - **Build everything:** `npm run build:site` (`build.py`, then `vite build` → `dist/`)
 - **Install Python deps:** `pip3 install -r requirements.txt`
 
 Level generation (Rust, `level-gen/` — build with `cargo build --release` first):
+
 - **Campaign:** `level-gen campaign --name run1 --duration 60m` — streams + screens millions of
   boards, keeps the best per (size × mechanic × band) bucket in `levels/campaigns/<name>/pool.json`.
   Resumable (`--resume`), Ctrl-C-safe. The quality model selects for levels that **need a plan**:
@@ -40,6 +43,7 @@ Level generation (Rust, `level-gen/` — build with `cargo build --release` firs
 ## Architecture
 
 ### Game (`src/`)
+
 - `core.ts` — shared primitives used across modules: the `Direction` union, `DIRECTION_DELTA`
   grid steps, the deterministic `noise()` hash, and the `PALETTE` colour map. Add shared
   constants/colours here rather than re-declaring them per module.
@@ -53,7 +57,9 @@ Level generation (Rust, `level-gen/` — build with `cargo build --release` firs
 - `game/effects.ts` — transient projectiles and teleport swirls.
 
 ### Static fallback
+
 Pipeline: `assets/resume.json` + `template.html` → `build.py` (Jinja2) → `assets/resume.html`.
+
 - `assets/resume.json` — résumé content ([JSON Resume](https://jsonresume.org/schema/) schema).
 - `template.html` — Jinja2 template, CSS inlined.
 - `build.py` — renders the template; custom filters `format_date` and `format_year`. Delegates avatar
@@ -63,6 +69,7 @@ Pipeline: `assets/resume.json` + `template.html` → `build.py` (Jinja2) → `as
 After editing `assets/resume.json` or `template.html`, run `python3 build.py` to regenerate the fallback HTML.
 
 ### Assets (`assets/` — Vite `publicDir`)
+
 Single source for everything served statically: `models/` (player/platform OBJ+MTL, loaded by
 `engine/models.ts`), `harishankar.jpeg` (the avatar, used by the game home screen and as `build.py`'s
 mosaic/photo input), and `resume.json`. `build.py` reads from here and writes `resume.html` here too.

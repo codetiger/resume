@@ -6,11 +6,11 @@ import * as THREE from 'three';
 // elapsed clock as the rest of the game; the manager derives its own dt.
 
 const SPHERE_RADIUS = 0.11;
-const SPHERE_SPEED = 9;          // world units / s
-const SPHERE_FADE = 0.12;        // s to fade a sphere once its last tile is reached
-const SWIRL_SPIN = 7;            // rad/s the orbiting swirl lines rotate
-const SWIRL_DURATION = 0.44;     // s a teleport vortex lives (≈ shrink + grow)
-const DT_CLAMP = 0.1;            // ignore huge gaps (tab refocus) so nothing teleports
+const SPHERE_SPEED = 9; // world units / s
+const SPHERE_FADE = 0.12; // s to fade a sphere once its last tile is reached
+const SWIRL_SPIN = 7; // rad/s the orbiting swirl lines rotate
+const SWIRL_DURATION = 0.44; // s a teleport vortex lives (≈ shrink + grow)
+const DT_CLAMP = 0.1; // ignore huge gaps (tab refocus) so nothing teleports
 
 // Shared, app-lifetime resources. createEffects() runs once per level, so these
 // must outlive any single level's dispose() and are intentionally never freed.
@@ -48,7 +48,10 @@ function additiveMaterial(color: number): THREE.MeshBasicMaterial {
   });
 }
 
-function makeHalo(color: number, scale: number): { sprite: THREE.Sprite; material: THREE.SpriteMaterial } {
+function makeHalo(
+  color: number,
+  scale: number,
+): { sprite: THREE.Sprite; material: THREE.SpriteMaterial } {
   const material = new THREE.SpriteMaterial({
     map: haloTex,
     color,
@@ -91,18 +94,18 @@ export interface Effects {
 }
 
 interface Projectile {
-  mesh: THREE.Group;          // sphere + halo + swirl child
-  swirl: THREE.Group;         // orbiting lines (spun each frame)
-  mats: FadeMaterial[];       // per-instance materials to fade then dispose
+  mesh: THREE.Group; // sphere + halo + swirl child
+  swirl: THREE.Group; // orbiting lines (spun each frame)
+  mats: FadeMaterial[]; // per-instance materials to fade then dispose
   origin: THREE.Vector3;
   dir: THREE.Vector3;
   startTime: number;
   speed: number;
-  distance: number;           // travelled so far
-  totalDist: number;          // distance to the final target
+  distance: number; // travelled so far
+  totalDist: number; // distance to the final target
   targets: { cumDist: number; onReach: () => void }[];
   nextIdx: number;
-  fadeAge: number;            // >0 once travelling is done
+  fadeAge: number; // >0 once travelling is done
   started: boolean;
 }
 
@@ -118,7 +121,11 @@ export function createEffects(): Effects {
   const swirls: Swirl[] = [];
   let lastElapsed: number | null = null;
 
-  function buildSphere(color: number): { mesh: THREE.Group; swirl: THREE.Group; mats: FadeMaterial[] } {
+  function buildSphere(color: number): {
+    mesh: THREE.Group;
+    swirl: THREE.Group;
+    mats: FadeMaterial[];
+  } {
     const mesh = new THREE.Group();
 
     const coreMat = new THREE.MeshStandardMaterial({
@@ -165,14 +172,19 @@ export function createEffects(): Effects {
     group.add(mesh);
 
     projectiles.push({
-      mesh, swirl, mats,
+      mesh,
+      swirl,
+      mats,
       origin: opts.origin.clone(),
       dir,
       startTime: opts.startTime,
       speed: opts.speed ?? SPHERE_SPEED,
       distance: 0,
       totalDist,
-      targets: opts.targets.map((t) => ({ cumDist: t.pos.clone().sub(opts.origin).dot(dir), onReach: t.onReach })),
+      targets: opts.targets.map((t) => ({
+        cumDist: t.pos.clone().sub(opts.origin).dot(dir),
+        onReach: t.onReach,
+      })),
       nextIdx: 0,
       fadeAge: 0,
       started: false,
@@ -186,7 +198,7 @@ export function createEffects(): Effects {
 
     const ringMat = additiveMaterial(opts.color);
     const ringA = new THREE.Mesh(vortexRingGeo, ringMat);
-    ringA.rotation.x = Math.PI / 2;             // lie flat over the tile
+    ringA.rotation.x = Math.PI / 2; // lie flat over the tile
     const ringB = new THREE.Mesh(vortexRingGeo, ringMat);
     ringB.rotation.x = Math.PI / 2;
     ringB.scale.setScalar(0.6);
@@ -212,7 +224,10 @@ export function createEffects(): Effects {
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i];
       if (elapsed < p.startTime) continue;
-      if (!p.started) { p.started = true; p.mesh.visible = true; }
+      if (!p.started) {
+        p.started = true;
+        p.mesh.visible = true;
+      }
 
       p.swirl.rotation.y += dt * SWIRL_SPIN;
 
@@ -225,7 +240,7 @@ export function createEffects(): Effects {
         }
         const d = Math.min(p.distance, p.totalDist);
         p.mesh.position.copy(p.origin).addScaledVector(p.dir, d);
-        if (p.distance >= p.totalDist) p.fadeAge = 1e-6;  // begin fading next frame
+        if (p.distance >= p.totalDist) p.fadeAge = 1e-6; // begin fading next frame
       } else {
         p.fadeAge += dt;
         const k = Math.max(0, 1 - p.fadeAge / SPHERE_FADE);
@@ -253,7 +268,7 @@ export function createEffects(): Effects {
       // Grow 0.3→1.3, opacity ramps in then out, fast spin.
       s.mesh.scale.setScalar(0.3 + t * 1.0);
       s.mesh.rotation.y += dt * SWIRL_SPIN * 1.6;
-      const opacity = Math.sin(t * Math.PI);   // 0→1→0
+      const opacity = Math.sin(t * Math.PI); // 0→1→0
       for (const m of s.mats) m.opacity = opacity;
     }
   }
@@ -263,7 +278,8 @@ export function createEffects(): Effects {
     // shared sphere/ring/halo geometry + texture are app-lifetime and reused by
     // the next level's Effects, so they are deliberately left intact — disposing
     // them here would pull GPU buffers out from under the following level.
-    for (let i = projectiles.length - 1; i >= 0; i--) disposeNode(projectiles[i].mesh, projectiles[i].mats);
+    for (let i = projectiles.length - 1; i >= 0; i--)
+      disposeNode(projectiles[i].mesh, projectiles[i].mats);
     for (let i = swirls.length - 1; i >= 0; i--) disposeNode(swirls[i].mesh, swirls[i].mats);
     projectiles.length = 0;
     swirls.length = 0;

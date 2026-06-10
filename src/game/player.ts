@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import { easeInOutQuad, type Direction } from '../core';
 
-const ROLL_DURATION = 0.18;             // seconds for one 90° roll
-const ROLLS_PER_MOVE = 2;               // two rolls land the cube on the next tile
+const ROLL_DURATION = 0.18; // seconds for one 90° roll
+const ROLLS_PER_MOVE = 2; // two rolls land the cube on the next tile
 
 // Falling off the edge: the roll into the void carries the cube most of the way
 // over (FALL_TIP_ANGLE — 3/4 of the roll, so it is well clear of the source
 // platform); past there it lets go and drops under gravity, tumbling about the
 // roll axis and drifting in the roll direction so it clears the edge cleanly.
-const FALL_GRAVITY = 30;                // world units / s² downward acceleration
-const FALL_SPIN = 9;                    // rad / s tumble while falling
-const FALL_FLOOR = -8;                  // world Y at which the cube is gone from view
+const FALL_GRAVITY = 30; // world units / s² downward acceleration
+const FALL_SPIN = 9; // rad / s tumble while falling
+const FALL_FLOOR = -8; // world Y at which the cube is gone from view
 const FALL_TIP_ANGLE = (3 / 4) * (Math.PI / 2); // let go after 3/4 of the roll (67.5°), once it's over the next tile
-const FALL_DRIFT = 2.4;                 // horizontal drift (× cubeSize / s) carrying it clear of the edge
+const FALL_DRIFT = 2.4; // horizontal drift (× cubeSize / s) carrying it clear of the edge
 
 // Shift teleport: the block spins and scales down into a swirl at the origin,
 // snaps to the destination, then spins back up out of a swirl there.
-export const TELEPORT_SHRINK = 0.22;    // s to shrink away at the origin
-export const TELEPORT_GROW = 0.22;      // s to grow back at the destination
-const TELEPORT_SPIN = 24;               // rad / s spin during the whole transit
+export const TELEPORT_SHRINK = 0.22; // s to shrink away at the origin
+export const TELEPORT_GROW = 0.22; // s to grow back at the destination
+const TELEPORT_SPIN = 24; // rad / s spin during the whole transit
 
 export interface PlayerOptions {
   model: THREE.Group;
@@ -46,8 +46,8 @@ export interface Player {
 
 export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Player {
   const S = cubeSize;
-  const yFloor = tileHeight / 2;        // world Y of tile top
-  const restY = yFloor + S / 2;         // world Y of cube centre when at rest
+  const yFloor = tileHeight / 2; // world Y of tile top
+  const restY = yFloor + S / 2; // world Y of cube centre when at rest
 
   // Per-direction roll geometry. A roll tips the cube 90° about its leading
   // bottom edge:
@@ -55,11 +55,30 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
   //                 floor level → (+S/2, -S/2, 0) for 'right');
   //   axis        = world rotation axis (right-hand rule);
   //   delta       = net world translation after one full 90° roll.
-  const ROLL: Record<Direction, { pivotOffset: THREE.Vector3; axis: THREE.Vector3; delta: THREE.Vector3 }> = {
-    right:   { pivotOffset: new THREE.Vector3( S/2, -S/2,  0  ), axis: new THREE.Vector3( 0, 0,-1), delta: new THREE.Vector3( S, 0, 0) },
-    left:    { pivotOffset: new THREE.Vector3(-S/2, -S/2,  0  ), axis: new THREE.Vector3( 0, 0, 1), delta: new THREE.Vector3(-S, 0, 0) },
-    forward: { pivotOffset: new THREE.Vector3( 0,  -S/2,  S/2 ), axis: new THREE.Vector3( 1, 0, 0), delta: new THREE.Vector3( 0, 0, S) },
-    back:    { pivotOffset: new THREE.Vector3( 0,  -S/2, -S/2 ), axis: new THREE.Vector3(-1, 0, 0), delta: new THREE.Vector3( 0, 0,-S) },
+  const ROLL: Record<
+    Direction,
+    { pivotOffset: THREE.Vector3; axis: THREE.Vector3; delta: THREE.Vector3 }
+  > = {
+    right: {
+      pivotOffset: new THREE.Vector3(S / 2, -S / 2, 0),
+      axis: new THREE.Vector3(0, 0, -1),
+      delta: new THREE.Vector3(S, 0, 0),
+    },
+    left: {
+      pivotOffset: new THREE.Vector3(-S / 2, -S / 2, 0),
+      axis: new THREE.Vector3(0, 0, 1),
+      delta: new THREE.Vector3(-S, 0, 0),
+    },
+    forward: {
+      pivotOffset: new THREE.Vector3(0, -S / 2, S / 2),
+      axis: new THREE.Vector3(1, 0, 0),
+      delta: new THREE.Vector3(0, 0, S),
+    },
+    back: {
+      pivotOffset: new THREE.Vector3(0, -S / 2, -S / 2),
+      axis: new THREE.Vector3(-1, 0, 0),
+      delta: new THREE.Vector3(0, 0, -S),
+    },
   };
 
   const group = new THREE.Group();
@@ -83,9 +102,9 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
   let falling = false;
   let fallStart = 0;
   let fell = false;
-  const fallBase = new THREE.Vector3();   // cube centre at the moment it lets go
+  const fallBase = new THREE.Vector3(); // cube centre at the moment it lets go
   const fallQuat = new THREE.Quaternion(); // orientation at that moment (continued by the tumble)
-  const fallDir = new THREE.Vector3();     // unit horizontal drift direction
+  const fallDir = new THREE.Vector3(); // unit horizontal drift direction
   let fallAxis: THREE.Vector3 = ROLL.right.axis;
 
   // Teleport state. `pendingTeleport` queues the request (resolved in update like
@@ -147,7 +166,7 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
         fallStart = elapsed;
         fallBase.copy(group.position);
         fallQuat.copy(group.quaternion);
-        fallDir.set(0, 0, 0);            // no horizontal drift — it falls in place
+        fallDir.set(0, 0, 0); // no horizontal drift — it falls in place
         fallAxis = ROLL.right.axis;
         pendingDrop = false;
       }
@@ -160,7 +179,7 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
       if (active) {
         const params = ROLL[active];
         const t = Math.min(1, (elapsed - activeStart) / ROLL_DURATION);
-        const alpha = easeInOutQuad(t) * Math.PI / 2;
+        const alpha = (easeInOutQuad(t) * Math.PI) / 2;
 
         // Pivot in world space.
         tmpVec.copy(restPos).add(params.pivotOffset);
@@ -198,11 +217,7 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
         // Drift in the roll direction as it drops so the cube clears the platform
         // edge rather than sliding straight down against it.
         const drift = FALL_DRIFT * S * age;
-        group.position.set(
-          fallBase.x + fallDir.x * drift,
-          y,
-          fallBase.z + fallDir.z * drift,
-        );
+        group.position.set(fallBase.x + fallDir.x * drift, y, fallBase.z + fallDir.z * drift);
         // Keep tumbling about the roll axis, continuing the orientation it let go at.
         tmpQuat.setFromAxisAngle(fallAxis, age * FALL_SPIN);
         group.quaternion.copy(fallQuat).premultiply(tmpQuat);
@@ -223,15 +238,22 @@ export function createPlayer({ model, tileHeight, cubeSize }: PlayerOptions): Pl
     },
     fall(dir) {
       if (active || queue.length > 0 || falling || fell) return;
-      queue.push(dir);          // a single roll tips the cube over the edge…
-      pendingFall = dir;        // …then it drops out of view.
+      queue.push(dir); // a single roll tips the cube over the edge…
+      pendingFall = dir; // …then it drops out of view.
     },
     drop() {
       if (active || queue.length > 0 || falling || fell || teleporting || pendingTeleport) return;
       pendingDrop = true;
     },
     isMoving() {
-      return active !== null || queue.length > 0 || falling || teleporting || pendingTeleport !== null || pendingDrop;
+      return (
+        active !== null ||
+        queue.length > 0 ||
+        falling ||
+        teleporting ||
+        pendingTeleport !== null ||
+        pendingDrop
+      );
     },
     hasFallen() {
       return fell;

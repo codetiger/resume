@@ -175,7 +175,10 @@ impl Level {
 
     /// Is this cell a green-like tile a sweep/blast can clear (green or info)?
     fn is_clearable(&self, idx: usize) -> bool {
-        matches!(self.cells[idx], Some(TileKind::Green) | Some(TileKind::Info))
+        matches!(
+            self.cells[idx],
+            Some(TileKind::Green) | Some(TileKind::Info)
+        )
     }
 
     /// Count of specials that can't actually clear a green when triggered: a line whose row/column
@@ -206,9 +209,10 @@ impl Level {
                     }
                 }
                 Some(TileKind::Explosive) => {
-                    let has = Direction::ALL
-                        .iter()
-                        .any(|&d| self.neighbor(i, d).map_or(false, |nb| self.is_clearable(nb)));
+                    let has = Direction::ALL.iter().any(|&d| {
+                        self.neighbor(i, d)
+                            .map_or(false, |nb| self.is_clearable(nb))
+                    });
                     if !has {
                         count += 1;
                     }

@@ -101,7 +101,9 @@ def prebake_data(resume):
     # Section 1: work — J prefix for job header, bare lines for highlights, -- between entries
     work = resume.get("work", [])
     for i, job in enumerate(work):
-        date_range = f"{format_date(job.get('startDate', ''))} \u2014 {format_date(job.get('endDate', ''))}"
+        date_range = (
+            f"{format_date(job.get('startDate', ''))} \u2014 {format_date(job.get('endDate', ''))}"
+        )
         lines.append(
             f"J\t{job['position']}\t{date_range}\t{job['company']}\t{job.get('summary', '')}"
         )
@@ -149,9 +151,7 @@ def prebake_data(resume):
     raw = "\n".join(lines).encode("utf-8")
     compressed = zlib.compress(raw, 9)
     b64 = base64.b64encode(compressed).decode("ascii")
-    print(
-        f"Resume data: {len(raw):,} → zlib: {len(compressed):,} → base64: {len(b64):,} bytes"
-    )
+    print(f"Resume data: {len(raw):,} → zlib: {len(compressed):,} → base64: {len(b64):,} bytes")
     return b64
 
 
@@ -163,9 +163,7 @@ def build_avatar_assets(image_path):
         return None, None
     from triangulate import export_hex_mosaic, export_photo
 
-    mesh = export_hex_mosaic(
-        str(image_path), HEX_RADIUS, AVATAR_SIZE, INDEX_BITS, COARSE_FACTOR
-    )
+    mesh = export_hex_mosaic(str(image_path), HEX_RADIUS, AVATAR_SIZE, INDEX_BITS, COARSE_FACTOR)
     photo = export_photo(str(image_path), PHOTO_SIZE, PHOTO_QUALITY)
     return mesh, photo
 
@@ -219,9 +217,7 @@ def minify_js(js):
         strings.append(m.group(0))
         return f"\x00STR{len(strings) - 1}\x00"
 
-    js = re.sub(
-        r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'', _save_string, js
-    )
+    js = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"|\'[^\'\\]*(?:\\.[^\'\\]*)*\'', _save_string, js)
 
     js = re.sub(r"//.*?$", "", js, flags=re.MULTILINE)  # line comments
     js = re.sub(r"/\*.*?\*/", "", js, flags=re.DOTALL)  # block comments

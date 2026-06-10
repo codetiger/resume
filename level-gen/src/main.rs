@@ -19,7 +19,10 @@ use std::path::Path;
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 #[derive(Parser)]
-#[command(name = "level-gen", about = "Solver / generator / curator for the rolling-cube game")]
+#[command(
+    name = "level-gen",
+    about = "Solver / generator / curator for the rolling-cube game"
+)]
 struct Cli {
     #[command(subcommand)]
     cmd: Cmd,
@@ -161,7 +164,12 @@ fn print_report(name: &str, level: &Level, r: &SolveResult) {
     }
     println!(
         "   solvable={} shortest={:?} solutions={} reachable={} deadEnds={} exact={}",
-        r.solvable, r.shortest_path, r.solution_count, r.reachable_states, r.dead_end_states, r.exact
+        r.solvable,
+        r.shortest_path,
+        r.solution_count,
+        r.reachable_states,
+        r.dead_end_states,
+        r.exact
     );
     println!(
         "   greens={} specials={} deadTiles={} unpairedShifts={} landsOnInfo={}",
@@ -185,7 +193,11 @@ fn print_report(name: &str, level: &Level, r: &SolveResult) {
     if let Some(q) = &r.quality {
         println!(
             "   randomSolve={:.4} greedySolves={} commitment={:.2} doomDelay={} specReq={}",
-            q.random_solve_prob, q.greedy_solves, q.commitment, q.max_doom_delay, q.spectacle_required
+            q.random_solve_prob,
+            q.greedy_solves,
+            q.commitment,
+            q.max_doom_delay,
+            q.spectacle_required
         );
     }
     if !r.solutions.is_empty() {
@@ -195,7 +207,13 @@ fn print_report(name: &str, level: &Level, r: &SolveResult) {
 }
 
 /// Solve a level with the full config and assemble its JSON record.
-fn record_for(level: &Level, name: String, seed: u64, target: f64, allow: &AllowSet) -> LevelRecord {
+fn record_for(
+    level: &Level,
+    name: String,
+    seed: u64,
+    target: f64,
+    allow: &AllowSet,
+) -> LevelRecord {
     let r = solve_default(level);
     let dcfg = DifficultyConfig::default();
     let diff = difficulty::score(&r, &dcfg);
@@ -334,15 +352,27 @@ fn spread_specs(n: usize, base_seed: u64, iters: usize) -> Vec<GenSpec> {
     let mut specs: Vec<GenSpec> = Vec::with_capacity(n);
 
     // Tutorial sub-pool (~40%): tiny boards, one tile type each, low target, mechanic required.
-    let line = AllowSet { line: true, ..AllowSet::none() };
-    let explosive = AllowSet { explosive: true, ..AllowSet::none() };
-    let shift = AllowSet { shift: true, ..AllowSet::none() };
-    let arrow = AllowSet { arrow: true, ..AllowSet::none() };
+    let line = AllowSet {
+        line: true,
+        ..AllowSet::none()
+    };
+    let explosive = AllowSet {
+        explosive: true,
+        ..AllowSet::none()
+    };
+    let shift = AllowSet {
+        shift: true,
+        ..AllowSet::none()
+    };
+    let arrow = AllowSet {
+        arrow: true,
+        ..AllowSet::none()
+    };
     // (allow, require, line_sweep)
     let kinds: [(AllowSet, AllowSet, Option<Sweep>); 6] = [
-        (AllowSet::none(), AllowSet::none(), None),     // movement
-        (line, line, Some(Sweep::Row)),                 // pure row line
-        (line, line, Some(Sweep::Col)),                 // pure col line
+        (AllowSet::none(), AllowSet::none(), None), // movement
+        (line, line, Some(Sweep::Row)),             // pure row line
+        (line, line, Some(Sweep::Col)),             // pure col line
         (explosive, explosive, None),
         (shift, shift, None),
         (arrow, arrow, None),
@@ -404,7 +434,13 @@ fn generate_record(
     scfg: &SolveConfig,
 ) -> Option<LevelRecord> {
     let outcome = generate(spec, dcfg, scfg)?;
-    let rec = record_for(&outcome.level, String::new(), spec.seed, spec.target, &spec.allow);
+    let rec = record_for(
+        &outcome.level,
+        String::new(),
+        spec.seed,
+        spec.target,
+        &spec.allow,
+    );
     let name = format!(
         "gen-{}x{}-{}-s{}",
         outcome.level.cols, outcome.level.rows, rec.band, spec.seed
@@ -433,7 +469,10 @@ fn cmd_gen(
         },
         None => {
             let allow = AllowSet::from_tokens(
-                &allow_str.split(',').map(|s| s.trim().to_string()).collect::<Vec<_>>(),
+                &allow_str
+                    .split(',')
+                    .map(|s| s.trim().to_string())
+                    .collect::<Vec<_>>(),
             );
             vec![GenSpec {
                 cols,
@@ -450,7 +489,12 @@ fn cmd_gen(
     };
 
     let total = specs.len();
-    println!("Generating {} boards (profile={}) across {} cores…", total, profile, rayon::current_num_threads());
+    println!(
+        "Generating {} boards (profile={}) across {} cores…",
+        total,
+        profile,
+        rayon::current_num_threads()
+    );
 
     // Generation is pure per seed → run the whole batch in parallel; collect preserves order.
     let records: Vec<LevelRecord> = specs
@@ -485,7 +529,11 @@ fn load_pool(dir: &str, out: &str, from_campaign: Option<&str>, root: &str) -> V
     if let Some(name) = from_campaign {
         let cdir = format!("{}/{}", root, name);
         let pool = campaign::load_pool(&cdir);
-        println!("Loaded {} boards from campaign {}/pool.json", pool.len(), cdir);
+        println!(
+            "Loaded {} boards from campaign {}/pool.json",
+            pool.len(),
+            cdir
+        );
         return pool;
     }
     let mut pool: Vec<LevelRecord> = Vec::new();
@@ -511,7 +559,14 @@ fn load_pool(dir: &str, out: &str, from_campaign: Option<&str>, root: &str) -> V
     pool
 }
 
-fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str, from_campaign: Option<&str>, root: &str) {
+fn cmd_curate(
+    dir: &str,
+    out: &str,
+    count: Option<usize>,
+    profile: &str,
+    from_campaign: Option<&str>,
+    root: &str,
+) {
     let pool = load_pool(dir, out, from_campaign, root);
     let ladder = match profile {
         "initial32" => curate::curate_initial(&pool),
@@ -529,7 +584,9 @@ fn cmd_curate(dir: &str, out: &str, count: Option<usize>, profile: &str, from_ca
             l.number,
             l.name,
             l.band,
-            l.difficulty.map(|x| format!("{:.2}", x)).unwrap_or_default(),
+            l.difficulty
+                .map(|x| format!("{:.2}", x))
+                .unwrap_or_default(),
             tut.map(|t| format!("[{:?}]", t)).unwrap_or_default(),
         );
     }
@@ -581,7 +638,10 @@ fn cmd_rank(name: &str, root: &str, out: &str, per_bucket: usize) {
     let mut keys: Vec<(String, f64)> = buckets
         .iter()
         .map(|(k, v)| {
-            let best = v.iter().filter_map(|r| r.difficulty).fold(f64::NEG_INFINITY, f64::max);
+            let best = v
+                .iter()
+                .filter_map(|r| r.difficulty)
+                .fold(f64::NEG_INFINITY, f64::max);
             (k.clone(), best)
         })
         .collect();
@@ -597,7 +657,12 @@ fn cmd_rank(name: &str, root: &str, out: &str, per_bucket: usize) {
     for (key, best) in &keys {
         let mut v = buckets[key].clone();
         v.sort_by(|a, b| b.difficulty.partial_cmp(&a.difficulty).unwrap_or(Equal));
-        md.push_str(&format!("## {} — best {:.3} ({} boards)\n\n", key, best, v.len()));
+        md.push_str(&format!(
+            "## {} — best {:.3} ({} boards)\n\n",
+            key,
+            best,
+            v.len()
+        ));
         for r in v.iter().take(per_bucket) {
             md.push_str(&format!(
                 "- **{}** · quality {:.3} · randomSolve {:.4} · shortest {} · solutions {} · states {} · doomDelay {} · specReq {}\n",
@@ -657,7 +722,11 @@ fn cmd_selftest() {
         if useless > 0 {
             flags.push(format!("{} USELESS-SPECIAL", useless));
         }
-        let status = if flags.is_empty() { "✓".to_string() } else { format!("✗ {}", flags.join(", ")) };
+        let status = if flags.is_empty() {
+            "✓".to_string()
+        } else {
+            format!("✗ {}", flags.join(", "))
+        };
         if !flags.is_empty() {
             failures += 1;
         }
@@ -705,7 +774,9 @@ fn main() {
             batch,
             profile,
             out,
-        } => cmd_gen(cols, rows, difficulty, &allow, seed, iters, batch, &profile, &out),
+        } => cmd_gen(
+            cols, rows, difficulty, &allow, seed, iters, batch, &profile, &out,
+        ),
         Cmd::Curate {
             dir,
             out,

@@ -230,7 +230,15 @@ fn build_loop(
     visited[base] = true;
     let mut budget: i64 = 200_000;
     if dfs(
-        cols, rows, base, min_len, max_len, &mut path, &mut visited, rng, &mut budget,
+        cols,
+        rows,
+        base,
+        min_len,
+        max_len,
+        &mut path,
+        &mut visited,
+        rng,
+        &mut budget,
     ) {
         Some(path)
     } else {
@@ -370,7 +378,11 @@ pub(crate) fn mutate(level: &Level, spec: &GenSpec, rng: &mut ChaCha8Rng) -> Opt
         0 => {
             let holes: Vec<usize> = (0..cols * rows)
                 .filter(|&i| next.cells[i].is_none())
-                .filter(|&i| neighbors(cols, rows, i).iter().any(|&n| next.cells[n].is_some()))
+                .filter(|&i| {
+                    neighbors(cols, rows, i)
+                        .iter()
+                        .any(|&n| next.cells[n].is_some())
+                })
                 .collect();
             let &h = holes.choose(rng)?;
             next.cells[h] = Some(TileKind::Green);
