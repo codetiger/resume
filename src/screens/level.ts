@@ -10,14 +10,7 @@ import type { Screen } from '../game/app';
 // only here, only after the player finishes the whole game — never stored or
 // shipped as plain text.
 import contact from 'virtual:contact';
-
-/** Decode the obfuscated phone ("0x2507B120E" → "+91 99401 77422"). */
-function decodePhone(encoded: string): string {
-  const n = Number(encoded);
-  if (!Number.isFinite(n) || n <= 0) return '';
-  const local = String(n).replace(/(\d{5})(\d{5})$/, '$1 $2');
-  return `+91 ${local}`;
-}
+import { decodePhone } from '../game/contact';
 
 const KEY_MAP: Record<string, Direction> = {
   ArrowRight: 'right',

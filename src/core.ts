@@ -1,11 +1,20 @@
-import type { TileKind } from './game/tile';
-
 // Shared primitives used across the engine and game modules: the cardinal
-// movement direction, its grid delta, a deterministic noise hash, and the
-// colour palette. Keeping these in one place avoids the three duplicate
-// `Direction` unions and the scattered magic hex literals the modules grew.
+// movement direction, its grid delta, the tile-kind union, a deterministic noise
+// hash, and the colour palette. Keeping these in one place avoids the three
+// duplicate `Direction` unions and the scattered magic hex literals the modules
+// grew — and lets the game layer depend on core rather than the reverse.
 
 export type Direction = 'right' | 'left' | 'forward' | 'back';
+
+/** The kinds of tile a board is built from (see game/tile.ts for their look). */
+export type TileKind =
+  | 'base'
+  | 'disappear-normal'
+  | 'disappear-line'
+  | 'arrow'
+  | 'shift'
+  | 'explosive'
+  | 'info';
 
 /** Grid step for each direction, as [dCol, dRow]. */
 export const DIRECTION_DELTA: Record<Direction, [number, number]> = {

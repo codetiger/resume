@@ -1,4 +1,4 @@
-import { parseLayout, type LevelLayout } from './grid';
+import { parseLayout, validateLayout, type LevelLayout } from './layout';
 // `virtual:levels` is levels.json with all JSONPath refs into resume.json resolved
 // at build time by the `resume-refs` Vite plugin (see vite.config.ts).
 import rawLevels from 'virtual:levels';
@@ -90,9 +90,26 @@ interface RawLevel {
   };
 }
 
-export const LEVELS: LevelDef[] = (rawLevels.levels as RawLevel[]).map((l) => ({
-  number: l.number,
-  name: l.name,
-  layout: parseLayout(l.layout),
-  content: { ...l.content, tag: l.content.tag as LevelContent['tag'] },
-}));
+const ALLOWED_TAGS: ReadonlySet<string> = new Set<LevelContent['tag']>(['resume', 'meta']);
+
+export const LEVELS: LevelDef[] = (rawLevels.levels as RawLevel[]).map((l) => {
+  // Fail loudly at load on corrupt data (ragged grid, no base, bad glyph, unknown
+  // tag) rather than rendering a broken board. The catalogue is generated, so this
+  // is a guard against a bad regen, not expected to fire in normal play.
+  let layout: LevelLayout;
+  try {
+    validateLayout(l.layout);
+    layout = parseLayout(l.layout);
+  } catch (e) {
+    throw new Error(`level ${l.number} ("${l.name}"): ${(e as Error).message}`, { cause: e });
+  }
+  if (!ALLOWED_TAGS.has(l.content.tag)) {
+    throw new Error(`level ${l.number} ("${l.name}"): unknown content tag "${l.content.tag}"`);
+  }
+  return {
+    number: l.number,
+    name: l.name,
+    layout,
+    content: { ...l.content, tag: l.content.tag as LevelContent['tag'] },
+  };
+});

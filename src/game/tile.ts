@@ -1,14 +1,9 @@
 import * as THREE from 'three';
-import { PALETTE } from '../core';
+import { PALETTE, type TileKind } from '../core';
 
-export type TileKind =
-  | 'base'
-  | 'disappear-normal'
-  | 'disappear-line'
-  | 'arrow'
-  | 'shift'
-  | 'explosive'
-  | 'info';
+// The platform OBJ names its coloured body material "Material2"; everything else
+// is the dark trim. Recolouring keys off this name, so it must match the mesh.
+const BODY_MATERIAL_NAME = 'Material2';
 
 export interface TileOptions {
   kind: TileKind;
@@ -37,7 +32,7 @@ export function createTile({ kind, template }: TileOptions): THREE.Group {
   });
 
   const pick = (src: THREE.Material): THREE.MeshStandardMaterial =>
-    src.name === 'Material2' ? bodyMat : trimMat;
+    src.name === BODY_MATERIAL_NAME ? bodyMat : trimMat;
 
   group.traverse((child) => {
     if (!(child instanceof THREE.Mesh)) return;
