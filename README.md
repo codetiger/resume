@@ -36,9 +36,9 @@ static résumé at `/resume/resume.html`). Requires repo **Settings → Pages �
 
 Source layout under `src/`:
 
-- `core.ts` — shared primitives: the `Direction` type, `DIRECTION_DELTA`, the `noise()` hash, and the `PALETTE` colour map.
+- `core.ts` — shared primitives: the `Direction` and `TileKind` types, `DIRECTION_DELTA`, the `noise()` hash, and the `PALETTE` colour map.
 - `engine/` — Three.js infrastructure: `scene.ts` (camera/lighting/renderer) and `models.ts` (OBJ/MTL loading).
-- `game/` — gameplay: `grid.ts` (level + tile rules), `player.ts` (rolling cube), `tile.ts`, `decoration.ts` (animated tile overlays), `effects.ts` (projectiles/swirls).
+- `game/` — gameplay: `layout.ts` (Three.js-free board parsing/validation), `grid.ts` (level + tile rules), `player.ts` (rolling cube), `tile.ts`, `contact.ts`, `decoration.ts` (animated tile overlays), `effects.ts` (projectiles/swirls).
 
 ## Static fallback (Python)
 
@@ -50,3 +50,34 @@ python3 build.py          # assets/resume.json + template.html → assets/resume
 - **Content:** edit `assets/resume.json` ([JSON Resume](https://jsonresume.org/schema/) schema).
 - **Design/layout:** edit `template.html` (Jinja2 template, CSS inlined).
 - `assets/resume.html` is generated — do not edit by hand; regenerate with `python3 build.py`.
+
+## Level generation (Rust)
+
+The puzzle ladder is produced offline by the `level-gen/` crate (solver + campaign +
+curator) and wired into the game with `level-gen/wire_ladder.py`. See
+[`level-gen/README.md`](level-gen/README.md) for the workflow and
+[`levels/README.md`](levels/README.md) for the candidate → curated → wired lifecycle.
+
+## Development
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for one-time setup and the full command list.
+Quick reference:
+
+```bash
+# TypeScript game
+npm run typecheck && npm run lint && npm test && npm run build
+
+# Python builder
+pip3 install -r requirements-dev.txt
+ruff check . && ruff format --check . && mypy && pytest
+
+# Rust level generator
+cd level-gen && cargo fmt --check && cargo clippy --lib --bins --tests -- -D warnings && cargo test
+
+# All three at once, on staged files
+pre-commit run --all-files
+```
+
+The architecture and the cross-stack data contracts are documented in
+[`docs/architecture.md`](docs/architecture.md). CI (`.github/workflows/ci.yml`) runs
+the same checks on every PR and push to `master`.

@@ -21,6 +21,13 @@ Game:
 
 - **Dev server:** `npm run dev` (Vite, http://localhost:5173)
 - **Build:** `npm run build` (`tsc --noEmit` then `vite build` → `dist/`)
+- **Quality:** `npm run typecheck` · `npm run lint` · `npm run format:check` · `npm test` (Vitest)
+
+Quality gates (run by CI in `.github/workflows/ci.yml`, and by `pre-commit run --all-files`):
+
+- Python: `ruff check .` · `ruff format --check .` · `mypy` · `pytest` (deps: `requirements-dev.txt`)
+- Rust (`level-gen/`): `cargo fmt --check` · `cargo clippy --lib --bins --tests -- -D warnings` · `cargo test`
+- See `CONTRIBUTING.md` for setup and `docs/architecture.md` for the cross-stack data contracts.
 
 Static fallback:
 
@@ -44,17 +51,22 @@ Level generation (Rust, `level-gen/` — build with `cargo build --release` firs
 
 ### Game (`src/`)
 
-- `core.ts` — shared primitives used across modules: the `Direction` union, `DIRECTION_DELTA`
-  grid steps, the deterministic `noise()` hash, and the `PALETTE` colour map. Add shared
-  constants/colours here rather than re-declaring them per module.
+- `core.ts` — shared primitives used across modules: the `Direction` and `TileKind` unions,
+  `DIRECTION_DELTA` grid steps, the deterministic `noise()` hash, and the `PALETTE` colour map. Add
+  shared constants/colours/types here rather than re-declaring them per module (core depends on
+  nothing — the game layer depends on core, not the reverse).
 - `engine/scene.ts` — Three.js scene, camera, lighting, parallax.
 - `engine/models.ts` — loads + normalises the player/platform OBJ+MTL meshes (`loadNormalizedModel`).
+- `game/layout.ts` — Three.js-free board parsing/validation: `CellDef`, `LevelLayout`, `parseLayout()`
+  (compact char grid → level), and `validateLayout()`. Kept canvas-free so it's unit-testable.
 - `game/grid.ts` — `buildLevel()` constructs the board, tile state, chain reactions (blasts/lines),
-  and win/lose rules. `parseLayout()` turns a compact char grid into the level; `DEMO_LAYOUT` is the demo.
-- `game/player.ts` — rolling/falling/teleporting cube physics.
+  and win/lose rules. Re-exports the layout types; `DEMO_LAYOUT` is the demo.
+- `game/player.ts` — rolling/falling/teleporting cube physics (unit-tested).
 - `game/tile.ts` — per-kind tile materials (colours from `PALETTE`).
+- `game/contact.ts` — `decodePhone()` for the play-to-unlock phone reveal.
 - `game/decoration.ts` — animated 8×8 cube-grid overlays per tile kind (one shared animator).
 - `game/effects.ts` — transient projectiles and teleport swirls.
+- Tests live next to their module as `*.test.ts` (Vitest); the suite runs headlessly (node).
 
 ### Static fallback
 
