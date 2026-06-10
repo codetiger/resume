@@ -3,14 +3,19 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "semi": true,
+    "trailingComma": "all"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "build:site": "python3 build.py && npm run build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
@@ -20,15 +25,11 @@
     "three": "^0.171.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@types/three": "^0.171.0",
-    "eslint": "^10.4.1",
-    "eslint-config-prettier": "^10.1.8",
     "jsdom": "^29.1.1",
     "jsonpath-plus": "^10.3.0",
     "prettier": "^3.8.4",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.61.0",
     "vite": "^6.0.1",
     "vitest": "^4.1.8"
   }

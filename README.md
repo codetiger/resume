@@ -60,24 +60,18 @@ curator) and wired into the game with `level-gen/wire_ladder.py`. See
 
 ## Development
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for one-time setup and the full command list.
-Quick reference:
+Quick reference for the three stacks:
 
 ```bash
 # TypeScript game
-npm run typecheck && npm run lint && npm test && npm run build
+npm run typecheck && npm test && npm run build
 
 # Python builder
 pip3 install -r requirements-dev.txt
-ruff check . && ruff format --check . && mypy && pytest
+ruff check . && ruff format --check . && pytest
 
 # Rust level generator
 cd level-gen && cargo fmt --check && cargo clippy --lib --bins --tests -- -D warnings && cargo test
-
-# All three at once, on staged files
-pre-commit run --all-files
 ```
 
-The architecture and the cross-stack data contracts are documented in
-[`docs/architecture.md`](docs/architecture.md). CI (`.github/workflows/ci.yml`) runs
-the same checks on every PR and push to `master`.
+CI (`.github/workflows/ci.yml`) runs the same checks on every PR and push to `master`.

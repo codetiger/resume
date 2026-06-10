@@ -1,3 +1,0 @@
-# Use rustfmt defaults (the Rust ecosystem standard); just fix the edition so
-# standalone rustfmt and editors format the same way `cargo fmt` does.
-edition = "2021"

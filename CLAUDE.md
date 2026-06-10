@@ -21,13 +21,13 @@ Game:
 
 - **Dev server:** `npm run dev` (Vite, http://localhost:5173)
 - **Build:** `npm run build` (`tsc --noEmit` then `vite build` → `dist/`)
-- **Quality:** `npm run typecheck` · `npm run lint` · `npm run format:check` · `npm test` (Vitest)
+- **Quality:** `npm run typecheck` · `npm run format:check` · `npm test` (Vitest)
 
-Quality gates (run by CI in `.github/workflows/ci.yml`, and by `pre-commit run --all-files`):
+Quality gates (run by CI in `.github/workflows/ci.yml`):
 
-- Python: `ruff check .` · `ruff format --check .` · `mypy` · `pytest` (deps: `requirements-dev.txt`)
+- Python: `ruff check .` · `ruff format --check .` · `pytest` (deps: `requirements-dev.txt`)
 - Rust (`level-gen/`): `cargo fmt --check` · `cargo clippy --lib --bins --tests -- -D warnings` · `cargo test`
-- See `CONTRIBUTING.md` for setup and `docs/architecture.md` for the cross-stack data contracts.
+- See `README.md` for setup and the full command list.
 
 Static fallback:
 

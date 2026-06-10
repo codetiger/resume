@@ -14,14 +14,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 # Tests lean on assert and intentionally repetitive fixtures.
 "tests/**" = ["E501"]
 
-[tool.mypy]
-python_version = "3.12"
-files = ["build.py", "triangulate.py", "level-gen/wire_ladder.py", "tests"]
-ignore_missing_imports = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-check_untyped_defs = true
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Make the root build scripts importable from tests/ (they're modules, not a package).
