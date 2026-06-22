@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
 # Builds both outputs and deploys them side by side:
-#   - the Three.js game        → https://codetiger.github.io/resume/
-#   - the static résumé (HTML)  → https://codetiger.github.io/resume/resume.html
+#   - the Three.js game        → https://codetiger.in/resume/
+#   - the static résumé (HTML)  → https://codetiger.in/resume/resume.html
 #
 # One-time setup: repo Settings → Pages → Source = "GitHub Actions".
 

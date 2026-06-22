@@ -403,6 +403,10 @@
         "location": "Chennai, India",
         "links": [
           {
+            "label": "Website",
+            "url": "$.basics.profiles[?(@.network=='Website')].url"
+          },
+          {
             "label": "GitHub",
             "url": "$.basics.profiles[?(@.network=='Github')].url"
           },

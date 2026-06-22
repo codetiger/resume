@@ -3,7 +3,7 @@
 An interactive, gamified résumé. Roll a cube across a 3D tile grid (Three.js); a static
 HTML résumé generated from JSON serves as the no-JavaScript fallback.
 
-Demo — [Game](https://codetiger.github.io/resume/) · [Static résumé](https://codetiger.github.io/resume/resume.html)
+Demo — [Game](https://codetiger.in/resume/) · [Static résumé](https://codetiger.in/resume/resume.html)
 
 ## Two stacks
 
