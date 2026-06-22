@@ -29,10 +29,10 @@ npm run build      # tsc --noEmit + vite build → dist/ (game only)
 npm run build:site # python3 build.py + npm run build → dist/ (game + static résumé)
 ```
 
-Deployment is automated: pushing to `master` runs `.github/workflows/deploy.yml`,
-which builds both stacks and publishes `dist/` to GitHub Pages (game at `/resume/`,
-static résumé at `/resume/resume.html`). Requires repo **Settings → Pages → Source =
-"GitHub Actions"** (one-time).
+Deployment is manual: run `npm run build:site` to produce `dist/` (the game
+`index.html` and `resume.html` side by side, with `models/`, the avatar, and
+`resume.json` alongside), then publish `dist/` to your host. CI
+(`.github/workflows/ci.yml`) runs the quality checks only; it does not deploy.
 
 Source layout under `src/`:
 

@@ -89,7 +89,7 @@ function resumeRefs(): Plugin {
 
 export default defineConfig(({ command }) => ({
   root: '.',
-  // Dev serves at root; the production build targets the GitHub Pages project path.
+  // Dev serves at root; the production build targets the /resume/ subpath.
   base: command === 'serve' ? '/' : '/resume/',
   // Single source of truth for static assets (models, avatar, resume.json, and the
   // generated resume.html). Vite serves these in dev and copies them into dist/ on

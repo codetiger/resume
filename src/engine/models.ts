@@ -25,7 +25,7 @@ async function loadNormalizedModel(
   objFile: string,
   fit: (size: THREE.Vector3) => number,
 ): Promise<NormalizedModel> {
-  // Base-relative so models resolve under the GitHub Pages project path
+  // Base-relative so models resolve under the /resume/ subpath
   // (BASE_URL is "/" in dev, "/resume/" in the production build).
   const modelsDir = `${import.meta.env.BASE_URL}models/`;
   const mtlLoader = new MTLLoader();

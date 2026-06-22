@@ -1,7 +1,7 @@
 name: CI
 
-# Quality gate for the three stacks. Runs on PRs and on pushes to master
-# (the deploy workflow handles publishing; this one just proves the tree is green).
+# Quality gate for the three stacks. Runs on PRs and on pushes to master,
+# proving the tree stays green. Deployment is handled outside CI.
 on:
   pull_request:
   push:
