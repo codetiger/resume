@@ -4,4 +4,4 @@
 # Bump deliberately and re-verify the build output when you do.
 Jinja2==3.1.4
 numpy==2.4.4
-Pillow==11.3.0
+Pillow==12.2.0
