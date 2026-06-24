@@ -14,6 +14,11 @@
             href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
+
+        <!-- Shared design system — TOKENS only (the game owns its HUD/overlay
+             components). Served at /design-system/ by the aggregator build in prod and
+             by the vite.config.ts middleware in dev. -->
+        <link rel="stylesheet" href="/design-system/tokens.css" />
         <style>
             *,
             *::before,
@@ -22,28 +27,29 @@
                 padding: 0;
                 box-sizing: border-box;
             }
-            /* Unified dark identity — shared with the static résumé + design spec.
-               Most overlay colours below are already these exact palette values;
-               the tokens give the popup chrome and fonts one source of truth. */
+            /* Re-skin onto the shared design system: each token aliases a DS token
+               (defined by /design-system/tokens.css). The fallback after the comma
+               keeps the navy/cyan identity if the DS isn't present. --card/--red/--r-*
+               stay game-specific. Most overlay colours below already equal these
+               values; the tokens give the popup chrome + fonts one source of truth. */
             :root {
-                --bg-0: #05090f;
-                --bg-1: #0a1320;
-                --bg-2: #0f1d2e;
+                --bg-0: var(--color-bg, #05090f);
+                --bg-1: var(--color-surface-2, #0a1320);
+                --bg-2: var(--color-bg-elevated, #0f1d2e);
                 --card: rgba(10, 18, 30, 0.92);
-                --line: rgba(140, 220, 255, 0.16);
-                --cyan: #8cdcff;
-                --cyan-vivid: #00ccff;
-                --gold: #ffd166;
-                --mint: #7ef7c8;
+                --line: var(--color-border, rgba(140, 220, 255, 0.16));
+                --cyan: var(--color-accent, #8cdcff);
+                --cyan-vivid: var(--accent-cyan-vivid, #00ccff);
+                --gold: var(--color-accent-2, #ffd166);
+                --mint: var(--color-accent-3, #7ef7c8);
                 --red: #ff6b6b;
-                --tx-0: #e8f3ff;
-                --tx-1: #bcd0e6;
-                --tx-2: #7e94ad;
-                --tx-3: #52677e;
-                --f-display: "Space Grotesk", system-ui, sans-serif;
-                --f-body:
-                    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-                --f-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+                --tx-0: var(--color-fg, #e8f3ff);
+                --tx-1: var(--color-fg-secondary, #bcd0e6);
+                --tx-2: var(--color-muted, #7e94ad);
+                --tx-3: var(--color-subtle, #52677e);
+                --f-display: var(--font-display, "Space Grotesk", system-ui, sans-serif);
+                --f-body: var(--font-sans, "Inter", system-ui, -apple-system, "Segoe UI", sans-serif);
+                --f-mono: var(--font-mono, "JetBrains Mono", "SF Mono", "Fira Code", monospace);
                 --r-sm: 6px;
                 --r-md: 10px;
                 --r-lg: 14px;

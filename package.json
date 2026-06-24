@@ -13,7 +13,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:site": "python3 build.py && npm run build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -26,7 +25,6 @@
   },
   "devDependencies": {
     "@types/three": "^0.184.1",
-    "jsdom": "^29.1.1",
     "jsonpath-plus": "^10.3.0",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",

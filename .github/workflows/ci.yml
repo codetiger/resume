@@ -32,7 +32,6 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: ruff format --check .
-      - run: pytest
 
   rust:
     runs-on: ubuntu-latest

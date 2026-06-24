@@ -1,8 +1,9 @@
 import { defineConfig, type Plugin } from 'vite';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, extname } from 'node:path';
 import { JSONPath } from 'jsonpath-plus';
+import { renderResume } from './src/resume/render';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const RESUME_PATH = resolve(ROOT, 'assets/resume.json');
@@ -87,20 +88,100 @@ function resumeRefs(): Plugin {
   };
 }
 
+// DEV ONLY: serve the shared design system at /design-system/ during `npm run dev`, so
+// the <link href="/design-system/tokens.css"> in index.html resolves locally. In
+// production the aggregator publishes it at that path (build/preview are untouched).
+// Streams straight from the design-system folder — no copy, never stale. Override the
+// location with DESIGN_SYSTEM_DIR.
+function designSystemDev(): Plugin {
+  const MIME: Record<string, string> = {
+    '.css': 'text/css',
+    '.html': 'text/html',
+    '.json': 'application/json',
+    '.js': 'text/javascript',
+    '.mjs': 'text/javascript',
+    '.svg': 'image/svg+xml',
+  };
+  const dir = [
+    process.env.DESIGN_SYSTEM_DIR,
+    resolve(ROOT, '../../design-system'), // website-cicd/projects/resume
+    resolve(ROOT, '../website-cicd/design-system'), // standalone clone beside website-cicd
+  ].find((d): d is string => !!d && existsSync(resolve(d, 'design-system.css')));
+  return {
+    name: 'design-system-dev',
+    apply: 'serve',
+    configureServer(server) {
+      if (!dir) {
+        server.config.logger.warn(
+          '[design-system] not found — set DESIGN_SYSTEM_DIR; /design-system/ will 404 locally',
+        );
+        return;
+      }
+      server.config.logger.info(`[design-system] serving /design-system/ from ${dir}`);
+      server.middlewares.use('/design-system', (req, res, next) => {
+        const rel = decodeURIComponent((req.url || '/').split('?')[0]);
+        const file = resolve(dir, '.' + (rel === '/' ? '/index.html' : rel));
+        if (!file.startsWith(dir)) return next(); // traversal guard
+        try {
+          const data = readFileSync(file);
+          res.setHeader('Content-Type', MIME[extname(file)] || 'application/octet-stream');
+          res.end(data);
+        } catch {
+          next();
+        }
+      });
+    },
+  };
+}
+
+// Render the static résumé (resume.html) from assets/resume.json at build time, so it
+// ships as plain HTML — no client framework, no Python. Runs for both dev and build;
+// resumeRefs()'s watcher already full-reloads on resume.json edits, re-running this.
+function staticResume(): Plugin {
+  let base = '/';
+  return {
+    name: 'static-resume',
+    configResolved(c) {
+      base = c.base;
+    },
+    transformIndexHtml(html, ctx) {
+      if (!(ctx.filename ?? ctx.path ?? '').endsWith('resume.html')) return html;
+      const resume = JSON.parse(readFileSync(RESUME_PATH, 'utf-8'));
+      return html.replace('%RESUME%', renderResume(resume, base));
+    },
+  };
+}
+
 export default defineConfig(({ command }) => ({
   root: '.',
   // Dev serves at root; the production build targets the /resume/ subpath.
   base: command === 'serve' ? '/' : '/resume/',
-  // Single source of truth for static assets (models, avatar, resume.json, and the
-  // generated resume.html). Vite serves these in dev and copies them into dist/ on
-  // build, so the deploy needs no separate copy step.
+  // Single source of truth for static assets (models, avatar, resume.json). Vite serves
+  // these in dev and copies them into dist/ on build, so the deploy needs no copy step.
   publicDir: 'assets',
-  plugins: [resumeRefs()],
+  plugins: [resumeRefs(), designSystemDev(), staticResume()],
+  optimizeDeps: {
+    // Pre-bundle three.js + the game's addons at startup so Vite doesn't discover them
+    // lazily and re-optimize mid-session — the cause of the 504 "Outdated Optimize Dep".
+    include: [
+      'three',
+      'three/examples/jsm/environments/RoomEnvironment.js',
+      'three/examples/jsm/loaders/MTLLoader.js',
+      'three/examples/jsm/loaders/OBJLoader.js',
+    ],
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     target: 'es2022',
     sourcemap: true,
+    rollupOptions: {
+      // Two pages from one build: the game (index.html) and the static résumé.
+      input: {
+        main: resolve(ROOT, 'index.html'),
+        resume: resolve(ROOT, 'resume.html'),
+      },
+    },
   },
   server: {
     port: 5173,

@@ -1,6 +1,3 @@
-# Dev/test tooling for the Python build scripts.
+# Lint tooling for the repo's lone Python helper (level-gen/wire_ladder.py).
 #   pip install -r requirements-dev.txt
--r requirements.txt
-
 ruff==0.15.18
-pytest==9.1.1

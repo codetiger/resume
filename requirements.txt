@@ -1,7 +1,0 @@
-# Runtime dependencies for the static-fallback builder (build.py, triangulate.py).
-# Pinned exactly: the avatar hex-mosaic quantization runs through Pillow + numpy,
-# so an unpinned upgrade can change the generated resume.html byte-for-byte.
-# Bump deliberately and re-verify the build output when you do.
-Jinja2==3.1.6
-numpy==2.5.0
-Pillow==12.2.0
